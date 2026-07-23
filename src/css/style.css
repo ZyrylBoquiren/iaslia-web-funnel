@@ -511,8 +511,11 @@ header .btn-primary {
 	}
 
 	/* STATS */
-	.stats-grid {
-		grid-template-columns: repeat(2, 1fr);
+	.stats-grid .num {
+		font-size: 1rem;
+	}
+	.stats-grid .label {
+		font-size: 0.6rem;
 	}
 
 	/* WHAT WE OFFER */
