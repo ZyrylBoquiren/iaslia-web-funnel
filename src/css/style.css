@@ -12,10 +12,26 @@
 	padding: 0;
 }
 
+html {
+	scroll-behavior: smooth;
+}
+
 body {
 	font-family: "Inter", sans-serif;
 	color: var(--ink);
 	background: #ffffff;
+	font-size: 1rem;
+	line-height: 1.5;
+}
+
+h1,
+h2,
+h3 {
+	font-family: "Fraunces", serif;
+}
+
+a {
+	color: inherit;
 }
 
 .wrap {
@@ -32,6 +48,10 @@ header {
 	gap: 20px;
 	padding: 16px 40px;
 	border-bottom: 1px solid #f1d9d8;
+	position: sticky;
+	top: 0;
+	background: #fff;
+	z-index: 50;
 }
 
 .logo-group {
@@ -41,30 +61,30 @@ header {
 }
 
 .logo-group img {
-	width: 64px;
-	height: 64px;
+	width: 50px;
+	height: 50px;
 	flex-shrink: 0;
 	object-fit: contain;
 }
 
 .logo-text h1 {
 	font-family: "Inter", sans-serif;
-	font-size: 16px;
+	font-size: 1rem;
 	font-weight: 700;
 	letter-spacing: 0.01em;
 }
 
 .logo-text p {
-	font-size: 9.5px;
+	font-size: 0.6rem;
 	font-weight: 600;
-	letter-spacing: 0.07em;
+	letter-spacing: 0.05em;
 	color: var(--gray);
 	margin-top: 2px;
 }
 
 header .btn-primary {
 	padding: 12px 24px;
-	font-size: 14px;
+	font-size: 1rem;
 }
 
 .btn {
@@ -73,7 +93,7 @@ header .btn-primary {
 	gap: 8px;
 	text-decoration: none;
 	font-weight: 600;
-	font-size: 15px;
+	font-size: 1rem;
 	border-radius: 999px;
 	padding: 13px 26px;
 	border: none;
@@ -159,7 +179,7 @@ header .btn-primary {
 
 .eyebrow {
 	color: var(--red);
-	font-size: 13px;
+	font-size: 1rem;
 	font-weight: 700;
 	letter-spacing: 0.06em;
 	margin-bottom: 20px;
@@ -168,7 +188,7 @@ header .btn-primary {
 .hero-copy h2 {
 	font-family: "Fraunces", serif;
 	font-weight: 700;
-	font-size: 48px;
+	font-size: 3rem;
 	line-height: 1.12;
 	letter-spacing: -0.01em;
 }
@@ -180,14 +200,14 @@ header .btn-primary {
 
 .kicker {
 	margin-top: 22px;
-	font-size: 16px;
+	font-size: 1.1rem;
 	font-weight: 600;
 	color: var(--ink);
 }
 
 .hero-copy p.desc {
 	margin-top: 12px;
-	font-size: 15px;
+	font-size: 0.9rem;
 	line-height: 1.7;
 	color: var(--gray);
 	max-width: 460px;
@@ -209,12 +229,12 @@ header .btn-primary {
 }
 
 .connect span {
-	font-size: 15px;
+	font-size: 1rem;
 	color: var(--ink);
 }
 
 .connect a {
-	font-size: 15px;
+	font-size: 1rem;
 	font-weight: 600;
 }
 
@@ -262,11 +282,65 @@ header .btn-primary {
 	margin-top: 4px;
 }
 
+/* ---------- WHAT WE OFFER ---------- */
+.offer {
+	padding: 5rem 0rem;
+}
+
+.section-title {
+	font-size: 3rem;
+	line-height: 1.2;
+	margin-bottom: 1.3rem;
+}
+
+.section-desc {
+	font-size: 1rem;
+	color: var(--gray);
+	margin-bottom: 2.5rem;
+}
+
+.section-title,
+.section-desc {
+	max-width: 640px;
+}
+
+.offer-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 20px;
+}
+
+.offer-card {
+	background-color: var(--beige);
+	border: 1px solid #e31d1a33;
+	padding: 28px 24px;
+	border-radius: 20px;
+	text-align: center;
+}
+
+.offer-icon img {
+	height: 6rem;
+}
+
+.offer-card h3 {
+	font-size: 1.1rem;
+	font-family: "Fraunces", serif;
+	margin-bottom: 0.8rem;
+}
+
+.offer-card p {
+	font-size: 0.8rem;
+	color: var(--gray);
+}
 
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 980px) {
+	.wrap {
+		padding: 0px 1.5rem;
+	}
+
 	header .btn-primary {
-		padding: 8px 14px;
+		padding: 0.7rem 0.9rem;
 		font-size: 11px;
 		flex-shrink: 0;
 	}
@@ -303,11 +377,11 @@ header .btn-primary {
 	}
 
 	.hero-copy h2 {
-		font-size: 36px;
+		font-size: 2.25rem;
 	}
 
 	header {
-		padding: 10px 16px;
+		padding: 0.7rem 1rem;
 		gap: 10px;
 		flex-wrap: nowrap;
 	}
@@ -318,8 +392,8 @@ header .btn-primary {
 	}
 
 	.logo-group img {
-		width: 36px;
-		height: 36px;
+		width: 2.25rem;
+		height: 2.25rem
 	}
 
 	.logo-text {
@@ -339,5 +413,18 @@ header .btn-primary {
 	/* STATS */
 	.stats-grid {
 		grid-template-columns: repeat(2, 1fr);
+	}
+
+	/* WHAT WE OFFER */
+	.section-title {
+		font-size: 1.9rem;
+	}
+
+	.offer-grid {
+		grid-template-columns: repeat(1, 1fr);
+	}
+
+	.offer-icon img {
+		height: 4rem;
 	}
 }
