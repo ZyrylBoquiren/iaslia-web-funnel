@@ -283,7 +283,8 @@ header .btn-primary {
 }
 
 /* ---------- WHAT WE OFFER ---------- */
-.offer {
+.offer,
+.family {
 	padding: 5rem 0rem;
 }
 
@@ -332,6 +333,105 @@ header .btn-primary {
 	font-size: 0.8rem;
 	color: var(--gray);
 }
+
+/* ---------- OUR GROWING FAMILY ---------- */
+.family {
+	background-color: var(--beige);
+}
+
+.family-bar {
+	background-color: #ffffff;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1rem 1.5rem;
+	border-radius: 20px;
+	margin-bottom: 2rem;
+	border: 1px solid #e31d1a33;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.family-bar .headline {
+	font-size: 0.9rem;
+	color: var(--gray);
+	font-style: italic;
+}
+
+.family-bar .headline strong {
+	color: var(--ink);
+	font-family: "Fraunces", serif;
+	font-weight: 600;
+	font-size: 1.2rem;
+}
+
+.testimonials-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 30px;
+}
+
+.t-card {
+	height: 100%;
+	background-color: #ffffff;
+	border: 1px solid #e31d1a33;
+	padding: 28px 24px;
+	border-radius: 20px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+	transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.t-card:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 12px 30px rgba(0, 0, 0, 0.09);
+}
+
+.t-head {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.t-head img {
+	height: 3rem;
+	width: 3rem;
+	border: 1.5px var(--red-dark) solid;
+	border-radius: 100%;
+	object-fit: cover;
+	flex-shrink: 0;
+}
+
+.t-head .name {
+	font-size: 1rem;
+	font-weight: 700;
+}
+
+.t-head .role {
+	font-size: 0.8rem;
+	color: var(--gray);
+}
+
+.t-body {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	margin-top: 1rem;
+}
+
+.t-quote {
+	color: var(--red-dark);
+	font-family: "Fraunces", serif;
+	font-size: 3rem;
+	line-height: 1;
+	flex-shrink: 0;
+}
+
+.t-desc {
+	font-size: 0.9rem;
+	line-height: 1.6;
+}
+
 
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 980px) {
@@ -393,7 +493,7 @@ header .btn-primary {
 
 	.logo-group img {
 		width: 2.25rem;
-		height: 2.25rem
+		height: 2.25rem;
 	}
 
 	.logo-text {
@@ -420,11 +520,13 @@ header .btn-primary {
 		font-size: 1.9rem;
 	}
 
-	.offer-grid {
+	.offer-grid, .testimonials-grid {
 		grid-template-columns: repeat(1, 1fr);
 	}
 
 	.offer-icon img {
 		height: 4rem;
 	}
+
+
 }
