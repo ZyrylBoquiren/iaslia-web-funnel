@@ -439,18 +439,117 @@ header .btn-primary {
 }
 
 /* ---------- MILESTONES ---------- */
+.milestones {
+	padding: 5rem 0;
+}
+
+.m-list {
+	width: 80%;
+	height: auto;
+	max-width: 800px;
+	margin: 4rem auto 0 auto;
+	position: relative;
+}
+
+.m-list::before {
+	content: "";
+	position: absolute;
+	height: 100%;
+	width: 2px;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: #e31d1a33;
+}
+
+.m-list ul {
+	list-style: none;
+}
+
+.m-list ul::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+.m-list ul li {
+	width: 50%;
+	background: #fff;
+	border: 1px solid #e31d1a33;
+	border-radius: 16px;
+	padding: 1.5rem;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+	margin-bottom: 1.5rem;
+	position: relative;
+}
+
+.m-list ul li:last-child {
+	margin-bottom: 0;
+}
+
+.m-list ul li:nth-child(odd) {
+	float: left;
+	clear: right;
+	transform: translateX(-30px);
+}
+
+.m-list ul li:nth-child(even) {
+	float: right;
+	clear: left;
+	transform: translateX(30px);
+}
+
+.m-list ul li::after {
+	content: "";
+	position: absolute;
+	height: 20px;
+	width: 20px;
+	background-color: var(--red);
+	border-radius: 50%;
+	top: 0;
+}
+
+.m-list ul li:nth-child(odd)::after {
+	transform: translate(50%, -50%);
+	right: -30px;
+}
+
+.m-list ul li:nth-child(even)::after {
+	transform: translate(-50%, 50%);
+	left: -30px;
+}
+
+.m-date {
+	font-size: 1.6rem;
+	font-weight: 700;
+	color: var(--red);
+	margin-bottom: 0.3rem;
+}
+.m-title {
+	font-size: 1rem;
+	font-weight: 600;
+	margin-bottom: 0.6rem;
+}
+.m-desc {
+	font-size: 0.9rem;
+	line-height: 1.6;
+	color: var(--gray);
+}
+.m-desc strong {
+	color: var(--ink);
+}
 
 /* ---------- CHOOSE YOUR PATH ---------- */
 .path {
 	background-color: var(--beige);
 }
 
+.milestones .section-title,
+.milestones .section-desc,
 .path .eyebrow,
 .path .section-title,
-.path .section-desc,
-.note {
+.path .section-desc {
 	text-align: center;
-	margin: 1.25rem auto;
+	margin: 0 auto 1.25rem auto;
 }
 
 .path-tag,
@@ -540,6 +639,7 @@ header .btn-primary {
 }
 
 .note {
+	text-align: center;
 	font-size: 0.85rem;
 	color: var(--gray);
 }
@@ -625,6 +725,7 @@ header .btn-primary {
 	.stats-grid .num {
 		font-size: 1rem;
 	}
+
 	.stats-grid .label {
 		font-size: 0.6rem;
 	}
@@ -642,6 +743,35 @@ header .btn-primary {
 
 	.offer-icon img {
 		height: 4rem;
+	}
+
+	/* MILESTONES */
+	.m-list {
+		width: 100%;
+		padding-left: 1rem;
+	}
+
+	.m-list::before {
+		left: 10px;
+		transform: none;
+	}
+
+	.m-list ul li,
+	.m-list ul li:nth-child(odd),
+	.m-list ul li:nth-child(even) {
+		width: 90%;
+		float: none;
+		clear: none;
+		transform: none;
+		margin-left: 20px;
+	}
+
+	.m-list ul li::after,
+	.m-list ul li:nth-child(odd)::after,
+	.m-list ul li:nth-child(even)::after {
+		left: -26px;
+		right: auto;
+		transform: translate(-50%, -50%);
 	}
 
 	/* CHOOSE YOUR PATH */
