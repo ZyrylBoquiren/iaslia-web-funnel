@@ -65,9 +65,9 @@
             </div>
             <div class="connect">
                 <span>Connect to one of us:</span>
-                <a href="#" class="icon-circle" aria-label="Email">✉</a>
-                <a href="#" class="icon-circle" aria-label="LinkedIn">in</a>
-                <a href="#" class="icon-circle" aria-label="Facebook">f</a>
+                <a href="#" class="social-btn" aria-label="Email">✉</a>
+                <a href="#" class="social-btn" aria-label="LinkedIn">in</a>
+                <a href="#" class="social-btn" aria-label="Facebook">f</a>
             </div>
         </div>
     </section>
@@ -313,7 +313,7 @@
     <!-- CALENDAR - BOOKING -->
     <section class="booking" id="booking-section">
         <div class="wrap">
-            
+
             <!-- ===================== AGENT / CAREER PREVIEW FORM ===================== -->
             <div id="agent-form-container" class="form-container">
                 <div class="form-header">
@@ -389,8 +389,8 @@
                                     <div class="field-row-2">
                                         <div>
                                             <label class="field-label">Area of Residence <span>*</span></label>
-                                            <input type="text" name="residence" placeholder="e.g. Caloocan City" required
-                                                class="field-input">
+                                            <input type="text" name="residence" placeholder="e.g. Caloocan City"
+                                                required class="field-input">
                                         </div>
                                         <div>
                                             <label class="field-label">Area of Business/Employment
@@ -602,7 +602,8 @@
                                         <label class="field-label">Do you have any personal life insurance?
                                             <span>*</span></label>
                                         <div class="toggle-group">
-                                            <input type="hidden" name="has_insurance" id="has_insurance" value="" required>
+                                            <input type="hidden" name="has_insurance" id="has_insurance" value=""
+                                                required>
                                             <button type="button" class="toggle-btn"
                                                 onclick="selectToggle(this, 'has_insurance', 'yes')">Yes</button>
                                             <button type="button" class="toggle-btn"
@@ -716,36 +717,30 @@
         </div>
     </section>
 
-    <footer class="bg-[#e31d1a] text-white pt-10 pb-6 px-6 lg:px-10 mt-10">
-        <div class="max-w-7xl mx-auto">
-            <div
-                class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-white/20 pb-8">
-                <div class="flex items-center gap-6">
-                    <h2 class="font-serif text-2xl lg:text-3xl font-bold uppercase tracking-wider">Connect With Us</h2>
-                    <div class="flex gap-3">
-                        <a href="#"
-                            class="w-10 h-10 flex items-center justify-center border-2 border-white rounded-md hover:bg-white hover:text-[#e31d1a] transition font-bold text-lg">✉</a>
-                        <a href="#"
-                            class="w-10 h-10 flex items-center justify-center border-2 border-white rounded-md hover:bg-white hover:text-[#e31d1a] transition font-bold text-lg">in</a>
-                        <a href="#"
-                            class="w-10 h-10 flex items-center justify-center border-2 border-white rounded-md hover:bg-white hover:text-[#e31d1a] transition font-bold text-lg">f</a>
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-wrap">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <h2 class="footer-title">Connect With Us</h2>
+                    <div class="footer-socials">
+                        <a href="#" class="social-btn">✉</a>
+                        <a href="#" class="social-btn">in</a>
+                        <a href="#" class="social-btn">f</a>
                     </div>
                 </div>
-                <div class="flex items-center gap-4 text-right">
+                <div class="footer-agency">
                     <div>
-                        <h3 class="font-bold text-sm tracking-widest uppercase">Infinity Ace Summit Life Insurance
-                            Agency</h3>
-                        <p class="text-[10px] tracking-widest text-white/80 uppercase mt-1">Securing Futures With
-                            Excellence & Integrity</p>
+                        <h3 class="agency-name">Infinity Ace Summit Life Insurance Agency</h3>
+                        <p class="agency-tagline">Securing Futures With Excellence & Integrity</p>
                     </div>
-                    <img src="./assets/images/logo.png" alt="IASLIA Logo"
-                        class="w-14 h-14 object-contain flex-shrink-0 drop-shadow-lg">
+                    <img src="./assets/images/logo.png" alt="IASLIA Logo" class="agency-logo">
                 </div>
             </div>
-            <div class="text-xs text-white/90 leading-relaxed space-y-3">
-                <p>Copyright © 2026 | Powered by Figma</p>
-                <p class="max-w-5xl text-[11px] opacity-80">This page is a design prototype built for demonstration
-                    purposes. PRU Life UK of the Philippines is regulated by the Insurance Commission.</p>
+            <div class="footer-bottom">
+                <p>© 2026 Infinity Ace Summit Life Insurance Agency. All Rights Reserved.</p>
+                <p class="footer-disclaimer">This site is an independent agency page and is not an official Pru Life UK
+                    website. PRU Life UK of the Philippines is regulated by the Insurance Commission.</p>
             </div>
         </div>
     </footer>
