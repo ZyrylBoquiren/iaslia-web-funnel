@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IASLIA Admin Console</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Fraunces', 'serif'],
+                    },
+                    colors: {
+                        pru: {
+                            red: '#bd1512',
+                            dark: '#231717',
+                            bg: '#fbf8f7',
+                            border: '#f1d9d8',
+                            muted: '#8c8282'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-pru-bg text-gray-800 antialiased h-screen overflow-hidden flex flex-col font-sans">
+
+    <div id="login-view" class="fixed inset-0 z-50 flex bg-pru-bg">
+        <div class="hidden lg:flex flex-col justify-center w-1/2 bg-gray-900 text-white p-16 relative overflow-hidden">
+            <img src="./assets/images/hero1.png" alt="Background" class="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay">
+            
+            <div class="relative z-10 max-w-lg">
+                <h2 class="text-3xl font-medium mb-1">Welcome Back,</h2>
+                <h1 class="text-6xl font-serif font-bold mb-6">Admin</h1>
+                <div class="w-32 h-3 bg-red-600 rounded-full mb-8"></div>
+                <h3 class="text-2xl font-bold tracking-wider mb-1">INFINITY ACE SUMMIT</h3>
+                <p class="text-[13px] tracking-widest text-gray-300 mb-8 uppercase">Life Insurance Agency, Inc.</p>
+                <p class="text-red-500 font-bold uppercase tracking-widest text-[13px] mb-4">Securing Futures With <br>Excellence & Integrity</p>
+                <p class="text-[13px] text-gray-200 mb-10 leading-relaxed max-w-md">Access your dashboard to manage leads, monitor your team, and grow the business with confidence.</p>
+                
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="flex gap-4">
+                        <div class="w-10 h-10 bg-white rounded-full flex-shrink-0"></div>
+                        <div>
+                            <h4 class="text-xs font-bold uppercase">Lead Management</h4>
+                            <p class="text-[11px] text-red-500 mt-1">Organize and track leads efficiently.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-10 h-10 border-2 border-white rounded-full flex-shrink-0"></div>
+                        <div>
+                            <h4 class="text-xs font-bold uppercase">Performance Analytics</h4>
+                            <p class="text-[11px] text-red-500 mt-1">Monitor performance and key metrics.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-10 h-10 border-2 border-white rounded-full flex-shrink-0"></div>
+                        <div>
+                            <h4 class="text-xs font-bold uppercase">Secure Database</h4>
+                            <p class="text-[11px] text-red-500 mt-1">The data is protected with top-tier security.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-10 h-10 border-2 border-white rounded-md flex-shrink-0"></div>
+                        <div>
+                            <h4 class="text-xs font-bold uppercase">Email Templates</h4>
+                            <p class="text-[11px] text-red-500 mt-1">Generate and send email anytime.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="w-full lg:w-1/2 flex items-center justify-center p-8 relative">
+            <div class="w-full max-w-md bg-white rounded-2xl shadow-xl border border-pru-border p-10">
+                <h2 class="text-4xl font-serif font-bold text-gray-900 mb-2">Sign In</h2>
+                <p class="text-[13px] text-gray-500 mb-8">Please enter your credentials to continue.</p>
+                <form id="login-form" onsubmit="handleLogin(event)">
+                    <div class="mb-5">
+                        <label class="block text-[13px] font-semibold text-gray-700 mb-2">Username</label>
+                        <input type="text" placeholder="Enter your username" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-[13px] focus:outline-none focus:border-pru-red bg-white" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="block text-[13px] font-semibold text-gray-700 mb-2">Password</label>
+                        <div class="relative">
+                            <input type="password" placeholder="Enter your password" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-[13px] focus:outline-none focus:border-pru-red bg-white" required>
+                            <span class="absolute right-4 top-3.5 text-gray-400 text-xs cursor-pointer">👁</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-end mb-8">
+                        <a href="#" class="text-xs font-bold text-pru-red hover:underline">Forgot Password?</a>
+                    </div>
+                    <button type="submit" class="w-full bg-[#bd1512] text-white font-bold py-3.5 rounded-full hover:bg-red-900 transition-colors shadow-md text-[13px]">Sign In</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-app" class="hidden flex h-screen w-full">
+        
+        <aside class="w-64 bg-pru-dark text-white flex flex-col border-r border-[#3a2727] flex-shrink-0">
+            <div class="p-6 flex items-center gap-3 border-b border-[#3a2727]">
+                <img src="./assets/images/logo.png" alt="Logo" class="w-8 h-8 object-contain">
+                <div>
+                    <h1 class="text-[13px] font-bold tracking-wider uppercase">PRU Life UK</h1>
+                    <p class="text-[9px] text-gray-400 tracking-widest uppercase">Admin Console</p>
+                </div>
+            </div>
+
+            <div class="flex-grow py-6 px-4">
+                <p class="text-[10px] text-gray-500 font-semibold tracking-widest uppercase mb-4 px-2">PIPELINE</p>
+                <nav class="space-y-1 mb-8">
+                    <button onclick="switchTab('leads')" id="nav-leads" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-[#3a2727] text-white text-[13px] font-semibold transition-colors">
+                        <span class="w-2 h-2 rounded-full bg-[#b89569]"></span> Leads
+                    </button>
+                    <button onclick="switchTab('analytics')" id="nav-analytics" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-[#3a2727] hover:text-white text-[13px] font-semibold transition-colors">
+                        <span class="w-2 h-2 rounded-full bg-[#6b7280]"></span> Analytics
+                    </button>
+                    <button onclick="switchTab('calendar')" id="nav-calendar" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-[#3a2727] hover:text-white text-[13px] font-semibold transition-colors">
+                        <span class="w-2 h-2 rounded-full bg-[#6b7280]"></span> Calendar
+                    </button>
+                </nav>
+
+                <p class="text-[10px] text-gray-500 font-semibold tracking-widest uppercase mb-4 px-2">WORKSPACE</p>
+                <nav class="space-y-1">
+                    <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-[#3a2727] hover:text-white text-[13px] font-semibold transition-colors">
+                        <span class="w-2 h-2 rounded-full bg-[#6b7280]"></span> Email Templates
+                    </button>
+                    <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-[#3a2727] hover:text-white text-[13px] font-semibold transition-colors">
+                        <span class="w-2 h-2 rounded-full bg-[#6b7280]"></span> Settings
+                    </button>
+                </nav>
+            </div>
+
+            <div class="p-4 border-t border-[#3a2727] flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-[#fce8e8] text-pru-red flex items-center justify-center font-bold text-xs">AU</div>
+                <div class="overflow-hidden">
+                    <p class="text-xs font-bold text-white truncate">Admin User</p>
+                    <p class="text-[10px] text-gray-400 truncate">admin@prulifeuk.demo</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-grow overflow-y-auto bg-pru-bg p-10">
+            
+            <div id="view-leads" class="block max-w-6xl mx-auto">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <h1 class="text-3xl font-serif font-bold text-gray-900 mb-1">Leads</h1>
+                        <p class="text-[13px] text-gray-500">Everyone who came through the funnel — agents and clients, in one pipeline.</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="relative">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                            </svg>
+                            <input type="text" placeholder="Search name, email, mobile." class="pl-11 pr-4 py-2 border border-pru-border rounded-full text-[13px] font-medium w-72 bg-white focus:outline-none focus:border-pru-red text-gray-600">
+                        </div>
+                        <button onclick="openModal('add-lead-modal')" class="bg-[#bd1512] text-white px-6 py-2 rounded-full text-[13px] font-bold shadow-md hover:bg-red-900 transition-colors">+ Add Lead</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm">
+                        <p class="text-3xl font-serif font-bold text-pru-red mb-2">6</p>
+                        <p class="text-[12px] text-gray-500">Total Leads</p>
+                    </div>
+                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm">
+                        <p class="text-3xl font-serif font-bold text-pru-red mb-2">3</p>
+                        <p class="text-[12px] text-gray-500">Agents</p>
+                    </div>
+                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm">
+                        <p class="text-3xl font-serif font-bold text-pru-red mb-2">3</p>
+                        <p class="text-[12px] text-gray-500">Clients</p>
+                    </div>
+                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm">
+                        <p class="text-3xl font-serif font-bold text-pru-red mb-2">2</p>
+                        <p class="text-[12px] text-gray-500">Officially Converted</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex bg-[#f3e9e8] rounded-full p-1 border border-pru-border">
+                        <button class="px-5 py-1.5 text-[12px] font-bold text-gray-600 rounded-full hover:bg-white transition-colors">All</button>
+                        <button class="px-5 py-1.5 text-[12px] font-bold text-gray-600 rounded-full hover:bg-white transition-colors">Agents</button>
+                        <button class="px-5 py-1.5 text-[12px] font-bold text-white bg-[#bd1512] rounded-full shadow-sm">Client</button>
+                    </div>
+                    <select class="border border-pru-border bg-white text-[12px] font-bold text-gray-700 rounded-full px-5 py-2 w-48 focus:outline-none shadow-sm">
+                        <option>All Stages</option>
+                    </select>
+                </div>
+
+                <div class="bg-white border border-pru-border rounded-xl overflow-hidden shadow-sm">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-[#fbf4f2] text-[10px] font-bold tracking-wider text-gray-500 uppercase border-b border-pru-border">
+                            <tr>
+                                <th class="px-6 py-4">Name</th>
+                                <th class="px-6 py-4">Type</th>
+                                <th class="px-6 py-4">Contact</th>
+                                <th class="px-6 py-4">Source</th>
+                                <th class="px-6 py-4">Milestones</th>
+                                <th class="px-6 py-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-pru-border text-[13px]">
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4 flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-[#fce8e8] text-pru-red font-bold flex items-center justify-center text-sm border border-pru-border">AC</div>
+                                    <div>
+                                        <p class="font-bold text-gray-900">Angeline Cruz</p>
+                                        <p class="text-[11px] text-gray-400 mt-0.5">Added 2026-07-11</p>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4"><span class="px-3 py-1 bg-[#f3e9e8] text-gray-700 text-[11px] font-bold rounded-full border border-pru-border">Client</span></td>
+                                <td class="px-6 py-4">
+                                    <p class="font-semibold text-gray-900">angeline.cruz@gmail.com</p>
+                                    <p class="text-gray-500 text-[12px] mt-0.5">0920 111 7788</p>
+                                </td>
+                                <td class="px-6 py-4 text-gray-500">Funnel, Financial Conversation</td>
+                                <td class="px-6 py-4 flex gap-1 items-center h-full mt-2">
+                                    <div class="w-6 h-6 rounded-full border border-pru-border text-[9px] font-bold flex items-center justify-center text-gray-400 bg-[#fbf4f2]">M</div>
+                                    <div class="w-6 h-6 rounded-full border border-pru-border text-[9px] font-bold flex items-center justify-center text-gray-400 bg-[#fbf4f2]">C</div>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button onclick="openModal('profile-modal')" class="w-8 h-8 border border-pru-border rounded-full inline-flex items-center justify-center text-gray-400 hover:text-pru-red transition-colors shadow-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+                                    </button>
+                                    <button class="w-8 h-8 border border-pru-border rounded-full inline-flex items-center justify-center text-gray-400 hover:text-pru-red transition-colors shadow-sm ml-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4 flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-[#fce8e8] text-pru-red font-bold flex items-center justify-center text-sm border border-pru-border">RD</div>
+                                    <div>
+                                        <p class="font-bold text-gray-900">Ramon Dela Cruz</p>
+                                        <p class="text-[11px] text-gray-400 mt-0.5">Added 2026-07-05</p>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4"><span class="px-3 py-1 bg-[#f3e9e8] text-gray-700 text-[11px] font-bold rounded-full border border-pru-border">Client</span></td>
+                                <td class="px-6 py-4">
+                                    <p class="font-semibold text-gray-900">ramon.delacruz@gmail.com</p>
+                                    <p class="text-gray-500 text-[12px] mt-0.5">0921 456 9900</p>
+                                </td>
+                                <td class="px-6 py-4 text-gray-500">Funnel, Financial Conversation</td>
+                                <td class="px-6 py-4 flex gap-1 items-center h-full mt-2">
+                                    <div class="w-6 h-6 rounded-full border border-pru-red text-[9px] font-bold flex items-center justify-center text-white bg-[#bd1512]">M</div>
+                                    <div class="w-6 h-6 rounded-full border border-pru-border text-[9px] font-bold flex items-center justify-center text-gray-400 bg-[#fbf4f2]">C</div>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button onclick="openModal('profile-modal')" class="w-8 h-8 border border-pru-border rounded-full inline-flex items-center justify-center text-gray-400 hover:text-pru-red transition-colors shadow-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+                                    </button>
+                                    <button class="w-8 h-8 border border-pru-border rounded-full inline-flex items-center justify-center text-gray-400 hover:text-pru-red transition-colors shadow-sm ml-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4 flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-[#fce8e8] text-pru-red font-bold flex items-center justify-center text-sm border border-pru-border">MF</div>
+                                    <div>
+                                        <p class="font-bold text-gray-900">Michelle Fernandez</p>
+                                        <p class="text-[11px] text-gray-400 mt-0.5">Added 2026-06-15</p>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4"><span class="px-3 py-1 bg-[#f3e9e8] text-gray-700 text-[11px] font-bold rounded-full border border-pru-border">Client</span></td>
+                                <td class="px-6 py-4">
+                                    <p class="font-semibold text-gray-900">michelle.fernandez@gmail.com</p>
+                                    <p class="text-gray-500 text-[12px] mt-0.5">0922 333 4455</p>
+                                </td>
+                                <td class="px-6 py-4 text-gray-500">Referral</td>
+                                <td class="px-6 py-4 flex gap-1 items-center h-full mt-2">
+                                    <div class="w-6 h-6 rounded-full border border-pru-red text-[9px] font-bold flex items-center justify-center text-white bg-[#bd1512]">M</div>
+                                    <div class="w-6 h-6 rounded-full border border-[#00875a] text-[9px] font-bold flex items-center justify-center text-white bg-[#00875a]">C</div>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button onclick="openModal('profile-modal')" class="w-8 h-8 border border-pru-border rounded-full inline-flex items-center justify-center text-gray-400 hover:text-pru-red transition-colors shadow-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+                                    </button>
+                                    <button class="w-8 h-8 border border-pru-border rounded-full inline-flex items-center justify-center text-gray-400 hover:text-pru-red transition-colors shadow-sm ml-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="view-analytics" class="hidden max-w-6xl mx-auto">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-serif font-bold text-gray-900 mb-1">Analytics</h1>
+                    <p class="text-[13px] text-gray-500">A live snapshot of your pipeline, calculated from your current lead data.</p>
+                </div>
+                
+                <div class="grid grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">6</p><p class="text-[12px] text-gray-500">Total Leads</p></div>
+                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">3</p><p class="text-[12px] text-gray-500">Agent Leads</p></div>
+                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">3</p><p class="text-[12px] text-gray-500">Client Leads</p></div>
+                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">2</p><p class="text-[12px] text-gray-500">Converted Leads</p></div>
+                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">33%</p><p class="text-[12px] text-gray-500">Conversion Rate</p></div>
+                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">2</p><p class="text-[12px] text-gray-500">New Leads</p></div>
+                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">4</p><p class="text-[12px] text-gray-500">Meetings Completed</p></div>
+                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">1</p><p class="text-[12px] text-gray-500">PRU Life UK Emails Created</p></div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white border border-pru-border rounded-xl p-7 shadow-sm">
+                        <h3 class="font-bold text-[14px] text-gray-900 mb-1">Agent vs. Client</h3>
+                        <p class="text-[11px] text-gray-500 mb-8">Split of your total pipeline by lead type.</p>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <span class="w-16 text-[12px] text-gray-600">Agents</span>
+                                <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
+                                    <div class="h-full bg-[#9f1b21] w-1/2 rounded-full"></div>
+                                </div>
+                                <span class="text-[12px] font-bold text-gray-900 w-4 text-right">3</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="w-16 text-[12px] text-gray-600">Clients</span>
+                                <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
+                                    <div class="h-full bg-[#b89569] w-1/2 rounded-full"></div>
+                                </div>
+                                <span class="text-[12px] font-bold text-gray-900 w-4 text-right">3</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white border border-pru-border rounded-xl p-7 shadow-sm">
+                        <h3 class="font-bold text-[14px] text-gray-900 mb-1">Stage Breakdown</h3>
+                        <p class="text-[11px] text-gray-500 mb-8">Where every lead currently sits.</p>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <span class="w-48 text-[12px] text-gray-600">New Lead</span>
+                                <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
+                                    <div class="h-full bg-[#9f1b21] w-1/3 rounded-full"></div>
+                                </div>
+                                <span class="text-[12px] font-bold text-gray-900 w-4 text-right">2</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="w-48 text-[12px] text-gray-600">Meeting Done</span>
+                                <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
+                                    <div class="h-full bg-[#9f1b21] w-1/3 rounded-full"></div>
+                                </div>
+                                <span class="text-[12px] font-bold text-gray-900 w-4 text-right">2</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="w-48 text-[12px] text-gray-600">PRU Life UK Email Created</span>
+                                <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
+                                    <div class="h-full bg-[#9f1b21] w-[0%] rounded-full"></div>
+                                </div>
+                                <span class="text-[12px] font-bold text-gray-900 w-4 text-right">0</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="w-48 text-[12px] text-gray-600">Officially Converted</span>
+                                <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
+                                    <div class="h-full bg-[#6a8770] w-1/3 rounded-full"></div>
+                                </div>
+                                <span class="text-[12px] font-bold text-gray-900 w-4 text-right">2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-pru-border rounded-xl p-7 shadow-sm">
+                    <h3 class="font-bold text-[14px] text-gray-900 mb-1">Source Breakdown</h3>
+                    <p class="text-[11px] text-gray-500 mb-8">Where your leads are coming from.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <span class="w-48 text-[12px] text-gray-600">Funnel, Career Preview</span>
+                            <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
+                                <div class="h-full bg-[#9f1b21] w-1/3 rounded-full"></div>
+                            </div>
+                            <span class="text-[12px] font-bold text-gray-900 w-4 text-right">2</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="w-48 text-[12px] text-gray-600">Referral</span>
+                            <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
+                                <div class="h-full bg-[#9f1b21] w-1/3 rounded-full"></div>
+                            </div>
+                            <span class="text-[12px] font-bold text-gray-900 w-4 text-right">2</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="w-48 text-[12px] text-gray-600">Funnel, Financial Conversation</span>
+                            <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
+                                <div class="h-full bg-[#9f1b21] w-1/3 rounded-full"></div>
+                            </div>
+                            <span class="text-[12px] font-bold text-gray-900 w-4 text-right">2</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-calendar" class="hidden max-w-6xl mx-auto">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-serif font-bold text-gray-900 mb-2">Set dates, see who's booked</h1>
+                    <p class="text-[13px] text-gray-500">Toggle which days are open for booking and manage available time slots per track. Booked leads for the selected date show up on the right.</p>
+                </div>
+                
+                <div class="flex bg-white border border-pru-border rounded-full p-1 w-max mb-8 shadow-sm">
+                    <button class="px-5 py-2 text-[13px] font-bold text-white bg-[#bd1512] rounded-full shadow-sm">Career Preview (Agent)</button>
+                    <button class="px-5 py-2 text-[13px] font-bold text-gray-600 rounded-full hover:bg-gray-50 transition-colors">Financial Conversation (Client)</button>
+                </div>
+
+                <div class="grid grid-cols-[1.2fr_1fr] gap-8 items-start">
+                    
+                    <div class="bg-white border border-pru-border rounded-2xl p-8 shadow-sm">
+                        <div class="flex justify-between items-center mb-8">
+                            <h2 class="text-2xl font-serif font-bold text-gray-900">July 2026</h2>
+                            <div class="flex gap-2">
+                                <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 text-gray-600 text-sm font-bold transition-colors">&lt;</button>
+                                <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 text-gray-600 text-sm font-bold transition-colors">&gt;</button>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-7 gap-3 text-center mb-8">
+                            <div class="text-[11px] font-bold text-gray-900 mb-2">S</div>
+                            <div class="text-[11px] font-bold text-gray-900 mb-2">M</div>
+                            <div class="text-[11px] font-bold text-gray-900 mb-2">T</div>
+                            <div class="text-[11px] font-bold text-gray-900 mb-2">W</div>
+                            <div class="text-[11px] font-bold text-gray-900 mb-2">T</div>
+                            <div class="text-[11px] font-bold text-gray-900 mb-2">F</div>
+                            <div class="text-[11px] font-bold text-gray-900 mb-2">S</div>
+                            
+                            <div></div><div></div><div></div>
+                            
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">1</div>
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">2</div>
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">3</div>
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">4</div>
+                            
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">5</div>
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">6</div>
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">7</div>
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">8</div>
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">9</div>
+                            
+                            <div onclick="showDayDetails('booked')" class="aspect-square flex items-center justify-center rounded-xl bg-[#e6f4ea] text-[13px] font-bold text-gray-800 cursor-pointer relative hover:scale-105 transition-transform border border-green-200 shadow-sm">
+                                10
+                                <span class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#bd1512] text-white text-[9px] font-bold rounded-full flex items-center justify-center border-2 border-white box-content shadow-sm">2</span>
+                            </div>
+                            
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">11</div>
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">12</div>
+                            
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#e6f4ea] text-[13px] font-bold text-gray-800 cursor-pointer">13</div>
+                            
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">14</div>
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">15</div>
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">16</div>
+                            
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#e6f4ea] text-[13px] font-bold text-gray-800 cursor-pointer">17</div>
+                            
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">18</div>
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">19</div>
+                            
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#e6f4ea] text-[13px] font-bold text-gray-800 cursor-pointer">20</div>
+                            
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">21</div>
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">22</div>
+                            
+                            <div onclick="showDayDetails('empty')" class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer hover:scale-105 transition-transform border border-pru-border">23</div>
+                            
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#e6f4ea] text-[13px] font-bold text-gray-800 cursor-pointer">24</div>
+                            
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">25</div>
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">26</div>
+                            
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#e6f4ea] text-[13px] font-bold text-gray-800 cursor-pointer">27</div>
+                            
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">28</div>
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">29</div>
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">30</div>
+                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">31</div>
+                        </div>
+
+                        <div class="flex gap-6 text-[13px] text-gray-700 font-medium pt-4 border-t border-gray-100">
+                            <span class="flex items-center gap-2">
+                                <div class="w-4 h-4 rounded border-2 border-gray-800 bg-[#e6f4ea]"></div> Open for Booking
+                            </span>
+                            <span class="flex items-center gap-2">
+                                <div class="w-4 h-4 rounded border-2 border-gray-800 bg-[#fbf4f2]"></div> Closed
+                            </span>
+                            <span class="flex items-center gap-2">
+                                <div class="w-4 h-4 rounded-full bg-[#bd1512]"></div> Has Booked Leads
+                            </span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-[17px] font-serif font-bold text-gray-900 mb-4">Scheduled Leads</h2>
+                        
+                        <div id="leads-empty-state" class="bg-white border border-pru-border rounded-2xl p-10 shadow-sm h-96 flex items-center justify-center text-center text-[13px] text-gray-400">
+                            Select a date on the calendar to open or close it for booking, manage time slots, and view any leads already booked that day.
+                        </div>
+
+                        <div id="leads-day-view" class="hidden bg-white border border-pru-border rounded-2xl p-6 shadow-sm">
+                            <div class="mb-6">
+                                <h3 id="panel-date" class="text-[17px] font-bold text-gray-900">Friday, July 10, 2026</h3>
+                                <p class="text-[11px] text-gray-500">Track: Career Preview (Agent)</p>
+                            </div>
+
+                            <div class="flex justify-between items-center bg-[#fbf4f2] border border-pru-border rounded-xl p-4 mb-8">
+                                <div>
+                                    <p class="text-[13px] font-bold text-gray-900">Open for booking</p>
+                                    <p class="text-[11px] text-gray-500">Clients can request this date</p>
+                                </div>
+                                <div id="booking-switch" class="w-12 h-6 bg-[#00875a] rounded-full relative cursor-pointer border border-[#00875a] shadow-sm">
+                                    <div class="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5 shadow-sm"></div>
+                                </div>
+                            </div>
+
+                            <div id="time-slots-section" class="mb-8">
+                                <p class="text-[10px] font-bold text-gray-900 uppercase tracking-widest mb-3">Available Time Slots</p>
+                                <div class="flex gap-2 flex-wrap mb-3">
+                                    <span class="px-3 py-1 bg-[#fbeaea] text-[#bd1512] text-[11px] font-bold rounded-full border border-pru-border flex items-center gap-1 cursor-pointer hover:bg-red-100">9:00 AM ⊗</span>
+                                    <span class="px-3 py-1 bg-[#fbeaea] text-[#bd1512] text-[11px] font-bold rounded-full border border-pru-border flex items-center gap-1 cursor-pointer hover:bg-red-100">11:00 AM ⊗</span>
+                                    <span class="px-3 py-1 bg-[#fbeaea] text-[#bd1512] text-[11px] font-bold rounded-full border border-pru-border flex items-center gap-1 cursor-pointer hover:bg-red-100">2:00 PM ⊗</span>
+                                    <span class="px-3 py-1 bg-[#fbeaea] text-[#bd1512] text-[11px] font-bold rounded-full border border-pru-border flex items-center gap-1 cursor-pointer hover:bg-red-100">7:00 PM ⊗</span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <input type="text" placeholder="e.g. 4:00 PM" class="flex-grow border border-pru-border rounded-lg px-4 py-2 text-[13px] outline-none focus:border-pru-red text-gray-600">
+                                    <button class="bg-gray-900 text-white px-5 py-2 rounded-lg text-[11px] font-bold hover:bg-gray-800 transition-colors">Add</button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between items-center mb-4 pb-2 border-b border-pru-border">
+                                    <p class="text-[10px] font-bold text-gray-900 uppercase tracking-widest">Booked Leads</p>
+                                    <span id="booked-count-badge" class="w-4 h-4 bg-[#bd1512] text-white text-[9px] font-bold rounded-full flex items-center justify-center">2</span>
+                                </div>
+                                
+                                <div id="booked-leads-list" class="space-y-3">
+                                    <div class="bg-[#fbf4f2] border border-pru-border rounded-xl p-4 flex items-center justify-between shadow-sm">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-full bg-[#fce8e8] text-pru-red font-bold flex items-center justify-center text-[10px] border border-pru-border">AR</div>
+                                            <div>
+                                                <p class="text-[13px] font-bold text-gray-900">Angela Reyes</p>
+                                                <p class="text-[11px] text-gray-500 mt-0.5">angela.reyes@email.com · 0917 234 5566</p>
+                                                <p class="text-[11px] text-gray-500">Ref: PLU-AR93K</p>
+                                            </div>
+                                        </div>
+                                        <span class="bg-white border border-pru-border text-[#bd1512] text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm">7:00 PM</span>
+                                    </div>
+                                    <div class="bg-[#fbf4f2] border border-pru-border rounded-xl p-4 flex items-center justify-between shadow-sm">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-full bg-[#fce8e8] text-pru-red font-bold flex items-center justify-center text-[10px] border border-pru-border">MD</div>
+                                            <div>
+                                                <p class="text-[13px] font-bold text-gray-900">Marco Dizon</p>
+                                                <p class="text-[11px] text-gray-500 mt-0.5">marco.dizon@email.com · 0928 883 1120</p>
+                                                <p class="text-[11px] text-gray-500">Ref: PLU-MD22F</p>
+                                            </div>
+                                        </div>
+                                        <span class="bg-white border border-pru-border text-[#bd1512] text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm">8:30 PM</span>
+                                    </div>
+                                </div>
+                                
+                                <div id="no-leads-msg" class="hidden text-[13px] font-bold text-gray-600 mt-6">
+                                    No leads booked for this date
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+        </main>
+    </div>
+
+    <div id="modal-overlay" class="hidden fixed inset-0 bg-black/60 z-40 transition-opacity"></div>
+
+    <div id="add-lead-modal" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-2xl z-50 shadow-2xl border border-pru-border overflow-hidden">
+        <div class="p-6 border-b border-pru-border flex justify-between items-center bg-[#fbf4f2]">
+            <h2 class="text-xl font-serif font-bold text-gray-900">Add a New Lead</h2>
+            <button onclick="closeModals()" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
+        <div class="p-6 space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Lead Type</label>
+                <select class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] text-gray-700 bg-white focus:border-pru-red outline-none shadow-sm">
+                    <option>Agent ( Career Preview )</option>
+                    <option>Client ( Financial Conversation )</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Full Name</label>
+                <input type="text" placeholder="Juan Dela Cruz" class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] outline-none focus:border-pru-red shadow-sm">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Email Address</label>
+                <input type="email" placeholder="juan@email.com" class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] outline-none focus:border-pru-red shadow-sm">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Mobile Number</label>
+                <input type="text" placeholder="09XX XXX XXXX" class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] outline-none focus:border-pru-red shadow-sm">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Source</label>
+                <input type="text" value="Funnel - Booked Slot" readonly class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] bg-gray-50 outline-none font-medium text-gray-600 shadow-sm">
+            </div>
+            <p class="text-[11px] font-medium text-gray-800 leading-relaxed pt-2">You can fill in the full interview Sheet or Market Survey details after actual meeting, from this lead's Profile</p>
+        </div>
+        <div class="p-4 border-t border-pru-border flex justify-end gap-3 bg-white">
+            <button onclick="closeModals()" class="px-5 py-2 text-[13px] font-bold text-pru-red border border-pru-border rounded-full hover:bg-[#fbf4f2] transition-colors shadow-sm bg-white">Cancel</button>
+            <button class="px-5 py-2 text-[13px] font-bold text-white bg-[#bd1512] rounded-full hover:bg-red-900 transition-colors shadow-sm">Add Lead</button>
+        </div>
+    </div>
+
+    <div id="profile-modal" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl bg-white rounded-2xl z-50 shadow-2xl border border-pru-border overflow-hidden flex flex-col max-h-[90vh]">
+        
+        <div class="p-6 pb-4 bg-[#fbf4f2] border-b border-pru-border relative">
+            <button onclick="closeModals()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+            </button>
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-full bg-[#bd1512] text-white font-bold flex items-center justify-center text-lg shadow-sm">JV</div>
+                <div>
+                    <h2 class="text-xl font-serif font-bold text-gray-900 leading-tight">Jerome Villanueva</h2>
+                    <p class="text-[11px] font-bold text-gray-600 mt-1">Agent Funnel Career Preview Added 2026-07-08</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <div class="flex-1 bg-white border border-pru-border rounded-full py-1.5 px-3 flex items-center gap-2 shadow-sm">
+                    <div class="w-3 h-3 rounded-full border border-gray-300"></div>
+                    <span class="text-[10px] font-bold text-gray-700">Meeting Done</span>
+                </div>
+                <div class="flex-1 bg-white border border-pru-border rounded-full py-1.5 px-3 flex items-center gap-2 shadow-sm">
+                    <div class="w-3 h-3 rounded-full border border-gray-300"></div>
+                    <span class="text-[10px] font-bold text-gray-700">PRU LIFE UK Email Created</span>
+                </div>
+                <div class="flex-1 bg-white border border-pru-border rounded-full py-1.5 px-3 flex items-center gap-2 opacity-50 shadow-sm">
+                    <div class="w-3 h-3 rounded-full border border-gray-300"></div>
+                    <span class="text-[10px] font-bold text-gray-700">Officially Converted</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex px-6 border-b border-pru-border bg-white pt-2">
+            <button class="px-4 py-2 border-b-2 border-pru-red text-pru-red text-[13px] font-bold">Profile</button>
+            <button class="px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 text-[13px] font-bold transition-colors">Email</button>
+        </div>
+
+        <div class="p-8 overflow-y-auto flex-grow bg-white">
+            <h3 class="text-[11px] font-bold text-[#b89569] uppercase tracking-widest mb-4">Contact</h3>
+            <div class="grid grid-cols-2 gap-y-6 gap-x-12 mb-8">
+                <div><p class="text-[12px] font-bold text-gray-900 mb-1">Full Name</p><p class="text-[13px] text-gray-500 font-medium">Jerome Villanueva</p></div>
+                <div><p class="text-[12px] font-bold text-gray-900 mb-1">Email Address</p><p class="text-[13px] text-gray-500 font-medium">jerome.villanueva@gmail.com</p></div>
+                <div><p class="text-[12px] font-bold text-gray-900 mb-1">Mobile Number</p><p class="text-[13px] text-gray-500 font-medium">0917 234 5678</p></div>
+                <div><p class="text-[12px] font-bold text-gray-900 mb-1">Source</p><p class="text-[13px] text-gray-500 font-medium">Funnel - Career Preview</p></div>
+            </div>
+
+            <h3 class="text-[11px] font-bold text-[#b89569] uppercase tracking-widest mb-4">Basic Info</h3>
+            <div class="grid grid-cols-2 gap-y-6 gap-x-12 mb-8">
+                <div><p class="text-[12px] font-bold text-gray-900 mb-1">Date of Birth</p><p class="text-[13px] text-gray-400 italic">Not Recorded</p></div>
+                <div><p class="text-[12px] font-bold text-gray-900 mb-1">Age</p><p class="text-[13px] text-gray-400 italic">Not Recorded</p></div>
+                <div><p class="text-[12px] font-bold text-gray-900 mb-1">Area of Residence</p><p class="text-[13px] text-gray-400 italic">Not Recorded</p></div>
+            </div>
+
+            <h3 class="text-[11px] font-bold text-[#b89569] uppercase tracking-widest mb-4">Education & Work</h3>
+            <div class="grid grid-cols-2 gap-y-6 gap-x-12 mb-8">
+                <div><p class="text-[12px] font-bold text-gray-900 mb-1">University/College (Graduated Form)</p><p class="text-[13px] text-gray-400 italic">Not Recorded</p></div>
+                <div><p class="text-[12px] font-bold text-gray-900 mb-1">Degree</p><p class="text-[13px] text-gray-400 italic">Not Recorded</p></div>
+                <div><p class="text-[12px] font-bold text-gray-900 mb-1">Area of Business or Employment</p><p class="text-[13px] text-gray-400 italic">Not Recorded</p></div>
+                <div><p class="text-[12px] font-bold text-gray-900 mb-1">Work Experience</p><p class="text-[13px] text-gray-400 italic">Not Recorded</p></div>
+                <div><p class="text-[12px] font-bold text-gray-900 mb-1">Number of Years Working</p><p class="text-[13px] text-gray-400 italic">Not Recorded</p></div>
+            </div>
+            
+            <h3 class="text-[11px] font-bold text-[#b89569] uppercase tracking-widest mb-4">Recruitment</h3>
+            <div class="grid grid-cols-2 gap-y-6 gap-x-12">
+                <div><p class="text-[12px] font-bold text-gray-900 mb-1">Name of Recruiter</p><p class="text-[13px] text-gray-400 italic"></p></div>
+                <div><p class="text-[12px] font-bold text-gray-900 mb-1">Immediate Manager</p><p class="text-[13px] text-gray-400 italic"></p></div>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-pru-border flex justify-between items-center bg-white">
+            <button class="px-5 py-2 text-[13px] font-bold text-pru-red border border-pru-border rounded-full hover:bg-red-50 transition-colors shadow-sm">Delete Lead</button>
+            <div class="flex gap-3">
+                <button onclick="closeModals()" class="px-5 py-2 text-[13px] font-bold text-pru-red border border-pru-border rounded-full hover:bg-[#fbf4f2] transition-colors shadow-sm">Close</button>
+                <button class="px-5 py-2 text-[13px] font-bold text-white bg-[#bd1512] rounded-full hover:bg-red-900 transition-colors shadow-sm">Edit Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../src/js/admin.js"></script>
+</body>
+</html>
