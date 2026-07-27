@@ -18,6 +18,9 @@
 // 		);
 // 	});
 
+// ============= FORM REFERENCES =============
+const agentForm = document.getElementById("appointment-form");
+const clientForm = document.getElementById("client-appointment-form");
 
 // ============= TRACK SWITCHING =============
 function switchTrack(trackType) {
