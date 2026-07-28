@@ -168,7 +168,7 @@ async function loadAdminLeads() {
         leads.forEach(lead => {
             const tr = document.createElement('tr');
             
-            const isAgent = lead.track && (lead.track.toLowerCase().includes('career') || lead.track.toLowerCase().includes('agent'));
+            const isAgent = lead.track === "future_advisor";
             const dataType = isAgent ? 'agent' : 'client';
             const typeLabel = isAgent ? 'Agent' : 'Client';
             
@@ -256,16 +256,28 @@ window.viewLeadDetails = async function(leadId) {
         if (leadError) throw leadError;
 
         // 4. Determine if Agent or Client, then fetch the specific profile
-        const isAgent = lead.track && (lead.track.toLowerCase().includes('career') || lead.track.toLowerCase().includes('agent'));
-        let profile = null;
+            const isAgent = lead.track === "future_advisor";
+            let profile = null;
 
-        if (isAgent) {
-            const { data } = await supabase.from('recruit_profile').select('*').eq('lead_id', leadId).single();
-            profile = data;
-        } else {
-            const { data } = await supabase.from('client_profile').select('*').eq('lead_id', leadId).single();
-            profile = data;
-        }
+            if (isAgent) {
+                const { data, error } = await supabase
+                    .from("recruit_profile")
+                    .select("*")
+                    .eq("lead_id", leadId)
+                    .single();
+
+                if (error) console.error(error);
+                profile = data;
+            } else {
+                const { data, error } = await supabase
+                    .from("client_profile")
+                    .select("*")
+                    .eq("lead_id", leadId)
+                    .single();
+
+                if (error) console.error(error);
+                profile = data;
+            }
 
         // 5. Data Formatting (Initials, Dates, Age)
         const fullName = lead.full_name || 'Unknown User';

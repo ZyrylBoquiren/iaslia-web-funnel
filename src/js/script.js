@@ -277,7 +277,8 @@ agentForm.addEventListener("submit", async function (e) {
             mobile_number: agentForm.querySelector("input[name='mobile']").value,
             track: "future_advisor", 
             source: "Website Funnel",
-            current_stage: "new"
+            current_stage: "new",
+			date_of_birth: agentForm.querySelector("input[name='dob']")?.value || null
         };
 
         const { data: lead, error: leadError } = await supabaseClient
@@ -333,7 +334,8 @@ clientForm.addEventListener("submit", async function (e) {
             mobile_number: clientForm.querySelector("input[name='mobile']").value,
             track: "future_client",
             source: "Website Funnel",
-            current_stage: "new"
+            current_stage: "new",
+			date_of_birth: clientForm.querySelector("input[name='dob']")?.value || null
         };
 
         const { data: lead, error: leadError } = await supabaseClient
@@ -350,12 +352,13 @@ clientForm.addEventListener("submit", async function (e) {
         if (insuranceInput === "no") hasInsuranceBool = false;
 
         const clientData = {
-            lead_id: lead.lead_id, 
+            lead_id: lead.lead_id,
             has_life_insurance: hasInsuranceBool,
 			current_employment: clientForm.querySelector("input[name='employment']").value,
 			marital_status: clientForm.querySelector("input[name='marital_status']").value,
 			no_of_dependents: parseInt(clientForm.querySelector("input[name='dependents']").value) || 0,
-			monthly_budget: parseFloat(clientForm.querySelector("input[name='budget']").value.replace(/[^0-9.-]+/g,"")) || 0
+			monthly_budget: parseFloat(clientForm.querySelector("input[name='budget']").value.replace(/[^0-9.-]+/g,"")) || 0,
+			area_of_residence: clientForm.querySelector("input[name='residence']").value,
         };
 
         const { error: profileError } = await supabaseClient
