@@ -1,22 +1,9 @@
+// ============= SUPABASE INITIALIZATION =============
+// 
+const SUPABASE_URL = "https://refufwvilgtgqpcnejhs.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZnVmd3ZpbGd0Z3FwY25lamhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4Nzk4MTMsImV4cCI6MjEwMDQ1NTgxM30.lPL_AWB1uMHS8Bac7jNtuPJJD7FUDpPNiuP0J7v6DII";
 
-
-// Demo Submission
-// document
-// 	.getElementById("appointment-form")
-// 	.addEventListener("submit", function (e) {
-// 		e.preventDefault();
-// 		alert(
-// 			"Success! (Demo Mode): Your Agent Career Preview slot has been reserved.",
-// 		);
-// 	});
-// document
-// 	.getElementById("client-appointment-form")
-// 	.addEventListener("submit", function (e) {
-// 		e.preventDefault();
-// 		alert(
-// 			"Success! (Demo Mode): Your Financial Conversation slot has been reserved.",
-// 		);
-// 	});
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ============= FORM REFERENCES =============
 const agentForm = document.getElementById("appointment-form");
@@ -35,9 +22,6 @@ function switchTrack(trackType) {
 }
 
 // ============= AVAILABLE DATES (hardcoded for now) =============
-// Format: "YYYY-M-D" (no leading zeros needed)
-// Remove this to fetch actual data from the backend
-
 const AGENT_AVAILABLE_DATES = [
 	"2026-8-3", "2026-8-6", "2026-8-10", "2026-8-13",
 	"2026-8-17", "2026-8-20", "2026-8-24", "2026-8-27", "2026-8-31",
@@ -47,22 +31,9 @@ const CLIENT_AVAILABLE_DATES = [
 	"2026-8-17", "2026-8-20", "2026-8-24", "2026-8-27", "2026-8-31",
 ];
 
-
-// ============= TRACK SWITCHING =============
-function switchTrack(trackType) {
-	const agentContainer = document.getElementById("agent-form-container");
-	const clientContainer = document.getElementById("client-form-container");
-	const bookingSection = document.getElementById("booking-section");
-
-	agentContainer.classList.toggle("hidden", trackType === "client");
-	clientContainer.classList.toggle("hidden", trackType === "agent");
-
-	bookingSection.scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
 // ============= DYNAMIC CALENDAR =============
-const calendarState = new WeakMap(); // tracks each form's currently-viewed month/year
-const calendarDates = new WeakMap(); // tracks each form's available-dates list
+const calendarState = new WeakMap(); 
+const calendarDates = new WeakMap(); 
 
 function renderCalendar(form, availableDates) {
 	calendarDates.set(form, availableDates);
@@ -74,7 +45,7 @@ function renderCalendar(form, availableDates) {
 	let state = calendarState.get(form);
 	if (!state) {
 		const today = new Date();
-		state = { year: today.getFullYear(), month: today.getMonth() }; // month is 0-indexed
+		state = { year: today.getFullYear(), month: today.getMonth() }; 
 		calendarState.set(form, state);
 	}
 
@@ -85,7 +56,7 @@ function renderCalendar(form, availableDates) {
 	];
 	title.textContent = `${monthNames[month]} ${year}`;
 
-	const firstWeekday = new Date(year, month, 1).getDay(); // 0 = Sunday
+	const firstWeekday = new Date(year, month, 1).getDay(); 
 	const daysInMonth = new Date(year, month + 1, 0).getDate();
 
 	const today = new Date();
@@ -93,7 +64,6 @@ function renderCalendar(form, availableDates) {
 
 	grid.innerHTML = "";
 
-	// Empty leading cells so day 1 lands on the correct weekday column
 	for (let i = 0; i < firstWeekday; i++) {
 		const empty = document.createElement("div");
 		empty.className = "day-cell empty";
@@ -137,7 +107,6 @@ function changeMonth(form, direction) {
 	renderCalendar(form, availableDates);
 }
 
-// Click handling for calendar day cells (re-attached every time the grid re-renders)
 function attachDayCellListeners(form) {
 	const dayCells = form.querySelectorAll(".day-cell.available, .day-cell.selected");
 	const dateInput = form.querySelector(".appt-date-input");
@@ -194,7 +163,6 @@ function validateForm(form) {
 	let isValid = true;
 	let firstInvalidEl = null;
 
-	// Standard required text/email/tel/date/number/select fields
 	const requiredFields = form.querySelectorAll(
 		"input[required]:not([type=hidden]), select[required]",
 	);
@@ -208,7 +176,6 @@ function validateForm(form) {
 		}
 	});
 
-	// Date + time (hidden inputs, checked manually since hidden fields can't use native validation)
 	const dateInput = form.querySelector(".appt-date-input");
 	const timeInput = form.querySelector(".appt-time-input");
 	const calendarGrid = form.querySelector(".calendar-grid");
@@ -230,7 +197,6 @@ function validateForm(form) {
 		timesGrid.classList.remove("times-error");
 	}
 
-	// Client form only: insurance Yes/No toggle
 	const insuranceInput = form.querySelector("#has_insurance");
 	if (insuranceInput) {
 		const toggleGroup = insuranceInput.closest(".toggle-group");
@@ -243,10 +209,6 @@ function validateForm(form) {
 		}
 	}
 
-	// Show/hide the top-of-form error banner
-	const summary = form.querySelector(".form-error-summary");
-	if (summary) summary.classList.toggle("show", !isValid);
-
 	if (firstInvalidEl) {
 		firstInvalidEl.scrollIntoView({ behavior: "smooth", block: "center" });
 	}
@@ -254,7 +216,6 @@ function validateForm(form) {
 	return isValid;
 }
 
-// Live-clear a field's red border as soon as the user starts fixing it
 function attachLiveValidation(form) {
 	const requiredFields = form.querySelectorAll(
 		"input[required]:not([type=hidden]), select[required]",
@@ -274,7 +235,6 @@ function attachLiveValidation(form) {
 function resetBookingForm(form) {
 	form.reset();
 
-	// Clear calendar selection back to "available" (nothing selected)
 	form.querySelectorAll(".day-cell.selected").forEach((cell) => {
 		cell.classList.remove("selected");
 		cell.classList.add("available");
@@ -282,14 +242,12 @@ function resetBookingForm(form) {
 	form.querySelector(".appt-date-input").value = "";
 	form.querySelector(".appt-time-input").value = "";
 
-	// Disable + reset the time picker until a new date is chosen
 	const timesGrid = form.querySelector(".times-grid");
 	timesGrid.classList.add("times-disabled");
 	timesGrid.classList.remove("times-error");
 	form.querySelectorAll(".time-btn").forEach((b) => b.classList.remove("selected"));
 	form.querySelector(".times-hint").textContent = "Select a highlighted date to see open times.";
 
-	// Reset any Yes/No toggle
 	const insuranceInput = form.querySelector("#has_insurance");
 	if (insuranceInput) {
 		insuranceInput.value = "";
@@ -297,25 +255,125 @@ function resetBookingForm(form) {
 		insuranceInput.closest(".toggle-group").classList.remove("toggle-error");
 	}
 
-	// Clear any leftover error highlighting
 	form.querySelectorAll(".field-error").forEach((el) => el.classList.remove("field-error"));
 	form.querySelector(".calendar-grid").classList.remove("calendar-error");
-
-	const summary = form.querySelector(".form-error-summary");
-	if (summary) summary.classList.remove("show");
 }
 
-// ============= FORM SUBMIT HANDLERS =============
-agentForm.addEventListener("submit", function (e) {
-	e.preventDefault();
-	if (!validateForm(agentForm)) return;
-	resetBookingForm(agentForm);
+// ============= FORM SUBMIT HANDLERS (SUPABASE) =============
+
+// 1. RECRUITMENT (AGENT) FUNNEL
+agentForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    if (!validateForm(agentForm)) return;
+
+    const submitBtn = agentForm.querySelector("button[type='submit']");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting...";
+
+    try {
+        const leadData = {
+            full_name: agentForm.querySelector("input[name='full_name']").value,
+            email: agentForm.querySelector("input[name='email']").value,
+            mobile_number: agentForm.querySelector("input[name='mobile']").value,
+            track: "future_advisor", 
+            source: "Website Funnel",
+            current_stage: "new"
+        };
+
+        const { data: lead, error: leadError } = await supabaseClient
+            .from("leads")
+            .insert([leadData])
+            .select()
+            .single();
+
+        if (leadError) throw leadError;
+
+        const recruitData = {
+            lead_id: lead.lead_id, 
+            area_of_residence: agentForm.querySelector("input[name='residence']").value,
+			university_college: agentForm.querySelector("input[name='university']").value,
+			degree: agentForm.querySelector("input[name='degree']").value,
+			area_of_employment: agentForm.querySelector("input[name='employment_field']").value,
+			work_experience: agentForm.querySelector("input[name='work_exp']").value,
+			years_working: parseInt(agentForm.querySelector("input[name='years_working']").value) || 0,
+			attended_byb_session: agentForm.querySelector("select[name='attended_byb']").value === 'yes'
+        };
+
+        const { error: profileError } = await supabaseClient
+            .from("recruit_profile")
+            .insert([recruitData]);
+
+        if (profileError) throw profileError;
+
+        alert("Success! Your Agent Career Preview slot has been reserved.");
+        resetBookingForm(agentForm);
+
+    } catch (error) {
+        console.error("Supabase Error:", error);
+        alert("Error saving booking. Please try again. Check console for details.");
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Confirm My Slot";
+    }
 });
 
-clientForm.addEventListener("submit", function (e) {
-	e.preventDefault();
-	if (!validateForm(clientForm)) return;
-	resetBookingForm(clientForm);
+// 2. CLIENT FUNNEL
+clientForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    if (!validateForm(clientForm)) return;
+
+    const submitBtn = clientForm.querySelector("button[type='submit']");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting...";
+
+    try {
+        const leadData = {
+            full_name: clientForm.querySelector("input[name='full_name']").value,
+            email: clientForm.querySelector("input[name='email']").value,
+            mobile_number: clientForm.querySelector("input[name='mobile']").value,
+            track: "future_client",
+            source: "Website Funnel",
+            current_stage: "new"
+        };
+
+        const { data: lead, error: leadError } = await supabaseClient
+            .from("leads")
+            .insert([leadData])
+            .select()
+            .single();
+
+        if (leadError) throw leadError;
+
+        const insuranceInput = clientForm.querySelector("#has_insurance") ? clientForm.querySelector("#has_insurance").value : "";
+        let hasInsuranceBool = null;
+        if (insuranceInput === "yes") hasInsuranceBool = true;
+        if (insuranceInput === "no") hasInsuranceBool = false;
+
+        const clientData = {
+            lead_id: lead.lead_id, 
+            has_life_insurance: hasInsuranceBool,
+			current_employment: clientForm.querySelector("input[name='employment']").value,
+			marital_status: clientForm.querySelector("input[name='marital_status']").value,
+			no_of_dependents: parseInt(clientForm.querySelector("input[name='dependents']").value) || 0,
+			monthly_budget: parseFloat(clientForm.querySelector("input[name='budget']").value.replace(/[^0-9.-]+/g,"")) || 0
+        };
+
+        const { error: profileError } = await supabaseClient
+            .from("client_profile")
+            .insert([clientData]);
+
+        if (profileError) throw profileError;
+
+        alert("Success! Your Financial Conversation slot has been reserved.");
+        resetBookingForm(clientForm);
+
+    } catch (error) {
+        console.error("Supabase Error:", error);
+        alert("Error saving booking. Please try again. Check console for details.");
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Confirm My Slot";
+    }
 });
 
 // ============= INIT =============

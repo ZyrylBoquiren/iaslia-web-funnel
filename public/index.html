@@ -22,9 +22,9 @@
     </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <link rel="stylesheet" href="../src/css/style.css">
     <script src="/src/js/script.js" defer></script>
@@ -65,9 +65,9 @@
             </div>
             <div class="connect">
                 <span>Connect to one of us:</span>
-                <a href="#" class="social-btn" aria-label="Email">✉</a>
-                <a href="#" class="social-btn" aria-label="LinkedIn">in</a>
-                <a href="#" class="social-btn" aria-label="Facebook">f</a>
+                <a href="#" class="icon-circle" aria-label="Email">✉</a>
+                <a href="#" class="icon-circle" aria-label="LinkedIn">in</a>
+                <a href="#" class="icon-circle" aria-label="Facebook">f</a>
             </div>
         </div>
     </section>
@@ -214,57 +214,6 @@
     </section>
 
     <!-- MILESTONES -->
-    <section class="milestones" id="milestones">
-        <div class="wrap">
-            <h2 class="section-title">MILESTONES</h2>
-            <p class="section-desc">Three decades of firsts in the Philippine life insurance industry from a
-                two-year-old challenger to the <strong>country's leading life insurer</strong>.</p>
-
-
-            <div class="m-list">
-                <ul>
-                    <li>
-                        <p class="m-date">1996</p>
-                        <p class="m-title">FOUNDATION</p>
-                        <p class="m-desc">Incorporated as Pru Life Insurance Corporation of U.K. <strong>granting
-                                license in the Philippines</strong> by the Insurance Commission.</p>
-                    </li>
-
-
-                    <li>
-                        <p class="m-date">2002</p>
-                        <p class="m-title">PIONEERED INVESTMENT-INSURANCE</p>
-                        <p class="m-desc">Launched PRULink Investor Account, introducing <strong>investment-linked
-                                life insurance</strong> to Philippine market for first time.</p>
-                    </li>
-
-
-                    <li>
-                        <p class="m-date">2007</p>
-                        <p class="m-title">CROSSED PhP1-BILLION</p>
-                        <p class="m-desc">A 130% growth from prior years, marking major financial scale milestone
-                            signaling company's rapid growth.</p>
-                    </li>
-
-
-                    <li>
-                        <p class="m-date">2011</p>
-                        <p class="m-title">LAUNCHED CHA-CHING</p>
-                        <p class="m-desc">Marked a <strong>shift toward public engagements</strong> and
-                            brand-building. Cha-Ching financial literacy cartoon that soon became education program.</p>
-                    </li>
-
-
-                    <li>
-                        <p class="m-date">2020</p>
-                        <p class="m-title">LAUNCHED PULSE</p>
-                        <p class="m-desc">Represents company's digital transformation era. <strong>Ranking
-                                1st</strong> for consecutive years in ASEAN Corporate Governance Scorecard.</p>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </section>
 
     <!-- CHOOSE YOUR PATH -->
     <section class="path" id="path">
@@ -275,34 +224,26 @@
                 wrong answers, just a different first step.</p>
 
             <div class="path-grid">
-                <div onclick="switchTrack('agent')"
-                    class="path-card cursor-pointer border-2 border-[#e31d1a]/20 hover:border-[#e31d1a] transition-all group">
-                    <span
-                        class="inline-block bg-[#e31d1a] text-white text-[0.65rem] font-medium px-3.5 py-1.5 rounded-full mb-2 self-start tracking-[0.15em] uppercase">FOR
-                        FUTURE ADVISORS</span>
+                <div onclick="switchTrack('agent')" class="path-card cursor-pointer border-2 border-[#e31d1a]/20 hover:border-[#e31d1a] transition-all group">
+                    <span class="inline-block bg-[#e31d1a] text-white text-[0.65rem] font-medium px-3.5 py-1.5 rounded-full mb-2 self-start tracking-[0.15em] uppercase">FOR FUTURE ADVISORS</span>
                     <h3 class="path-title mt-2">Become an <span>Agent</span></h3>
                     <ul>
                         <li>Uncapped, flexible income</li>
                         <li>Mentorship and PRU Agent Academy Training</li>
                         <li>Sell, Recruit, Manage - build your own team</li>
                     </ul>
-                    <span class="path-link group-hover:text-[#e31d1a] transition-colors mt-auto block">See CAREER
-                        PREVIEW dates →</span>
+                    <span class="path-link group-hover:text-[#e31d1a] transition-colors mt-auto block">See CAREER PREVIEW dates →</span>
                 </div>
 
-                <div onclick="switchTrack('client')"
-                    class="path-card cursor-pointer border-2 border-[#e31d1a]/20 hover:border-[#e31d1a] transition-all group">
-                    <span
-                        class="inline-block bg-[#e31d1a] text-white text-[0.65rem] font-medium px-3.5 py-1.5 rounded-full mb-2 self-start tracking-[0.15em] uppercase">FOR
-                        FUTURE CLIENTS</span>
+                <div onclick="switchTrack('client')" class="path-card cursor-pointer border-2 border-[#e31d1a]/20 hover:border-[#e31d1a] transition-all group">
+                    <span class="inline-block bg-[#e31d1a] text-white text-[0.65rem] font-medium px-3.5 py-1.5 rounded-full mb-2 self-start tracking-[0.15em] uppercase">FOR FUTURE CLIENTS</span>
                     <h3 class="path-title mt-2">Become a <span>Client</span></h3>
                     <ul>
                         <li>Protection for what matters</li>
                         <li>Savings &amp; investment-linked growth</li>
                         <li>A plan built around your goals</li>
                     </ul>
-                    <span class="path-link group-hover:text-[#e31d1a] transition-colors mt-auto block">Book a FINANCIAL
-                        CONVERSATION →</span>
+                    <span class="path-link group-hover:text-[#e31d1a] transition-colors mt-auto block">Book a FINANCIAL CONVERSATION →</span>
                 </div>
             </div>
             <div class="path-photo"></div>
@@ -310,439 +251,308 @@
         </div>
     </section>
 
-    <!-- CALENDAR - BOOKING -->
-    <section class="booking" id="booking-section">
-        <div class="wrap">
+    <section class="relative py-20 px-6 lg:px-10 max-w-7xl mx-auto overflow-hidden" id="booking-section">
+      
+      <img src="./assets/images/ribbon.png" alt="" aria-hidden="true" 
+           class="absolute top-0 right-0 w-[800px] lg:w-[1000px] max-w-none object-contain pointer-events-none -z-10 translate-x-[20%] -translate-y-[10%] opacity-90">
 
-            <!-- ===================== AGENT / CAREER PREVIEW FORM ===================== -->
-            <div id="agent-form-container" class="form-container">
-                <div class="form-header">
-                    <p class="eyebrow">— Now is the time</p>
-                    <h2 class="section-title">Where do you see yourself?</h2>
-
-                    <div class="track-badge">
-                        <span class="track-badge-text">Your track: <strong>Career Preview (Agent)</strong></span>
-                        <button type="button" class="track-change-btn" onclick="switchTrack('client')">Change</button>
-                    </div>
-                </div>
-
-                <form id="appointment-form" action="/api/submit-agent" method="POST" class="booking-form">
-                    <div class="form-body">
-
-                        <!-- LEFT: fields -->
-                        <div class="form-col left">
-                            <div class="field-group">
-                                <div>
-                                    <label class="field-label">Full Name <span>*</span></label>
-                                    <input type="text" name="full_name" placeholder="e.g. Juan Dela Cruz" required
-                                        class="field-input">
-
-                                </div>
-                                <div class="field-row-2">
-                                    <div>
-                                        <label class="field-label">Email Address <span>*</span></label>
-                                        <input type="email" name="email" placeholder="e.g. juan@email.com" required
-                                            class="field-input">
-
-                                    </div>
-                                    <div>
-                                        <label class="field-label">Mobile Number <span>*</span></label>
-                                        <input type="tel" id="mobile" name="mobile" pattern="09[0-9]{9}" maxlength="11"
-                                            placeholder="e.g. 09123456789" required class="field-input">
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="field-label">Preferred Track</label>
-                                    <input type="text" name="track" value="Career Preview" readonly
-                                        class="field-input readonly" disabled>
-                                </div>
-                            </div>
-
-                            <div class="section-divider">
-                                <h3 class="subsection-title">Recruit Profile - A few more details for future advisors
-                                </h3>
-                                <div class="field-group">
-                                    <div class="field-row-2">
-                                        <div>
-                                            <label class="field-label">Date of Birth <span>*</span></label>
-                                            <input type="date" id="birthday" name="birthday" min="1900-01-01"
-                                                max="2026-12-31" required class="field-input">
-                                        </div>
-                                        <div>
-                                            <label class="field-label">Age <span>*</span></label>
-                                            <input type="number" name="age" placeholder="e.g. 28" required
-                                                class="field-input">
-                                        </div>
-                                    </div>
-                                    <div class="field-row-2">
-                                        <div>
-                                            <label class="field-label">University/College <span>*</span></label>
-                                            <input type="text" name="university" placeholder="e.g. PUP" required
-                                                class="field-input">
-                                        </div>
-                                        <div>
-                                            <label class="field-label">Degree <span>*</span></label>
-                                            <input type="text" name="degree" placeholder="e.g. Accounting" required
-                                                class="field-input">
-                                        </div>
-                                    </div>
-                                    <div class="field-row-2">
-                                        <div>
-                                            <label class="field-label">Area of Residence <span>*</span></label>
-                                            <input type="text" name="residence" placeholder="e.g. Caloocan City"
-                                                required class="field-input">
-                                        </div>
-                                        <div>
-                                            <label class="field-label">Area of Business/Employment
-                                                <span>*</span></label>
-                                            <input type="text" name="employment_field"
-                                                placeholder="e.g. Finance & Accounting" required class="field-input">
-
-                                        </div>
-                                    </div>
-                                    <div class="field-row-2">
-                                        <div>
-                                            <label class="field-label">Work Experience <span>*</span></label>
-                                            <input type="text" name="work_exp" placeholder="e.g. Sales Officer" required
-                                                class="field-input">
-                                        </div>
-                                        <div>
-                                            <label class="field-label">Years Working <span>*</span></label>
-                                            <input type="number" name="years_working" placeholder="e.g. 5" required
-                                                class="field-input">
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="field-label">Attended BYB in Pru Life UK? <span>*</span></label>
-                                        <select name="attended_byb" class="field-select" required>
-                                            <option value="" disabled selected>Select one</option>
-                                            <option value="yes">Yes</option>
-                                            <option value="no">No</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- RIGHT: calendar -->
-                        <div class="form-col right">
-                            <input type="hidden" name="appointment_date" class="appt-date-input" value="">
-                            <input type="hidden" name="appointment_time" class="appt-time-input" value="">
-
-                            <p class="calendar-notice">Select your preferred date *</p>
-
-                            <div class="calendar-header">
-                                <h3 class="calendar-title">August 2026</h3>
-                                <div class="calendar-nav">
-                                    <button type="button" class="nav-btn"
-                                        onclick="changeMonth(agentForm, -1)">&lt;</button>
-                                    <button type="button" class="nav-btn"
-                                        onclick="changeMonth(agentForm, 1)">&gt;</button>
-                                </div>
-                            </div>
-
-                            <div class="calendar-weekdays">
-                                <div>S</div>
-                                <div>M</div>
-                                <div>T</div>
-                                <div>W</div>
-                                <div>T</div>
-                                <div>F</div>
-                                <div>S</div>
-                            </div>
-
-                            <div class="calendar-grid">
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                            </div>
-
-                            <div class="times-section">
-                                <h4 class="times-title">Available times <span>*</span></h4>
-                                <p class="times-hint">Select a highlighted date to see open times.</p>
-                                <div class="times-grid">
-                                    <button type="button" class="time-btn">9:00 AM</button>
-                                    <button type="button" class="time-btn">11:00 AM</button>
-                                    <button type="button" class="time-btn">2:00 PM</button>
-                                    <button type="button" class="time-btn">4:30 PM</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-footer">
-                        <p class="form-footer-text">Track: <strong>Career Preview</strong></p>
-                        <button type="submit" class="submit-btn">Confirm My Slot</button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- ===================== CLIENT / FINANCIAL CONVERSATION FORM ===================== -->
-            <div id="client-form-container" class="form-container hidden">
-                <div class="form-header">
-                    <p class="eyebrow">— Now is the time</p>
-                    <h2 class="section-title">Let's find your time to talk about your future.</h2>
-
-                    <div class="track-badge">
-                        <span class="track-badge-text">Your track: <strong>Financial Conversation
-                                (Client)</strong></span>
-                        <button type="button" class="track-change-btn" onclick="switchTrack('agent')">Change</button>
-                    </div>
-                </div>
-
-                <form id="client-appointment-form" action="/api/submit-client" method="POST" class="booking-form">
-                    <div class="form-body">
-
-                        <!-- LEFT: fields -->
-                        <div class="form-col left">
-                            <div class="field-group">
-                                <div>
-                                    <label class="field-label">Full Name <span>*</span></label>
-                                    <input type="text" name="full_name" placeholder="e.g. Juan Dela Cruz" required
-                                        class="field-input">
-
-                                </div>
-                                <div class="field-row-2">
-                                    <div>
-                                        <label class="field-label">Email Address <span>*</span></label>
-                                        <input type="email" name="email" placeholder="e.g. juan@email.com" required
-                                            class="field-input">
-
-                                    </div>
-                                    <div>
-                                        <label class="field-label">Mobile Number <span>*</span></label>
-                                        <input type="tel" id="mobile" name="mobile" pattern="09[0-9]{9}" maxlength="11"
-                                            placeholder="e.g. 09123456789" required class="field-input">
-
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="field-label">Preferred Track</label>
-                                    <input type="text" name="track" value="Become a Client" readonly
-                                        class="field-input readonly" disabled>
-                                </div>
-                            </div>
-
-                            <div class="section-divider">
-                                <h3 class="subsection-title">Client Profile - A few more details for future advisors
-                                </h3>
-                                <div class="field-group">
-                                    <div class="field-row-2">
-                                        <div>
-                                            <label class="field-label">Date of Birth <span>*</span></label>
-                                            <input type="date" id="birthday" name="birthday" min="1900-01-01"
-                                                max="2026-12-31" required class="field-input">
-                                        </div>
-                                        <div>
-                                            <label class="field-label">Age <span>*</span></label>
-                                            <input type="number" name="age" placeholder="e.g. 28" required
-                                                class="field-input">
-                                        </div>
-                                    </div>
-                                    <div class="field-row-2">
-                                        <div>
-                                            <label class="field-label">Current Employment <span>*</span></label>
-                                            <input type="text" name="employment" placeholder="e.g. Project Manager"
-                                                class="field-input" required>
-                                        </div>
-                                        <div>
-                                            <label class="field-label">Marital Status <span>*</span></label>
-                                            <input type="text" name="marital_status" placeholder="e.g. Single"
-                                                class="field-input" required>
-                                        </div>
-                                    </div>
-                                    <div class="field-half">
-                                        <label class="field-label">No. of Dependents <span>*</span></label>
-                                        <input type="number" name="dependents" placeholder="e.g. 8" class="field-input"
-                                            required>
-                                    </div>
-                                    <div>
-                                        <label class="field-label">Do you have any personal life insurance?
-                                            <span>*</span></label>
-                                        <div class="toggle-group">
-                                            <input type="hidden" name="has_insurance" id="has_insurance" value=""
-                                                required>
-                                            <button type="button" class="toggle-btn"
-                                                onclick="selectToggle(this, 'has_insurance', 'yes')">Yes</button>
-                                            <button type="button" class="toggle-btn"
-                                                onclick="selectToggle(this, 'has_insurance', 'no')">No</button>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="field-label">How much do you think you can afford to set aside for
-                                            a program that we can start immediately? <span>*</span></label>
-                                        <input type="text" name="budget" placeholder="₱ 20000" class="field-input"
-                                            required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- RIGHT: calendar -->
-                        <div class="form-col right">
-                            <input type="hidden" name="appointment_date" class="appt-date-input" value="">
-                            <input type="hidden" name="appointment_time" class="appt-time-input" value="">
-
-                            <p class="calendar-notice">Select your preferred date *</p>
-
-                            <div class="calendar-header">
-                                <h3 class="calendar-title">August 2026</h3>
-                                <div class="calendar-nav">
-                                    <button type="button" class="nav-btn"
-                                        onclick="changeMonth(clientForm, -1)">&lt;</button>
-                                    <button type="button" class="nav-btn"
-                                        onclick="changeMonth(clientForm, 1)">&gt;</button>
-                                </div>
-                            </div>
-
-                            <div class="calendar-weekdays">
-                                <div>S</div>
-                                <div>M</div>
-                                <div>T</div>
-                                <div>W</div>
-                                <div>T</div>
-                                <div>F</div>
-                                <div>S</div>
-                            </div>
-
-                            <div class="calendar-grid">
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                                <div class="day-cell empty"></div>
-                            </div>
-
-                            <div class="times-section">
-                                <h4 class="times-title">Available times <span>*</span></h4>
-                                <p class="times-hint">Select a highlighted date to see open times.</p>
-                                <div class="times-grid">
-                                    <button type="button" class="time-btn">9:00 AM</button>
-                                    <button type="button" class="time-btn">11:00 AM</button>
-                                    <button type="button" class="time-btn">2:00 PM</button>
-                                    <button type="button" class="time-btn">4:30 PM</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-footer">
-                        <p class="form-footer-text">Track: <strong>Financial Conversation</strong></p>
-                        <button type="submit" class="submit-btn">Confirm My Slot</button>
-                    </div>
-                </form>
-            </div>
+      <div id="agent-form-container" class="relative z-10 block">
+        <div class="mb-10 max-w-2xl">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-[2px] bg-[#e31d1a]"></div>
+            <p class="text-[#e31d1a] font-bold text-sm tracking-widest uppercase">Career Preview — For Future Advisors</p>
+          </div>
+          <h2 class="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-6 leading-tight">
+            Let's find your time to talk about your future.
+          </h2>
+          <div class="inline-flex items-center bg-[#fce8e8] border border-[#f1d9d8] rounded-full px-4 py-2">
+            <span class="text-sm font-semibold text-gray-800 mr-3">Your track: <strong class="text-[#bd1512]">Career Preview (Agent)</strong></span>
+            <button type="button" onclick="switchTrack('client')" class="bg-white border border-gray-300 text-gray-700 text-xs font-bold px-3 py-1 rounded-full hover:bg-gray-50 transition shadow-sm cursor-pointer">Change</button>
+          </div>
         </div>
+
+        <form id="appointment-form" action="/api/submit-agent" method="POST" class="booking-form bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden relative flex flex-col">
+          
+          <input type="hidden" name="appointment_date" id="agent_appt_date" class="appt-date-input" value="">
+          <input type="hidden" name="appointment_time" id="agent_appt_time" class="appt-time-input" value="">
+
+          <div class="flex flex-col lg:flex-row flex-grow">
+            <div class="w-full lg:w-1/2 p-8 lg:p-10 bg-[#f6f3f2] border-r border-gray-200 space-y-8">
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-xs font-bold text-gray-600 mb-1">Full Name</label>
+                  <input type="text" name="full_name" value="Juan Dela Cruz" required class="w-full bg-white border border-[#e31d1a] rounded-md px-4 py-2.5 text-sm text-gray-800 focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Email Address</label>
+                    <input type="email" name="email" value="juan@email.com" required class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Mobile Number</label>
+                    <input type="tel" name="mobile" value="09XX XXX XXXX" required class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-gray-600 mb-1">Preferred Track</label>
+                  <input type="text" name="track" value="Career Preview" readonly class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-800 font-medium outline-none cursor-default">
+                </div>
+              </div>
+
+              <div>
+                <h3 class="text-[11px] font-bold text-[#e31d1a] tracking-wider uppercase mb-5 border-t border-dashed border-gray-300 pt-8">
+                  Recruit Profile - A few more details for future advisors
+                </h3>
+                <div class="space-y-4">
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Date of Birth</label>
+                      <input type="text" name="dob" placeholder="mm/dd/yyyy" required class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Age</label>
+                      <input type="number" name="age" placeholder="e.g. 28" required class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 mb-1">University/College</label>
+                      <input type="text" name="university" value="UST" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Degree</label>
+                      <input type="text" name="degree" value="BSCS" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Area of Residence</label>
+                      <input type="text" name="residence" value="Caloocan City" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Area of Business/Employment</label>
+                      <input type="text" name="employment_field" placeholder="e.g. Finance & Accounting" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Work Experience</label>
+                      <input type="text" name="work_exp" value="Sales Officer" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Years Working</label>
+                      <input type="number" name="years_working" placeholder="e.g. 5" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Attended BYB in Pru Life UK?</label>
+                    <select name="attended_byb" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-800 font-medium appearance-none focus:outline-none focus:border-[#e31d1a]">
+                      <option value="" disabled selected>Select one</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="w-full lg:w-1/2 p-8 lg:p-10 bg-[#faf8f8]">
+              
+              <div class="flex justify-between items-center mb-6">
+                <h3 class="calendar-title text-xl font-serif font-bold text-gray-900">August 2026</h3>
+                <div class="flex gap-2">
+                  <button type="button" onclick="changeMonth(agentForm, -1)" class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100">&lt;</button>
+                  <button type="button" onclick="changeMonth(agentForm, 1)" class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100">&gt;</button>
+                </div>
+              </div>
+
+              <div class="mb-8">
+                <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-gray-500 mb-4">
+                  <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+                </div>
+                <div class="calendar-grid grid grid-cols-7 gap-y-3 gap-x-1 text-sm text-center">
+                </div>
+              </div>
+
+              <div class="mt-8 border-t border-gray-200 pt-6">
+                <h4 class="text-sm font-bold text-gray-900 mb-1">Available times</h4>
+                <p class="times-hint text-xs text-gray-500 mb-4">Select a highlighted date to see open times.</p>
+                <div class="times-grid grid grid-cols-2 gap-3">
+                  <button type="button" class="time-btn w-full">9:00 AM</button>
+                  <button type="button" class="time-btn w-full">11:00 AM</button>
+                  <button type="button" class="time-btn w-full">2:00 PM</button>
+                  <button type="button" class="time-btn w-full">4:30 PM</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="w-full bg-[#edeae8] p-5 lg:px-10 flex justify-between items-center border-t border-gray-300">
+            <p class="text-sm text-gray-500">Track: <strong class="text-gray-900">Career Preview</strong> — pick a date and time.</p>
+            <button type="submit" class="bg-[#e31d1a] hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:-translate-y-0.5">Confirm My Slot</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="client-form-container" class="relative z-10 hidden">
+        <div class="mb-10 max-w-2xl">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-[2px] bg-[#e31d1a]"></div>
+            <p class="text-[#e31d1a] font-bold text-sm tracking-widest uppercase">Financial Conversation - For Potential Clients</p>
+          </div>
+          <h2 class="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-6 leading-tight">
+            Let's find your time to talk about your future.
+          </h2>
+          <div class="inline-flex items-center bg-[#fce8e8] border border-[#f1d9d8] rounded-full px-4 py-2">
+            <span class="text-sm font-semibold text-gray-800 mr-3">Your track: <strong class="text-[#bd1512]">Financial Conversation (Client)</strong></span>
+            <button type="button" onclick="switchTrack('agent')" class="bg-white border border-gray-300 text-gray-700 text-xs font-bold px-3 py-1 rounded-full hover:bg-gray-50 shadow-sm cursor-pointer">Change</button>
+          </div>
+        </div>
+
+        <form id="client-appointment-form" action="/api/submit-client" method="POST" class="booking-form bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden relative flex flex-col">
+          
+          <input type="hidden" name="appointment_date" id="client_appt_date" class="appt-date-input" value="">
+          <input type="hidden" name="appointment_time" id="client_appt_time" class="appt-time-input" value="">
+
+          <div class="flex flex-col lg:flex-row flex-grow">
+            <div class="w-full lg:w-1/2 p-8 lg:p-10 bg-[#f6f3f2] border-r border-gray-200 space-y-8">
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-xs font-bold text-gray-600 mb-1">Full Name</label>
+                  <input type="text" name="full_name" value="Juan Dela Cruz" required class="w-full bg-white border border-[#e31d1a] rounded-md px-4 py-2.5 text-sm text-gray-800 focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Email Address</label>
+                    <input type="email" name="email" value="juan@email.com" required class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Mobile Number</label>
+                    <input type="tel" name="mobile" value="09XX XXX XXXX" required class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-gray-600 mb-1">Preferred Track</label>
+                  <input type="text" name="track" value="Become a Client" readonly class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-800 font-medium cursor-default">
+                </div>
+              </div>
+
+              <div>
+                <h3 class="text-[11px] font-bold text-[#e31d1a] tracking-wider uppercase mb-5 border-t border-dashed border-gray-300 pt-8">
+                  Client Profile - A few more details for future advisors
+                </h3>
+                <div class="space-y-4">
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Date of Birth</label>
+                      <input type="text" name="dob" placeholder="mm/dd/yyyy" required class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Age</label>
+                      <input type="number" name="age" placeholder="e.g. 28" required class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Current Employment</label>
+                      <input type="text" name="employment" placeholder="e.g. Factory Worker" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Marital Status</label>
+                      <input type="text" name="marital_status" placeholder="e.g. Single" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    </div>
+                  </div>
+                  <div class="w-1/2 pr-2">
+                    <label class="block text-xs font-bold text-gray-600 mb-1">No. of Dependents</label>
+                    <input type="number" name="dependents" value="8" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-2">Personal life insurance?</label>
+                    <div class="toggle-group flex gap-4">
+                      <input type="hidden" name="has_insurance" id="has_insurance" value="">
+                      <button type="button" onclick="selectToggle(this, 'has_insurance', 'yes')" class="toggle-btn">Yes</button>
+                      <button type="button" onclick="selectToggle(this, 'has_insurance', 'no')" class="toggle-btn">No</button>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Budget to start immediately?</label>
+                    <input type="text" name="budget" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="w-full lg:w-1/2 p-8 lg:p-10 bg-[#faf8f8]">
+
+              <p class="text-sm font-bold text-[#e31d1a] text-center mb-8">
+                Please select the most convenient time for us to meet
+              </p>
+
+              <div class="flex justify-between items-center mb-6">
+                <h3 class="calendar-title text-xl font-serif font-bold text-gray-900">August 2026</h3>
+                <div class="flex gap-2">
+                  <button type="button" onclick="changeMonth(clientForm, -1)" class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100">&lt;</button>
+                  <button type="button" onclick="changeMonth(clientForm, 1)" class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100">&gt;</button>
+                </div>
+              </div>
+
+              <div class="mb-8">
+                <div class="grid grid-cols-7 gap-y-3 gap-x-1 text-sm text-center font-semibold text-gray-500 mb-4">
+                  <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+                </div>
+                <div class="calendar-grid grid grid-cols-7 gap-y-3 gap-x-1 text-sm text-center">
+                </div>
+              </div>
+              
+              <div class="mt-8 border-t border-gray-200 pt-6">
+                <h4 class="text-sm font-bold text-gray-900 mb-1">Available times</h4>
+                <p class="times-hint text-xs text-gray-500 mb-4">
+                    Select a highlighted date to see open times.
+                </p>
+
+                <div class="times-grid grid grid-cols-2 gap-3">
+                  <button type="button" class="time-btn w-full">9:00 AM</button>
+                  <button type="button" class="time-btn w-full">11:00 AM</button>
+                  <button type="button" class="time-btn w-full">2:00 PM</button>
+                  <button type="button" class="time-btn w-full">4:30 PM</button>
+                </div>
+             </div>
+
+            </div>
+          </div>
+
+          <div class="w-full bg-[#edeae8] p-5 lg:px-10 flex justify-between items-center border-t border-gray-300">
+            <p class="text-sm text-gray-500">Track: <strong class="text-gray-900">Financial Conversation</strong></p>
+            <button type="submit" class="bg-[#e31d1a] hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:-translate-y-0.5">Confirm My Slot</button>
+          </div>
+        </form>
+      </div>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="site-footer">
-        <div class="footer-wrap">
-            <div class="footer-top">
-                <div class="footer-brand">
-                    <h2 class="footer-title">Connect With Us</h2>
-                    <div class="footer-socials">
-                        <a href="#" class="social-btn">✉</a>
-                        <a href="#" class="social-btn">in</a>
-                        <a href="#" class="social-btn">f</a>
-                    </div>
-                </div>
-                <div class="footer-agency">
-                    <div>
-                        <h3 class="agency-name">Infinity Ace Summit Life Insurance Agency</h3>
-                        <p class="agency-tagline">Securing Futures With Excellence & Integrity</p>
-                    </div>
-                    <img src="./assets/images/logo.png" alt="IASLIA Logo" class="agency-logo">
-                </div>
+    <footer class="bg-[#e31d1a] text-white pt-10 pb-6 px-6 lg:px-10 mt-10">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-white/20 pb-8">
+          <div class="flex items-center gap-6">
+            <h2 class="font-serif text-2xl lg:text-3xl font-bold uppercase tracking-wider">Connect With Us</h2>
+            <div class="flex gap-3">
+              <a href="#" class="w-10 h-10 flex items-center justify-center border-2 border-white rounded-md hover:bg-white hover:text-[#e31d1a] transition font-bold text-lg">✉</a>
+              <a href="#" class="w-10 h-10 flex items-center justify-center border-2 border-white rounded-md hover:bg-white hover:text-[#e31d1a] transition font-bold text-lg">in</a>
+              <a href="#" class="w-10 h-10 flex items-center justify-center border-2 border-white rounded-md hover:bg-white hover:text-[#e31d1a] transition font-bold text-lg">f</a>
             </div>
-            <div class="footer-bottom">
-                <p>© 2026 Infinity Ace Summit Life Insurance Agency. All Rights Reserved.</p>
-                <p class="footer-disclaimer">This site is an independent agency page and is not an official Pru Life UK
-                    website. PRU Life UK of the Philippines is regulated by the Insurance Commission.</p>
+          </div>
+          <div class="flex items-center gap-4 text-right">
+            <div>
+              <h3 class="font-bold text-sm tracking-widest uppercase">Infinity Ace Summit Life Insurance Agency</h3>
+              <p class="text-[10px] tracking-widest text-white/80 uppercase mt-1">Securing Futures With Excellence & Integrity</p>
             </div>
+            <img src="./assets/images/logo.png" alt="IASLIA Logo" class="w-14 h-14 object-contain flex-shrink-0 drop-shadow-lg">
+          </div>
         </div>
+        <div class="text-xs text-white/90 leading-relaxed space-y-3">
+          <p>Copyright © 2026 | Powered by Figma</p>
+          <p class="max-w-5xl text-[11px] opacity-80">This page is a design prototype built for demonstration purposes. PRU Life UK of the Philippines is regulated by the Insurance Commission.</p>
+        </div>
+      </div>
     </footer>
 
 </body>
