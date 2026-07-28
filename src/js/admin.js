@@ -12,33 +12,43 @@ function handleLogin(event) {
 // 2. SPA Tab Navigation
 function switchTab(targetView) {
     // Hide all views completely
-    const views = ['view-leads', 'view-analytics', 'view-calendar'];
+    const views = ['view-leads', 'view-analytics', 'view-calendar', 'view-email-templates', 'view-settings'];
     views.forEach(view => {
-        document.getElementById(view).classList.add('hidden');
-        document.getElementById(view).classList.remove('block');
+        const el = document.getElementById(view);
+        if(el) {
+            el.classList.add('hidden');
+            el.classList.remove('block');
+        }
     });
 
     // Show target view
-    document.getElementById(`view-${targetView}`).classList.remove('hidden');
-    document.getElementById(`view-${targetView}`).classList.add('block');
+    const targetEl = document.getElementById(`view-${targetView}`);
+    if(targetEl) {
+        targetEl.classList.remove('hidden');
+        targetEl.classList.add('block');
+    }
 
     // Reset Sidebar Styles (Gray/Inactive)
-    const navs = ['nav-leads', 'nav-analytics', 'nav-calendar'];
+    const navs = ['nav-leads', 'nav-analytics', 'nav-calendar', 'nav-email-templates', 'nav-settings'];
     navs.forEach(nav => {
         const el = document.getElementById(nav);
-        el.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-[#3a2727] hover:text-white text-[13px] font-semibold transition-colors";
-        // Reset dot to gray
-        el.querySelector('span').className = "w-2 h-2 rounded-full bg-[#6b7280]";
+        if(el) {
+            el.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-[#3a2727] hover:text-white text-[13px] font-semibold transition-colors";
+            // Reset dot to gray
+            el.querySelector('span').className = "w-2 h-2 rounded-full bg-[#6b7280]";
+        }
     });
 
     // Apply Active Style to Target
     const activeEl = document.getElementById(`nav-${targetView}`);
-    activeEl.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-[#3a2727] text-white text-[13px] font-semibold transition-colors";
-    // Set dot to gold/yellow
-    activeEl.querySelector('span').className = "w-2 h-2 rounded-full bg-[#b89569]";
+    if(activeEl) {
+        activeEl.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-[#3a2727] text-white text-[13px] font-semibold transition-colors";
+        // Set dot to gold/yellow
+        activeEl.querySelector('span').className = "w-2 h-2 rounded-full bg-[#b89569]";
+    }
 }
 
-// 3. Dynamic Calendar Click Logic (Figma Testing). Click Day 10 to see Booked Leads, Click Day 23 to see an Empty/Closed day.
+// 3. Dynamic Calendar Click Logic (Figma Testing). 
 function showDayDetails(state) {
     document.getElementById('leads-empty-state').classList.add('hidden');
     document.getElementById('leads-day-view').classList.remove('hidden');
@@ -78,13 +88,27 @@ function showDayDetails(state) {
 // 4. Modal Controls
 function openModal(modalId) {
     document.getElementById('modal-overlay').classList.remove('hidden');
-    document.getElementById(modalId).classList.remove('hidden');
+    const modalEl = document.getElementById(modalId);
+    if(modalEl) {
+        modalEl.classList.remove('hidden');
+    }
 }
 
 function closeModals() {
     document.getElementById('modal-overlay').classList.add('hidden');
-    document.getElementById('add-lead-modal').classList.add('hidden');
-    document.getElementById('profile-modal').classList.add('hidden');
+    const modals = [
+        'add-lead-modal', 
+        'profile-modal', 
+        'edit-template-modal', 
+        'delete-template-modal', 
+        'reset-data-modal'
+    ];
+    modals.forEach(modal => {
+        const el = document.getElementById(modal);
+        if(el) {
+            el.classList.add('hidden');
+        }
+    });
 }
 
 // Close modals if the user clicks the dark background overlay
