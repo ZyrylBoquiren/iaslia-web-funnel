@@ -345,6 +345,33 @@ window.agentForm.addEventListener("submit", async function (e) {
             .select()
             .single();
 
+			if (leadError) {
+			if (leadError.code === '23505') {
+				alert("Hold up! It looks like you've already registered with this email address.");
+				
+				
+				submitBtn.disabled = false; 
+				submitBtn.textContent = "Confirm My Slot"; 
+				
+				return; // Stops the script completely
+			}
+			throw leadError; 
+		}
+
+			
+		if (leadError) {
+			if (leadError.code === '23505') {
+				alert("Hold up! It looks like you've already registered with this email address.");
+				
+				
+				submitBtn.disabled = false; 
+				submitBtn.textContent = "Confirm My Slot"; 
+				
+				return; // Stops the script completely
+			}
+			throw leadError; 
+		}
+
         if (leadError) throw leadError;
 
         const recruitData = {
@@ -388,7 +415,7 @@ window.agentForm.addEventListener("submit", async function (e) {
             .insert([{
                 lead_id: lead.lead_id,
                 slot_id: slotData.slot_id,
-                status: 'Scheduled',
+                status: 'pending',
                 admin_notes: `Time requested: ${apptTime}` 
             }]);
 
@@ -431,6 +458,19 @@ window.clientForm.addEventListener("submit", async function (e) {
             .insert([leadData])
             .select()
             .single();
+
+			if (leadError) {
+			if (leadError.code === '23505') {
+				alert("Hold up! It looks like you've already registered with this email address.");
+				
+				
+				submitBtn.disabled = false; 
+				submitBtn.textContent = "Confirm My Slot"; 
+				
+				return; // Stops the script completely
+			}
+			throw leadError; 
+		}
 
         if (leadError) throw leadError;
 
@@ -479,7 +519,7 @@ window.clientForm.addEventListener("submit", async function (e) {
             .insert([{
                 lead_id: lead.lead_id,
                 slot_id: slotData.slot_id,
-                status: 'Scheduled',
+                status: 'pending',
                 admin_notes: `Time requested: ${apptTime}` 
             }]);
 

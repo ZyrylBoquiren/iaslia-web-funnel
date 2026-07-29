@@ -663,7 +663,16 @@ data.forEach(slot => {
   document.querySelectorAll('.remove-slot-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       const slotId = e.currentTarget.dataset.slotId;
-      await supabase.from('availability_slots').delete().eq('slot_id', slotId);
+      
+      if (!confirm("Remove this available time slot?")) return;
+
+      const { error } = await supabase.from('availability_slots').delete().eq('slot_id', slotId);
+      
+      if (error) {
+          console.error("Delete blocked by database:", error);
+          alert("Cannot delete this slot! It is likely already booked by a lead. You must cancel the appointment first. \nError: " + error.message);
+      }
+      
       loadTimeSlots(dbDate, track);
     });
   });
@@ -676,18 +685,106 @@ function initAddSlotButton() {
 
   addBtn.addEventListener('click', async () => {
     if (!selectedDayEl) { alert('Please click a date first!'); return; }
-    const timeVal = input.value.trim();
+    const timeVal = input.value; // The HTML time picker returns format "HH:MM" natively!
     if (!timeVal) return;
 
     const dbDate = selectedDayEl.dataset.date;
     const track = currentAdminTrack;
 
+    // Supabase needs "HH:MM:SS", so we just slap ":00" onto the end.
+    const formattedTime = timeVal + ':00';
+
     const { error } = await supabase
       .from('availability_slots')
-      .insert({ slot_date: dbDate, track: track, slot_time: timeVal, is_open: true });
+      .insert({ slot_date: dbDate, track: track, slot_time: formattedTime, is_open: true });
 
-    if (error) { alert('Add failed: ' + error.message); return; }
+    if (error) { 
+        alert('Add failed: ' + error.message); 
+        return; 
+    }
+    
     input.value = '';
     loadTimeSlots(dbDate, track);
   });
+}
+// ==========================================
+// DYNAMIC SCHEDULED LEADS FETCH
+// ==========================================
+async function loadScheduledLeads(selectedDate, track) {
+    // 1. Target the exact container holding the cards
+    const list = document.getElementById('scheduled-leads-container'); 
+    
+    // Fallback if the ID doesn't exist (prevents crashes)
+    if (!list) {
+        console.warn("Could not find 'scheduled-leads-container' in HTML.");
+        return; 
+    }
+
+    // 2. WIPE THE SLATE CLEAN IMMEDIATELY
+    list.innerHTML = '<p class="text-[13px] text-gray-500 italic py-2">Checking schedule...</p>';
+
+    try {
+        // 3. Find slots for this date
+        const { data: slots } = await supabase
+            .from('availability_slots')
+            .select('slot_id, slot_time')
+            .eq('slot_date', selectedDate)
+            .eq('track', track);
+
+        if (!slots || slots.length === 0) {
+            list.innerHTML = '<div class="text-center py-6"><p class="text-[13px] text-gray-500 font-medium">No scheduled leads today.</p><p class="text-[11px] text-gray-400 mt-1">Open slots to accept bookings.</p></div>';
+            return;
+        }
+
+        const slotIds = slots.map(s => s.slot_id);
+
+        // 4. Find appointments linked to those slots
+        const { data: appointments } = await supabase
+            .from('appointments')
+            .select('appointment_id, lead_id, slot_id')
+            .in('slot_id', slotIds);
+
+        if (!appointments || appointments.length === 0) {
+            list.innerHTML = '<div class="text-center py-6"><p class="text-[13px] text-gray-500 font-medium">No scheduled leads today.</p><p class="text-[11px] text-gray-400 mt-1">Slots are open but empty.</p></div>';
+            return;
+        }
+
+        const leadIds = appointments.map(a => a.lead_id);
+
+        // 5. Get Lead Data
+        const { data: leads } = await supabase
+            .from('leads')
+            .select('lead_id, full_name, email, mobile_number')
+            .in('lead_id', leadIds);
+
+        // 6. BUILD THE UI
+        list.innerHTML = ''; // Clear the "Checking schedule" text
+        
+        appointments.forEach(appt => {
+            const lead = leads.find(l => l.lead_id === appt.lead_id);
+            const slot = slots.find(s => s.slot_id === appt.slot_id);
+            
+            if (lead && slot) {
+                const timeStr = new Date(`1970-01-01T${slot.slot_time}Z`).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const initials = lead.full_name ? lead.full_name.substring(0, 2).toUpperCase() : '??';
+
+                list.innerHTML += `
+                    <div onclick="window.openLeadModal('${appt.appointment_id}', '${lead.lead_id}', '${track}')" class="bg-[#fbf4f2] border border-pru-border rounded-xl p-4 flex items-center justify-between shadow-sm cursor-pointer hover:border-pru-red transition mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-[#fce8e8] text-pru-red font-bold flex items-center justify-center text-[10px] border border-pru-border flex-shrink-0">${initials}</div>
+                            <div>
+                                <p class="text-[13px] font-bold text-gray-900">${lead.full_name || 'Unknown'}</p>
+                                <p class="text-[11px] text-gray-500 mt-0.5">${lead.email || 'No email'} · ${lead.mobile_number || 'No number'}</p>
+                            </div>
+                        </div>
+                        <span class="bg-white border border-pru-border text-[#bd1512] text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm whitespace-nowrap">${timeStr}</span>
+                    </div>
+                `;
+            }
+        });
+
+    } catch (err) {
+        console.error("Schedule fetch error:", err);
+        list.innerHTML = '<p class="text-xs text-red-500 py-2">Error loading leads.</p>';
+    }
 }

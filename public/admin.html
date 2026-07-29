@@ -485,7 +485,7 @@
                                 <div id="time-slot-pills" class="flex gap-2 flex-wrap mb-3">
                                 </div>
                                 <div class="flex gap-2">
-                                    <input type="text" id="new-slot-time-input" placeholder="e.g. 4:00 PM" class="flex-grow border border-pru-border rounded-lg px-4 py-2 text-[13px] outline-none focus:border-pru-red text-gray-600">
+                                    <input type="time" id="new-slot-time-input" class="flex-grow border border-pru-border rounded-lg px-4 py-2 text-[13px] outline-none focus:border-pru-red text-gray-600">
                                     <button id="add-slot-btn" class="bg-gray-900 text-white px-5 py-2 rounded-lg text-[11px] font-bold hover:bg-gray-800 transition-colors">Add</button>
                                 </div>
                             </div>
@@ -496,30 +496,8 @@
                                     <span id="booked-count-badge" class="w-4 h-4 bg-[#bd1512] text-white text-[9px] font-bold rounded-full flex items-center justify-center">2</span>
                                 </div>
                                 
-                                <div id="booked-leads-list" class="space-y-3">
-                                    <div class="bg-[#fbf4f2] border border-pru-border rounded-xl p-4 flex items-center justify-between shadow-sm">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-8 h-8 rounded-full bg-[#fce8e8] text-pru-red font-bold flex items-center justify-center text-[10px] border border-pru-border">AR</div>
-                                            <div>
-                                                <p class="text-[13px] font-bold text-gray-900">Angela Reyes</p>
-                                                <p class="text-[11px] text-gray-500 mt-0.5">angela.reyes@email.com · 0917 234 5566</p>
-                                                <p class="text-[11px] text-gray-500">Ref: PLU-AR93K</p>
-                                            </div>
-                                        </div>
-                                        <span class="bg-white border border-pru-border text-[#bd1512] text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm">7:00 PM</span>
-                                    </div>
-                                    <div class="bg-[#fbf4f2] border border-pru-border rounded-xl p-4 flex items-center justify-between shadow-sm">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-8 h-8 rounded-full bg-[#fce8e8] text-pru-red font-bold flex items-center justify-center text-[10px] border border-pru-border">MD</div>
-                                            <div>
-                                                <p class="text-[13px] font-bold text-gray-900">Marco Dizon</p>
-                                                <p class="text-[11px] text-gray-500 mt-0.5">marco.dizon@email.com · 0928 883 1120</p>
-                                                <p class="text-[11px] text-gray-500">Ref: PLU-MD22F</p>
-                                            </div>
-                                        </div>
-                                        <span class="bg-white border border-pru-border text-[#bd1512] text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm">8:30 PM</span>
-                                    </div>
-                                </div>
+                                <div id="scheduled-leads-container" class="mt-4 space-y-3">
+                                 </div>
                                 
                                 <div id="no-leads-msg" class="hidden text-[13px] font-bold text-gray-600 mt-6">
                                     No leads booked for this date
@@ -814,5 +792,45 @@
     </div>
 
     <script src="../src/js/admin.js"></script>
+
+    <div id="lead-details-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden flex items-center justify-center transition-opacity">
+    <div class="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-xl border border-pru-border">
+        <div class="px-6 py-4 border-b border-pru-border flex justify-between items-center bg-[#fbf8f7]">
+            <h3 id="modal-lead-name" class="font-serif font-bold text-[18px] text-gray-900">Loading...</h3>
+            <button onclick="document.getElementById('lead-details-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 border border-gray-200 rounded-full w-7 h-7 flex items-center justify-center bg-white">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        
+        <div class="p-6 space-y-4">
+            <div class="flex gap-2 mb-2">
+                <span class="bg-blue-50 text-blue-700 border border-blue-200 text-[11px] font-bold px-3 py-1 rounded-full shadow-sm" id="modal-status">Status: Scheduled</span>
+                <span class="bg-[#fce8e8] text-pru-red border border-pru-border text-[11px] font-bold px-3 py-1 rounded-full shadow-sm" id="modal-track">Track: Client</span>
+            </div>
+            
+            <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                <p class="text-[13px] text-gray-500 mb-1">Email: <span id="modal-email" class="font-bold text-gray-900 ml-1"></span></p>
+                <p class="text-[13px] text-gray-500">Phone: <span id="modal-phone" class="font-bold text-gray-900 ml-1"></span></p>
+            </div>
+
+            <div class="border-t border-pru-border pt-4">
+                <h4 class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">Profile Data</h4>
+                <div id="modal-profile-content" class="text-[13px] space-y-2 text-gray-700">
+                    </div>
+            </div>
+
+            <div class="border-t border-pru-border pt-4">
+                <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Admin Notes</label>
+                <textarea id="modal-admin-notes" class="w-full mt-2 border border-pru-border rounded-lg p-3 text-[13px] outline-none focus:border-pru-red shadow-sm" rows="2" placeholder="Write any meeting notes here..."></textarea>
+            </div>
+        </div>
+
+        <div class="px-6 py-4 bg-[#fbf8f7] flex gap-3 border-t border-pru-border">
+            <button class="flex-1 bg-pru-red text-white py-2.5 rounded-lg text-[13px] font-bold hover:bg-red-800 transition shadow-sm">Complete Interaction</button>
+            <button onclick="document.getElementById('lead-details-modal').classList.add('hidden')" class="flex-1 bg-white border border-gray-300 text-gray-700 py-2.5 rounded-lg text-[13px] font-bold hover:bg-gray-50 transition shadow-sm">Close Window</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
