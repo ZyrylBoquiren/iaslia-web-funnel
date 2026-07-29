@@ -611,7 +611,8 @@ function initBookingSwitch() {
                 selectedDayEl.classList.remove('bg-[#e6f4ea]');
                 selectedDayEl.classList.add('bg-[#fbf4f2]');
 
-                const { error } = await window.supabase.from('availability_slots').update({ is_open: false }).eq('slot_date', dbDate).eq('track', currentAdminTrack);
+                // REMOVED 'window.' here
+                const { error } = await supabase.from('availability_slots').update({ is_open: false }).eq('slot_date', dbDate).eq('track', currentAdminTrack);
                 if (error) throw error;
             } else {
                 bookingSwitch.className = "w-12 h-6 bg-[#00875a] rounded-full relative cursor-pointer border border-[#00875a] shadow-sm";
@@ -619,7 +620,8 @@ function initBookingSwitch() {
                 selectedDayEl.classList.remove('bg-[#fbf4f2]', 'border-pru-border');
                 selectedDayEl.classList.add('bg-[#e6f4ea]');
 
-                const { error } = await window.supabase.from('availability_slots').upsert({ slot_date: dbDate, track: currentAdminTrack, is_open: true }, { onConflict: 'slot_date, track' });
+                // REMOVED 'window.' here
+                const { error } = await supabase.from('availability_slots').upsert({ slot_date: dbDate, track: currentAdminTrack, is_open: true, slot_time: '09:00:00' }, { onConflict: 'slot_date, track' });
                 if (error) throw error;
             }
         } catch (error) {
