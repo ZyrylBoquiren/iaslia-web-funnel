@@ -12,10 +12,17 @@ if (window.supabase) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (supabase) {
+    // Load leads if supabase is active
+    if (window.supabase) {
         loadAdminLeads();
     }
-    initCalendarInteractions();
+    
+    // Safely boot up the new calendar engine
+    if (typeof renderAdminCalendar === 'function') {
+        renderAdminCalendar();
+        setupCalendarArrows();
+        initBookingSwitch();
+    }
 });
 
 // ==========================================
@@ -406,64 +413,219 @@ window.viewLeadDetails = async function(leadId) {
     }
 };
 
-function initCalendarInteractions() {
-    // Grab all the day cells in the calendar grid
-    const calendarDays = document.querySelectorAll('#view-calendar .grid.grid-cols-7 > .aspect-square');
-    const bookingSwitch = document.getElementById('booking-switch');
-    let selectedDay = null;
+// ==========================================
+// --- ADMIN CALENDAR ENGINE ---
+// ==========================================
 
-    calendarDays.forEach(day => {
-        // Skip any empty spacer divs
-        if (!day.textContent.trim()) return;
+// Global state to track which calendar we are viewing in admin
+let currentAdminTrack = 'future_advisor'; // Defaults to agent to match your UI
 
-        // Ensure every day gets the hover effect
-        day.classList.add('hover:scale-105', 'transition-transform', 'cursor-pointer');
+function switchAdminTrack(track) {
+    currentAdminTrack = track;
+    
+    const clientBtn = document.getElementById('admin-track-client');
+    const agentBtn = document.getElementById('admin-track-agent');
+    
+    // Swap the Pill UI styles
+    if (track === 'future_client') {
+        clientBtn.className = "px-5 py-2 text-[13px] font-bold text-white bg-[#bd1512] rounded-full shadow-sm transition-colors focus:outline-none";
+        agentBtn.className = "px-5 py-2 text-[13px] font-bold text-gray-600 rounded-full hover:bg-gray-50 transition-colors focus:outline-none";
+    } else {
+        agentBtn.className = "px-5 py-2 text-[13px] font-bold text-white bg-[#bd1512] rounded-full shadow-sm transition-colors focus:outline-none";
+        clientBtn.className = "px-5 py-2 text-[13px] font-bold text-gray-600 rounded-full hover:bg-gray-50 transition-colors focus:outline-none";
+    }
+    
+    // Refresh the calendar UI to show data for the selected track
+    if (typeof renderAdminCalendar === 'function') {
+        renderAdminCalendar();
+    }
+}
 
-        day.addEventListener('click', (e) => {
-            selectedDay = e.currentTarget;
-            const dayNum = selectedDay.textContent.replace(/[^0-9]/g, ''); // Extract the day number
-            
-            // Check if this day has booked leads (looks for the red badge)
-            const hasLeads = selectedDay.querySelector('.bg-\\[\\#bd1512\\]');
-            const isOpen = selectedDay.classList.contains('bg-[#e6f4ea]');
-            
-            if (hasLeads) {
-                showDayDetails('booked', dayNum);
-            } else {
-                showDayDetails('empty', dayNum);
-                
-                // Sync the toggle switch with the day's current status
-                if (isOpen) {
-                    bookingSwitch.className = "w-12 h-6 bg-[#00875a] rounded-full relative cursor-pointer border border-[#00875a] shadow-sm";
-                    bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5 shadow-sm"></div>';
-                } else {
-                    bookingSwitch.className = "w-12 h-6 bg-[#fbf4f2] rounded-full relative cursor-pointer border border-gray-200 shadow-sm";
-                    bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute left-0.5 top-0.5 shadow-sm border border-gray-200"></div>';
-                }
-            }
-        });
-    });
+let adminNavDate = new Date(2026, 6, 1); // Starts at July 2026
+let selectedDayEl = null;
 
-    // Make the toggle switch change the calendar day color
-    if (bookingSwitch) {
-        bookingSwitch.addEventListener('click', () => {
-            if (!selectedDay) return;
-            
-            const isCurrentlyOpen = bookingSwitch.classList.contains('bg-[#00875a]');
-            
-            if (isCurrentlyOpen) {
-                // Turn off (Close booking)
-                bookingSwitch.className = "w-12 h-6 bg-[#fbf4f2] rounded-full relative cursor-pointer border border-gray-200 shadow-sm";
-                bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute left-0.5 top-0.5 shadow-sm border border-gray-200"></div>';
-                selectedDay.classList.remove('bg-[#e6f4ea]');
-                selectedDay.classList.add('bg-[#fbf4f2]');
-            } else {
-                // Turn on (Open booking)
-                bookingSwitch.className = "w-12 h-6 bg-[#00875a] rounded-full relative cursor-pointer border border-[#00875a] shadow-sm";
-                bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5 shadow-sm"></div>';
-                selectedDay.classList.remove('bg-[#fbf4f2]', 'border-pru-border');
-                selectedDay.classList.add('bg-[#e6f4ea]');
-            }
+// 1. Arrow Navigation
+function setupCalendarArrows() {
+    const prevBtn = document.getElementById('admin-prev-month');
+    const nextBtn = document.getElementById('admin-next-month');
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevents page reload
+            adminNavDate.setMonth(adminNavDate.getMonth() - 1);
+            renderAdminCalendar();
         });
     }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevents page reload
+            adminNavDate.setMonth(adminNavDate.getMonth() + 1);
+            renderAdminCalendar();
+        });
+    }
+}
+
+// 2. Dynamic Details Panel
+window.showDayDetails = function(state, dayNum = null, monthStr = "July", yearStr = "2026") {
+    const emptyState = document.getElementById('leads-empty-state');
+    const dayView = document.getElementById('leads-day-view');
+    if(emptyState) emptyState.classList.add('hidden');
+    if(dayView) dayView.classList.remove('hidden');
+    
+    const panelDate = document.getElementById('panel-date');
+    const switchEl = document.getElementById('booking-switch');
+    const timeSlots = document.getElementById('time-slots-section');
+    const badge = document.getElementById('booked-count-badge');
+    const list = document.getElementById('booked-leads-list');
+    const noLeads = document.getElementById('no-leads-msg');
+
+    if (dayNum && panelDate) {
+        const fullDate = new Date(`${monthStr} ${dayNum}, ${yearStr}`);
+        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const dayOfWeek = days[fullDate.getDay()];
+        panelDate.textContent = `${dayOfWeek}, ${monthStr} ${dayNum}, ${yearStr}`;
+    }
+
+    if (state === 'booked' && switchEl) {
+        switchEl.className = "w-12 h-6 bg-[#00875a] rounded-full relative cursor-pointer border border-[#00875a] shadow-sm";
+        switchEl.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5 shadow-sm"></div>';
+        if(timeSlots) timeSlots.classList.remove('hidden');
+        if(badge) { badge.textContent = "2"; badge.classList.remove('hidden'); }
+        if(list) list.classList.remove('hidden');
+        if(noLeads) noLeads.classList.add('hidden');
+    } else if (state === 'empty' && switchEl) {
+        switchEl.className = "w-12 h-6 bg-[#fbf4f2] rounded-full relative cursor-pointer border border-gray-200 shadow-sm";
+        switchEl.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute left-0.5 top-0.5 shadow-sm border border-gray-200"></div>';
+        if(timeSlots) timeSlots.classList.add('hidden');
+        if(badge) { badge.textContent = "0"; badge.classList.remove('hidden'); }
+        if(list) list.classList.add('hidden');
+        if(noLeads) noLeads.classList.remove('hidden');
+    }
+}
+
+// 3. Render Calendar Grid
+function renderAdminCalendar() {
+    const monthYearEl = document.getElementById('admin-calendar-month');
+    const gridEl = document.getElementById('admin-calendar-grid');
+    const bookingSwitch = document.getElementById('booking-switch');
+    if (!monthYearEl || !gridEl) return;
+
+    const year = adminNavDate.getFullYear();
+    const month = adminNavDate.getMonth();
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    
+    monthYearEl.textContent = `${monthNames[month]} ${year}`;
+    gridEl.innerHTML = ''; 
+
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    const startDay = firstDayIndex === 0 ? 6 : firstDayIndex - 1; 
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (let i = 0; i < startDay; i++) {
+        const blank = document.createElement('div');
+        blank.className = 'aspect-square';
+        gridEl.appendChild(blank);
+    }
+
+    for (let i = 1; i <= daysInMonth; i++) {
+    const dayDiv = document.createElement('div');
+    
+    // 1. Restore the original square shapes (rounded-xl) and font styling
+    dayDiv.className = 'aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer hover:scale-105 transition-transform border border-transparent';
+    
+    const dbDate = `${year}-${String(month+1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+    dayDiv.dataset.date = dbDate;
+
+    // 2. Re-inject the demo UI states specifically for July 2026 to match your Figma/HTML design
+    if (year === 2026 && month === 6) { // Month 6 is July (0-indexed)
+        const greenDays = [10, 13, 17, 20, 24, 27];
+        
+        // Apply green background for "open" days
+        if (greenDays.includes(i)) {
+            dayDiv.className = 'aspect-square flex items-center justify-center rounded-xl bg-[#e6f4ea] text-[13px] font-bold text-gray-800 cursor-pointer hover:scale-105 transition-transform border border-green-200 shadow-sm';
+        }
+        
+        // Apply the red badge specifically for the 10th
+        if (i === 10) {
+            dayDiv.classList.add('relative');
+            dayDiv.innerHTML = `${i} <span class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#bd1512] text-white text-[9px] font-bold rounded-full flex items-center justify-center border-2 border-white box-content shadow-sm">2</span>`;
+        } else {
+            dayDiv.textContent = i;
+        }
+    } else {
+        dayDiv.textContent = i;
+    }
+
+    // 3. Update the click listener to handle the 'booked' state for the 10th
+    dayDiv.addEventListener('click', (e) => {
+        selectedDayEl = e.currentTarget;
+        const isOpen = selectedDayEl.classList.contains('bg-[#e6f4ea]');
+        
+        // Trigger the booked UI panel if they click the 10th in July 2026
+        if (year === 2026 && month === 6 && i === 10) {
+            showDayDetails('booked', i, monthNames[month], year);
+        } else {
+            showDayDetails('empty', i, monthNames[month], year);
+        }
+        
+        const bookingSwitch = document.getElementById('booking-switch');
+        if (isOpen && bookingSwitch) {
+            bookingSwitch.className = "w-12 h-6 bg-[#00875a] rounded-full relative cursor-pointer border border-[#00875a] shadow-sm";
+            bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5 shadow-sm"></div>';
+        } else if (bookingSwitch) {
+            bookingSwitch.className = "w-12 h-6 bg-[#fbf4f2] rounded-full relative cursor-pointer border border-gray-200 shadow-sm";
+            bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute left-0.5 top-0.5 shadow-sm border border-gray-200"></div>';
+        }
+    });
+
+    gridEl.appendChild(dayDiv);
+    }
+}
+
+// 4. Booking Switch Logic
+function initBookingSwitch() {
+    const bookingSwitch = document.getElementById('booking-switch');
+    if (!bookingSwitch) return;
+
+    bookingSwitch.addEventListener('click', async () => {
+        if (!selectedDayEl) {
+            alert("Please click a date on the calendar first!");
+            return;
+        }
+        
+        const dbDate = selectedDayEl.dataset.date;
+        const activeTab = document.querySelector('.bg-\\[\\#bd1512\\]');
+        const trackStr = activeTab && activeTab.textContent.includes('Agent') ? 'future_advisor' : 'future_client';
+        const isCurrentlyOpen = bookingSwitch.classList.contains('bg-[#00875a]');
+        
+        if (!window.supabase) {
+            alert("Supabase is not connected! Check your initialization.");
+            return;
+        }
+
+        try {
+            if (isCurrentlyOpen) {
+                bookingSwitch.className = "w-12 h-6 bg-[#fbf4f2] rounded-full relative cursor-pointer border border-gray-200 shadow-sm";
+                bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute left-0.5 top-0.5 shadow-sm border border-gray-200"></div>';
+                selectedDayEl.classList.remove('bg-[#e6f4ea]');
+                selectedDayEl.classList.add('bg-[#fbf4f2]');
+
+                const { error } = await window.supabase.from('availability_slots').update({ is_open: false }).eq('slot_date', dbDate).eq('track', currentAdminTrack);
+                if (error) throw error;
+            } else {
+                bookingSwitch.className = "w-12 h-6 bg-[#00875a] rounded-full relative cursor-pointer border border-[#00875a] shadow-sm";
+                bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5 shadow-sm"></div>';
+                selectedDayEl.classList.remove('bg-[#fbf4f2]', 'border-pru-border');
+                selectedDayEl.classList.add('bg-[#e6f4ea]');
+
+                const { error } = await window.supabase.from('availability_slots').upsert({ slot_date: dbDate, track: currentAdminTrack, is_open: true }, { onConflict: 'slot_date, track' });
+                if (error) throw error;
+            }
+        } catch (error) {
+            console.error("SUPABASE ERROR:", error);
+            alert("Database Error: " + error.message + "\n(Hint: Check if RLS is blocking this or if a unique constraint is missing)");
+            renderAdminCalendar(); // Revert visually if DB fails
+        }
+    });
 }

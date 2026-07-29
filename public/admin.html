@@ -409,81 +409,40 @@
                 </div>
                 
                 <div class="flex bg-white border border-pru-border rounded-full p-1 w-max mb-8 shadow-sm">
-                    <button class="px-5 py-2 text-[13px] font-bold text-white bg-[#bd1512] rounded-full shadow-sm">Career Preview (Agent)</button>
-                    <button class="px-5 py-2 text-[13px] font-bold text-gray-600 rounded-full hover:bg-gray-50 transition-colors">Financial Conversation (Client)</button>
+                    <button id="admin-track-agent" onclick="switchAdminTrack('future_advisor')" class="px-5 py-2 text-[13px] font-bold text-white bg-[#bd1512] rounded-full shadow-sm transition-colors focus:outline-none">
+                        Career Preview (Agent)
+                    </button>
+                    <button id="admin-track-client" onclick="switchAdminTrack('future_client')" class="px-5 py-2 text-[13px] font-bold text-gray-600 rounded-full hover:bg-gray-50 transition-colors focus:outline-none">
+                        Financial Conversation (Client)
+                    </button>
                 </div>
 
                 <div class="grid grid-cols-[1.2fr_1fr] gap-8 items-start">
                     
                     <div class="bg-white border border-pru-border rounded-2xl p-8 shadow-sm">
-                        <div class="flex justify-between items-center mb-8">
-                            <h2 class="text-2xl font-serif font-bold text-gray-900">July 2026</h2>
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 id="admin-calendar-month" class="text-2xl font-serif font-bold text-gray-900">July 2026</h3>
                             <div class="flex gap-2">
-                                <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 text-gray-600 text-sm font-bold transition-colors">&lt;</button>
-                                <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 text-gray-600 text-sm font-bold transition-colors">&gt;</button>
+                                <button id="admin-prev-month" type="button" class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors cursor-pointer text-gray-600 font-bold">&lt;</button>
+                                <button id="admin-next-month" type="button" class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors cursor-pointer text-gray-600 font-bold">&gt;</button>
                             </div>
                         </div>
                         
-                        <div class="grid grid-cols-7 gap-3 text-center mb-8">
-                            <div class="text-[11px] font-bold text-gray-900 mb-2">S</div>
-                            <div class="text-[11px] font-bold text-gray-900 mb-2">M</div>
-                            <div class="text-[11px] font-bold text-gray-900 mb-2">T</div>
-                            <div class="text-[11px] font-bold text-gray-900 mb-2">W</div>
-                            <div class="text-[11px] font-bold text-gray-900 mb-2">T</div>
-                            <div class="text-[11px] font-bold text-gray-900 mb-2">F</div>
-                            <div class="text-[11px] font-bold text-gray-900 mb-2">S</div>
-                            
-                            <div></div><div></div><div></div>
-                            
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">1</div>
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">2</div>
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">3</div>
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">4</div>
-                            
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">5</div>
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">6</div>
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">7</div>
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">8</div>
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">9</div>
-                            
-                            <div onclick="showDayDetails('booked')" class="aspect-square flex items-center justify-center rounded-xl bg-[#e6f4ea] text-[13px] font-bold text-gray-800 cursor-pointer relative hover:scale-105 transition-transform border border-green-200 shadow-sm">
-                                10
-                                <span class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#bd1512] text-white text-[9px] font-bold rounded-full flex items-center justify-center border-2 border-white box-content shadow-sm">2</span>
-                            </div>
-                            
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">11</div>
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">12</div>
-                            
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#e6f4ea] text-[13px] font-bold text-gray-800 cursor-pointer">13</div>
-                            
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">14</div>
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">15</div>
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">16</div>
-                            
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#e6f4ea] text-[13px] font-bold text-gray-800 cursor-pointer">17</div>
-                            
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">18</div>
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">19</div>
-                            
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#e6f4ea] text-[13px] font-bold text-gray-800 cursor-pointer">20</div>
-                            
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">21</div>
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">22</div>
-                            
-                            <div onclick="showDayDetails('empty')" class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer hover:scale-105 transition-transform border border-pru-border">23</div>
-                            
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#e6f4ea] text-[13px] font-bold text-gray-800 cursor-pointer">24</div>
-                            
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">25</div>
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">26</div>
-                            
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#e6f4ea] text-[13px] font-bold text-gray-800 cursor-pointer">27</div>
-                            
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">28</div>
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">29</div>
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">30</div>
-                            <div class="aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer">31</div>
-                        </div>
+                        <div class="grid grid-cols-7 gap-3 text-center mb-2">
+                        <div class="text-[11px] font-bold text-gray-900">S</div>
+                        <div class="text-[11px] font-bold text-gray-900">M</div>
+                        <div class="text-[11px] font-bold text-gray-900">T</div>
+                        <div class="text-[11px] font-bold text-gray-900">W</div>
+                        <div class="text-[11px] font-bold text-gray-900">T</div>
+                        <div class="text-[11px] font-bold text-gray-900">F</div>
+                        <div class="text-[11px] font-bold text-gray-900">S</div>
+                    </div>
+
+                    <!-- 2. Dynamic Grid for the Days (with the missing ID) -->
+                    <div id="admin-calendar-grid" class="grid grid-cols-7 gap-3 text-center mb-8">
+                        <!-- You can remove all the hardcoded <div> days here -->
+                        <!-- The JavaScript renderAdminCalendar() function will automatically populate this when the page loads and when the arrows are clicked -->
+                    </div>
 
                         <div class="flex gap-6 text-[13px] text-gray-700 font-medium pt-4 border-t border-gray-100">
                             <span class="flex items-center gap-2">

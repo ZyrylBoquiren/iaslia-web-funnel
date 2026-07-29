@@ -35,6 +35,24 @@ const CLIENT_AVAILABLE_DATES = [
 const calendarState = new WeakMap(); 
 const calendarDates = new WeakMap(); 
 
+async function fetchAvailableDates(trackStr) {
+    try {
+        const { data, error } = await supabaseClient
+            .from('availability_slots')
+            .select('slot_date')
+            .eq('track', trackStr)
+            .eq('is_open', true); // ONLY get dates the admin marked as true
+
+        if (error) throw error;
+        
+        // Convert the raw database rows into a simple array of date strings
+        return data.map(row => row.slot_date);
+    } catch (err) {
+        console.error(`Error fetching dates for ${trackStr}:`, err);
+        return []; // If it fails, show no dates to prevent errors
+    }
+}
+
 function renderCalendar(form, availableDates) {
 	calendarDates.set(form, availableDates);
 
@@ -306,6 +324,37 @@ agentForm.addEventListener("submit", async function (e) {
 
         if (profileError) throw profileError;
 
+		// NEW: Get the formatted date and selected time from the UI
+        const rawDate = form.querySelector(".appt-date-input").value; // e.g. "August 10, 2026"
+        const apptDateObj = new Date(rawDate);
+        // Correct for local timezone offset before converting to ISO string
+        const tzOffset = apptDateObj.getTimezoneOffset() * 60000;
+        const dbDate = (new Date(apptDateObj - tzOffset)).toISOString().split('T')[0];
+        
+        const apptTime = form.querySelector(".appt-time-input").value;
+
+        // NEW: Fetch the specific slot_id from availability_slots for this date
+        const { data: slotData, error: slotError } = await supabaseClient
+            .from('availability_slots')
+            .select('slot_id')
+            .eq('slot_date', dbDate)
+            .eq('track', 'future_advisor') // Change to 'future_client' for the client form!
+            .single();
+
+        if (slotError || !slotData) throw new Error("Could not find an open slot for this date in the database.");
+
+        // NEW: Insert into appointments table
+        const { error: appointmentError } = await supabaseClient
+            .from('appointments')
+            .insert([{
+                lead_id: lead.lead_id,
+                slot_id: slotData.slot_id,
+                status: 'Scheduled',
+                admin_notes: `Time requested: ${apptTime}` // Saving the time here since time isn't strictly defined in the slot table UI yet
+            }]);
+
+        if (appointmentError) throw appointmentError;
+
         alert("Success! Your Agent Career Preview slot has been reserved.");
         resetBookingForm(agentForm);
 
@@ -367,6 +416,37 @@ clientForm.addEventListener("submit", async function (e) {
 
         if (profileError) throw profileError;
 
+		// NEW: Get the formatted date and selected time from the UI
+        const rawDate = form.querySelector(".appt-date-input").value; // e.g. "August 10, 2026"
+        const apptDateObj = new Date(rawDate);
+        // Correct for local timezone offset before converting to ISO string
+        const tzOffset = apptDateObj.getTimezoneOffset() * 60000;
+        const dbDate = (new Date(apptDateObj - tzOffset)).toISOString().split('T')[0];
+        
+        const apptTime = form.querySelector(".appt-time-input").value;
+
+        // NEW: Fetch the specific slot_id from availability_slots for this date
+        const { data: slotData, error: slotError } = await supabaseClient
+            .from('availability_slots')
+            .select('slot_id')
+            .eq('slot_date', dbDate)
+            .eq('track', 'future_client') // Change to 'future_client' for the client form!
+            .single();
+
+        if (slotError || !slotData) throw new Error("Could not find an open slot for this date in the database.");
+
+        // NEW: Insert into appointments table
+        const { error: appointmentError } = await supabaseClient
+            .from('appointments')
+            .insert([{
+                lead_id: lead.lead_id,
+                slot_id: slotData.slot_id,
+                status: 'Scheduled',
+                admin_notes: `Time requested: ${apptTime}` // Saving the time here since time isn't strictly defined in the slot table UI yet
+            }]);
+
+        if (appointmentError) throw appointmentError;
+
         alert("Success! Your Financial Conversation slot has been reserved.");
         resetBookingForm(clientForm);
 
@@ -385,5 +465,13 @@ document.querySelectorAll(".booking-form").forEach((form) => {
 	attachLiveValidation(form);
 });
 
-renderCalendar(agentForm, AGENT_AVAILABLE_DATES);
-renderCalendar(clientForm, CLIENT_AVAILABLE_DATES);
+// Fetch dates dynamically from Supabase instead of hardcoded arrays
+async function initializeCalendars() {
+    const agentDates = await fetchAvailableDates('future_advisor');
+    const clientDates = await fetchAvailableDates('future_client');
+    
+    renderCalendar(agentForm, agentDates);
+    renderCalendar(clientForm, clientDates);
+}
+
+initializeCalendars();
