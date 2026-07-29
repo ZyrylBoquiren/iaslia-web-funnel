@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (supabase) {
         loadAdminLeads();
     }
+    initCalendarInteractions();
 });
 
 // ==========================================
@@ -66,7 +67,7 @@ function switchTab(targetView) {
 }
 
 // Dynamic Calendar Logic
-function showDayDetails(state) {
+function showDayDetails(state, dayNum = null) {
     document.getElementById('leads-empty-state').classList.add('hidden');
     document.getElementById('leads-day-view').classList.remove('hidden');
     
@@ -77,8 +78,13 @@ function showDayDetails(state) {
     const list = document.getElementById('booked-leads-list');
     const noLeads = document.getElementById('no-leads-msg');
 
+    // Dynamically set the date text if a day is clicked
+    if (dayNum) {
+        panelDate.textContent = `July ${dayNum}, 2026`;
+    }
+
     if (state === 'booked') {
-        panelDate.textContent = "Friday, July 10, 2026";
+        if (!dayNum) panelDate.textContent = "Friday, July 10, 2026";
         switchEl.className = "w-12 h-6 bg-[#00875a] rounded-full relative cursor-pointer border border-[#00875a] shadow-sm";
         switchEl.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5 shadow-sm"></div>';
         
@@ -88,7 +94,7 @@ function showDayDetails(state) {
         list.classList.remove('hidden');
         noLeads.classList.add('hidden');
     } else if (state === 'empty') {
-        panelDate.textContent = "Thursday, July 23, 2026";
+        if (!dayNum) panelDate.textContent = "Thursday, July 23, 2026";
         switchEl.className = "w-12 h-6 bg-[#fbf4f2] rounded-full relative cursor-pointer border border-gray-200 shadow-sm";
         switchEl.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute left-0.5 top-0.5 shadow-sm border border-gray-200"></div>';
         
@@ -399,3 +405,65 @@ window.viewLeadDetails = async function(leadId) {
         contentDiv.innerHTML = `<div class="p-12 flex justify-center text-red-500 text-sm font-semibold">Error loading database profile. Check Console.</div>`;
     }
 };
+
+function initCalendarInteractions() {
+    // Grab all the day cells in the calendar grid
+    const calendarDays = document.querySelectorAll('#view-calendar .grid.grid-cols-7 > .aspect-square');
+    const bookingSwitch = document.getElementById('booking-switch');
+    let selectedDay = null;
+
+    calendarDays.forEach(day => {
+        // Skip any empty spacer divs
+        if (!day.textContent.trim()) return;
+
+        // Ensure every day gets the hover effect
+        day.classList.add('hover:scale-105', 'transition-transform', 'cursor-pointer');
+
+        day.addEventListener('click', (e) => {
+            selectedDay = e.currentTarget;
+            const dayNum = selectedDay.textContent.replace(/[^0-9]/g, ''); // Extract the day number
+            
+            // Check if this day has booked leads (looks for the red badge)
+            const hasLeads = selectedDay.querySelector('.bg-\\[\\#bd1512\\]');
+            const isOpen = selectedDay.classList.contains('bg-[#e6f4ea]');
+            
+            if (hasLeads) {
+                showDayDetails('booked', dayNum);
+            } else {
+                showDayDetails('empty', dayNum);
+                
+                // Sync the toggle switch with the day's current status
+                if (isOpen) {
+                    bookingSwitch.className = "w-12 h-6 bg-[#00875a] rounded-full relative cursor-pointer border border-[#00875a] shadow-sm";
+                    bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5 shadow-sm"></div>';
+                } else {
+                    bookingSwitch.className = "w-12 h-6 bg-[#fbf4f2] rounded-full relative cursor-pointer border border-gray-200 shadow-sm";
+                    bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute left-0.5 top-0.5 shadow-sm border border-gray-200"></div>';
+                }
+            }
+        });
+    });
+
+    // Make the toggle switch change the calendar day color
+    if (bookingSwitch) {
+        bookingSwitch.addEventListener('click', () => {
+            if (!selectedDay) return;
+            
+            const isCurrentlyOpen = bookingSwitch.classList.contains('bg-[#00875a]');
+            
+            if (isCurrentlyOpen) {
+                // Turn off (Close booking)
+                bookingSwitch.className = "w-12 h-6 bg-[#fbf4f2] rounded-full relative cursor-pointer border border-gray-200 shadow-sm";
+                bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute left-0.5 top-0.5 shadow-sm border border-gray-200"></div>';
+                selectedDay.classList.remove('bg-[#e6f4ea]');
+                selectedDay.classList.add('bg-[#fbf4f2]');
+            } else {
+                // Turn on (Open booking)
+                bookingSwitch.className = "w-12 h-6 bg-[#00875a] rounded-full relative cursor-pointer border border-[#00875a] shadow-sm";
+                bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5 shadow-sm"></div>';
+                selectedDay.classList.remove('bg-[#fbf4f2]', 'border-pru-border');
+                selectedDay.classList.add('bg-[#e6f4ea]');
+            }
+        });
+    }
+}
