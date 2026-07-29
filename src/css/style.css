@@ -990,6 +990,12 @@ header .btn-primary {
 	cursor: pointer;
 }
 
+.time-btn-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 .time-btn:hover,
 .time-btn.selected {
 	background: #e31d1a;

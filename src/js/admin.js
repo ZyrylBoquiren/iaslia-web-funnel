@@ -606,9 +606,13 @@ function initBookingSwitch() {
                 selectedDayEl.classList.add('bg-[#e6f4ea]');
 
                 // REMOVED 'window.' here
-                const { error } = await supabase.from('availability_slots').upsert({ slot_date: dbDate, track: currentAdminTrack, is_open: true, slot_time: '09:00:00' }, { onConflict: 'slot_date, track' });
+                const { error } = await supabase.from('availability_slots').upsert(
+                    { slot_date: dbDate, track: currentAdminTrack, is_open: true, slot_time: '09:00:00' },
+                    { onConflict: 'slot_date, track, slot_time' }
+                    );
                 if (error) throw error;
             }
+            loadTimeSlots(dbDate, currentAdminTrack);
         } catch (error) {
             console.error("SUPABASE ERROR:", error);
             alert("Database Error: " + error.message + "\n(Hint: Check if RLS is blocking this or if a unique constraint is missing)");
@@ -637,12 +641,24 @@ async function loadTimeSlots(dbDate, track) {
     return;
   }
 
-  data.forEach(slot => {
+  function formatSlotTime(timeStr) {
+    const [h, m] = timeStr.split(':');
+    let hour = parseInt(h, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12 || 12;
+    return `${hour}:${m} ${ampm}`;
+}
+
+data.forEach(slot => {
     const pill = document.createElement('span');
-    pill.className = 'px-3 py-1 bg-fbeaea text-bd1512 text-11px font-bold rounded-full border border-pru-border flex items-center gap-1 cursor-pointer hover:bg-red-100';
-    pill.innerHTML = `${slot.slot_time} <span data-slot-id="${slot.slot_id}" class="remove-slot-btn ml-1">&times;</span>`;
+    pill.className = 'px-3 py-1 bg-[#fbeaea] text-[#bd1512] text-[11px] font-bold rounded-full flex items-center gap-1.5 cursor-pointer hover:bg-red-100 transition-colors';
+    pill.innerHTML = `
+        ${formatSlotTime(slot.slot_time)}
+        <svg data-slot-id="${slot.slot_id}" class="remove-slot-btn w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+        </svg>`;
     pillsContainer.appendChild(pill);
-  });
+});
 
   document.querySelectorAll('.remove-slot-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
@@ -664,8 +680,7 @@ function initAddSlotButton() {
     if (!timeVal) return;
 
     const dbDate = selectedDayEl.dataset.date;
-    const activeTab = document.querySelector('.bg-bd1512');
-    const track = activeTab && activeTab.textContent.includes('Agent') ? 'future_advisor' : 'future_client';
+    const track = currentAdminTrack;
 
     const { error } = await supabase
       .from('availability_slots')
