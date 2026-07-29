@@ -11,18 +11,14 @@ if (window.supabase) {
     console.warn("Supabase script not loaded. Real data will not fetch.");
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Load leads if supabase is active
-    if (window.supabase) {
-        loadAdminLeads();
-    }
-    
-    // Safely boot up the new calendar engine
-    if (typeof renderAdminCalendar === 'function') {
-        renderAdminCalendar();
-        setupCalendarArrows();
-        initBookingSwitch();
-    }
+document.addEventListener('DOMContentLoaded', async () => {
+  if (window.supabase) loadAdminLeads();
+  if (typeof renderAdminCalendar === 'function') {
+    await renderAdminCalendar();
+    setupCalendarArrows();
+    initBookingSwitch();
+    initAddSlotButton();
+  }
 });
 
 // ==========================================
@@ -505,83 +501,72 @@ window.showDayDetails = function(state, dayNum = null, monthStr = "July", yearSt
 }
 
 // 3. Render Calendar Grid
-function renderAdminCalendar() {
-    const monthYearEl = document.getElementById('admin-calendar-month');
-    const gridEl = document.getElementById('admin-calendar-grid');
-    const bookingSwitch = document.getElementById('booking-switch');
-    if (!monthYearEl || !gridEl) return;
+async function renderAdminCalendar() {
+  const monthYearEl = document.getElementById('admin-calendar-month');
+  const gridEl = document.getElementById('admin-calendar-grid');
+  if (!monthYearEl || !gridEl) return;
+  const year = adminNavDate.getFullYear();
+  const month = adminNavDate.getMonth();
+  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  monthYearEl.textContent = `${monthNames[month]} ${year}`;
 
-    const year = adminNavDate.getFullYear();
-    const month = adminNavDate.getMonth();
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    
-    monthYearEl.textContent = `${monthNames[month]} ${year}`;
-    gridEl.innerHTML = ''; 
+  const startStr = `${year}-${String(month+1).padStart(2,'0')}-01`;
+  const endStr = `${year}-${String(month+1).padStart(2,'0')}-31`;
+  const { data: slotsData, error } = await supabase
+    .from('availability_slots')
+    .select('slot_date, is_open')
+    .eq('track', currentAdminTrack)
+    .gte('slot_date', startStr)
+    .lte('slot_date', endStr);
 
-    const firstDayIndex = new Date(year, month, 1).getDay();
-    const startDay = firstDayIndex === 0 ? 6 : firstDayIndex - 1; 
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
+  if (error) console.error('SUPABASE ERROR', error);
 
-    for (let i = 0; i < startDay; i++) {
-        const blank = document.createElement('div');
-        blank.className = 'aspect-square';
-        gridEl.appendChild(blank);
-    }
+  const openDatesSet = new Set(
+    (slotsData || []).filter(row => row.is_open).map(row => row.slot_date)
+  );
 
-    for (let i = 1; i <= daysInMonth; i++) {
+  gridEl.innerHTML = '';
+  const firstDayIndex = new Date(year, month, 1).getDay();
+  const startDay = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  for (let i = 0; i < startDay; i++) {
+    const blank = document.createElement('div');
+    blank.className = 'aspect-square';
+    gridEl.appendChild(blank);
+  }
+
+  for (let i = 1; i <= daysInMonth; i++) {
     const dayDiv = document.createElement('div');
-    
-    // 1. Restore the original square shapes (rounded-xl) and font styling
-    dayDiv.className = 'aspect-square flex items-center justify-center rounded-xl bg-[#fbf4f2] text-[13px] font-bold text-gray-800 cursor-pointer hover:scale-105 transition-transform border border-transparent';
-    
-    const dbDate = `${year}-${String(month+1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+    const dbDate = `${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
     dayDiv.dataset.date = dbDate;
 
-    // 2. Re-inject the demo UI states specifically for July 2026 to match your Figma/HTML design
-    if (year === 2026 && month === 6) { // Month 6 is July (0-indexed)
-        const greenDays = [10, 13, 17, 20, 24, 27];
-        
-        // Apply green background for "open" days
-        if (greenDays.includes(i)) {
-            dayDiv.className = 'aspect-square flex items-center justify-center rounded-xl bg-[#e6f4ea] text-[13px] font-bold text-gray-800 cursor-pointer hover:scale-105 transition-transform border border-green-200 shadow-sm';
-        }
-        
-        // Apply the red badge specifically for the 10th
-        if (i === 10) {
-            dayDiv.classList.add('relative');
-            dayDiv.innerHTML = `${i} <span class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#bd1512] text-white text-[9px] font-bold rounded-full flex items-center justify-center border-2 border-white box-content shadow-sm">2</span>`;
-        } else {
-            dayDiv.textContent = i;
-        }
-    } else {
-        dayDiv.textContent = i;
-    }
+    const isOpenDay = openDatesSet.has(dbDate);
+    dayDiv.className = isOpenDay
+      ? 'aspect-square flex items-center justify-center rounded-xl bg-e6f4ea text-[13px] font-bold text-gray-800 cursor-pointer hover:scale-105 transition-transform border border-green-200 shadow-sm'
+      : 'aspect-square flex items-center justify-center rounded-xl bg-fbf4f2 text-[13px] font-bold text-gray-800 cursor-pointer hover:scale-105 transition-transform border border-transparent';
+    dayDiv.textContent = i;
 
-    // 3. Update the click listener to handle the 'booked' state for the 10th
     dayDiv.addEventListener('click', (e) => {
-        selectedDayEl = e.currentTarget;
-        const isOpen = selectedDayEl.classList.contains('bg-[#e6f4ea]');
-        
-        // Trigger the booked UI panel if they click the 10th in July 2026
-        if (year === 2026 && month === 6 && i === 10) {
-            showDayDetails('booked', i, monthNames[month], year);
-        } else {
-            showDayDetails('empty', i, monthNames[month], year);
-        }
-        
-        const bookingSwitch = document.getElementById('booking-switch');
-        if (isOpen && bookingSwitch) {
-            bookingSwitch.className = "w-12 h-6 bg-[#00875a] rounded-full relative cursor-pointer border border-[#00875a] shadow-sm";
-            bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5 shadow-sm"></div>';
-        } else if (bookingSwitch) {
-            bookingSwitch.className = "w-12 h-6 bg-[#fbf4f2] rounded-full relative cursor-pointer border border-gray-200 shadow-sm";
-            bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute left-0.5 top-0.5 shadow-sm border border-gray-200"></div>';
-        }
+      selectedDayEl = e.currentTarget;
+      const isOpen = selectedDayEl.classList.contains('bg-e6f4ea');
+      loadTimeSlots(selectedDayEl.dataset.date, currentAdminTrack);
+      showDayDetails(isOpen ? 'booked' : 'empty', i, monthNames[month], year);
+
+      const bookingSwitch = document.getElementById('booking-switch');
+      if (isOpen && bookingSwitch) {
+        bookingSwitch.className = 'w-12 h-6 bg-[#00875a] rounded-full relative cursor-pointer border border-[#00875a] shadow-sm';
+        bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5 shadow-sm"></div>';
+      } else if (bookingSwitch) {
+        bookingSwitch.className = 'w-12 h-6 bg-fbf4f2 rounded-full relative cursor-pointer border border-gray-200 shadow-sm';
+        bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute left-0.5 top-0.5 shadow-sm border border-gray-200"></div>';
+      }
     });
 
     gridEl.appendChild(dayDiv);
-    }
+  }
 }
+
 
 // 4. Booking Switch Logic
 function initBookingSwitch() {
@@ -630,4 +615,64 @@ function initBookingSwitch() {
             renderAdminCalendar(); // Revert visually if DB fails
         }
     });
+}
+
+async function loadTimeSlots(dbDate, track) {
+  const pillsContainer = document.getElementById('time-slot-pills');
+  if (!pillsContainer) return;
+  pillsContainer.innerHTML = '<span class="text-11px text-gray-400">Loading...</span>';
+
+  const { data, error } = await supabase
+    .from('availability_slots')
+    .select('slot_id, slot_time, is_open')
+    .eq('slot_date', dbDate)
+    .eq('track', track)
+    .order('slot_time', { ascending: true });
+
+  if (error) { console.error('SUPABASE ERROR', error); return; }
+
+  pillsContainer.innerHTML = '';
+  if (!data || data.length === 0) {
+    pillsContainer.innerHTML = '<span class="text-11px text-gray-400 italic">No time slots yet.</span>';
+    return;
+  }
+
+  data.forEach(slot => {
+    const pill = document.createElement('span');
+    pill.className = 'px-3 py-1 bg-fbeaea text-bd1512 text-11px font-bold rounded-full border border-pru-border flex items-center gap-1 cursor-pointer hover:bg-red-100';
+    pill.innerHTML = `${slot.slot_time} <span data-slot-id="${slot.slot_id}" class="remove-slot-btn ml-1">&times;</span>`;
+    pillsContainer.appendChild(pill);
+  });
+
+  document.querySelectorAll('.remove-slot-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const slotId = e.currentTarget.dataset.slotId;
+      await supabase.from('availability_slots').delete().eq('slot_id', slotId);
+      loadTimeSlots(dbDate, track);
+    });
+  });
+}
+
+function initAddSlotButton() {
+  const addBtn = document.getElementById('add-slot-btn');
+  const input = document.getElementById('new-slot-time-input');
+  if (!addBtn || !input) return;
+
+  addBtn.addEventListener('click', async () => {
+    if (!selectedDayEl) { alert('Please click a date first!'); return; }
+    const timeVal = input.value.trim();
+    if (!timeVal) return;
+
+    const dbDate = selectedDayEl.dataset.date;
+    const activeTab = document.querySelector('.bg-bd1512');
+    const track = activeTab && activeTab.textContent.includes('Agent') ? 'future_advisor' : 'future_client';
+
+    const { error } = await supabase
+      .from('availability_slots')
+      .insert({ slot_date: dbDate, track: track, slot_time: timeVal, is_open: true });
+
+    if (error) { alert('Add failed: ' + error.message); return; }
+    input.value = '';
+    loadTimeSlots(dbDate, track);
+  });
 }
