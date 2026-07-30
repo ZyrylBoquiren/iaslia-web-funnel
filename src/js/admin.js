@@ -805,9 +805,11 @@ async function loadScheduledLeads(selectedDate, track) {
                 const timeStr = `${formattedHour}:${minutes} ${ampm}`;
 
                 const initials = lead.full_name ? lead.full_name.substring(0, 2).toUpperCase() : '??';
-                
+
                 list.innerHTML += `
-                    <div onclick="window.openLeadModal('${appt.appointment_id}', '${lead.lead_id}', '${track}')" class="bg-[#fbf4f2] border border-pru-border rounded-xl p-4 flex items-center justify-between shadow-sm cursor-pointer hover:border-pru-red transition mb-3">
+                    <div class="bg-[#fbf4f2] border border-pru-border rounded-xl p-4 flex items-center justify-between shadow-sm cursor-pointer hover:border-pru-red transition mb-3 group relative"
+                         onclick="window.openLeadModal('${appt.appointment_id}', '${lead.lead_id}', '${track}')">
+                        
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-full bg-[#fce8e8] text-pru-red font-bold flex items-center justify-center text-[10px] border border-pru-border flex-shrink-0">${initials}</div>
                             <div>
@@ -815,7 +817,18 @@ async function loadScheduledLeads(selectedDate, track) {
                                 <p class="text-[11px] text-gray-500 mt-0.5">${lead.email || 'No email'} · ${lead.mobile_number || 'No number'}</p>
                             </div>
                         </div>
-                        <span class="bg-white border border-pru-border text-[#bd1512] text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm whitespace-nowrap">${timeStr}</span>
+                        
+                        <div class="flex items-center gap-2">
+                            <span class="bg-white border border-pru-border text-[#bd1512] text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm whitespace-nowrap">${timeStr}</span>
+                            
+                            <button onclick="event.stopPropagation(); window.cancelAppointment('${appt.appointment_id}', '${slot.slot_date}')" 
+                                    class="hidden group-hover:flex w-6 h-6 items-center justify-center rounded-full bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-colors"
+                                    title="Cancel Appointment">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 `;
             }
@@ -825,4 +838,29 @@ async function loadScheduledLeads(selectedDate, track) {
         console.error("Schedule fetch error:", err);
         list.innerHTML = '<p class="text-xs text-red-500 py-2">Error loading leads.</p>';
     }
+
+    // ==========================================\
+// CANCEL APPOINTMENT LOGIC
+// ==========================================\
+window.cancelAppointment = async (appointmentId, slotDate) => {
+    if (!confirm("Are you sure you want to cancel this appointment? The lead will remain in the database.")) return;
+
+    try {
+        // 1. Update the status in Supabase to 'cancelled'
+        const { error } = await supabase
+            .from('appointments')
+            .update({ status: 'cancelled' })
+            .eq('appointment_id', appointmentId);
+
+        if (error) throw error;
+
+        // 2. Refresh the UI
+        loadScheduledLeads(slotDate, currentAdminTrack);
+        alert("Appointment cancelled successfully.");
+
+    } catch (error) {
+        console.error("Error cancelling appointment:", error);
+        alert("Failed to cancel appointment. Check console.");
+        }
+    };
 }
