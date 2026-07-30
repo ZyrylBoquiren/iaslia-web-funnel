@@ -81,6 +81,14 @@ function showDayDetails(state, dayNum = null) {
     const list = document.getElementById('booked-leads-list');
     const noLeads = document.getElementById('no-leads-msg');
 
+    // Update the Track Label dynamically based on the active tab
+    const trackLabel = document.getElementById('panel-track-label');
+    if (trackLabel) {
+        trackLabel.textContent = currentAdminTrack === 'future_client' 
+            ? 'Track: Financial Conversation (Client)' 
+            : 'Track: Career Preview (Agent)';
+    }
+
     // Dynamically set the date text if a day is clicked
     if (dayNum) {
         panelDate.textContent = `July ${dayNum}, 2026`;
@@ -730,6 +738,15 @@ async function loadScheduledLeads(selectedDate, track) {
     // 2. WIPE THE SLATE CLEAN IMMEDIATELY
     list.innerHTML = '<p class="text-[13px] text-gray-500 italic py-2">Checking schedule...</p>';
 
+    // Revert UI to Gray & dynamically swap the text based on the active tab
+        const trackLabel = document.getElementById('panel-track-label');
+        if (trackLabel) {
+            trackLabel.className = "text-[11px] font-bold text-gray-400 tracking-widest uppercase mb-1";
+            trackLabel.textContent = currentAdminTrack === 'future_client' 
+                ? 'Track: Financial Conversation (Client)' 
+                : 'Track: Career Preview (Agent)';
+        }
+
     try {
         // 3. Find slots for this date
         const { data: slots } = await supabase
@@ -779,9 +796,16 @@ async function loadScheduledLeads(selectedDate, track) {
             const slot = slots.find(s => s.slot_id === appt.slot_id);
             
             if (lead && slot) {
-                const timeStr = new Date(`1970-01-01T${slot.slot_time}Z`).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                const initials = lead.full_name ? lead.full_name.substring(0, 2).toUpperCase() : '??';
+                // Force raw database time to AM/PM without timezone shifting
+                const rawTime = slot.slot_time; // Looks like "09:00:00"
+                const [hours, minutes] = rawTime.split(':');
+                const hourNum = parseInt(hours, 10);
+                const ampm = hourNum >= 12 ? 'PM' : 'AM';
+                const formattedHour = hourNum % 12 || 12;
+                const timeStr = `${formattedHour}:${minutes} ${ampm}`;
 
+                const initials = lead.full_name ? lead.full_name.substring(0, 2).toUpperCase() : '??';
+                
                 list.innerHTML += `
                     <div onclick="window.openLeadModal('${appt.appointment_id}', '${lead.lead_id}', '${track}')" class="bg-[#fbf4f2] border border-pru-border rounded-xl p-4 flex items-center justify-between shadow-sm cursor-pointer hover:border-pru-red transition mb-3">
                         <div class="flex items-center gap-3">
