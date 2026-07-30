@@ -544,16 +544,33 @@ async function renderAdminCalendar() {
     gridEl.appendChild(blank);
   }
 
+// FETCH BOOKED DATES FOR RED DOT
+  const { data: bookedData } = await supabase
+    .from('appointments')
+    .select('availability_slots!inner(slot_date, track)')
+    .or('status.neq.cancelled,status.is.null')
+    .eq('availability_slots.track', currentAdminTrack);
+  const bookedDates = bookedData ? bookedData.map(appt => appt.availability_slots?.slot_date) : [];
+
   for (let i = 1; i <= daysInMonth; i++) {
     const dayDiv = document.createElement('div');
     const dbDate = `${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
     dayDiv.dataset.date = dbDate;
 
     const isOpenDay = openDatesSet.has(dbDate);
+    const hasBooking = bookedDates.includes(dbDate);
+    
+    // We added 'relative' to the classes so the absolute dot positions correctly inside the square
     dayDiv.className = isOpenDay
-      ? 'aspect-square flex items-center justify-center rounded-xl bg-[#e2f1e7] text-[13px] font-bold text-gray-900 cursor-pointer hover:shadow-md transition-transform border border-green-200'
-      : 'aspect-square flex items-center justify-center rounded-xl bg-[#fdf4f2] text-[13px] text-gray-500 cursor-pointer hover:border-pru-red hover:border transition-all';
-    dayDiv.textContent = i;
+      ? 'relative aspect-square flex items-center justify-center rounded-xl bg-[#e2f1e7] text-[13px] font-bold text-gray-900 cursor-pointer hover:shadow-md transition-transform border border-green-200'
+      : 'relative aspect-square flex items-center justify-center rounded-xl bg-[#fdf4f2] text-[13px] text-gray-500 cursor-pointer hover:border-pru-red hover:border transition-all';
+    
+    // Inject the Red Dot if booked
+    let redDotHTML = hasBooking 
+        ? `<span class="absolute top-1.5 w-1.5 h-1.5 bg-[#bd1512] rounded-full"></span>` 
+        : ``;
+        
+    dayDiv.innerHTML = `${redDotHTML}${i}`;
 
     dayDiv.addEventListener('click', (e) => {
       selectedDayEl = e.currentTarget;
@@ -766,7 +783,8 @@ async function loadScheduledLeads(selectedDate, track) {
         const { data: appointments } = await supabase
             .from('appointments')
             .select('appointment_id, lead_id, slot_id')
-            .in('slot_id', slotIds);
+            .in('slot_id', slotIds)
+            .or('status.neq.cancelled,status.is.null');
 
         if (!appointments || appointments.length === 0) {
             list.innerHTML = '<div class="text-center py-6"><p class="text-[13px] text-gray-500 font-medium">No scheduled leads today.</p><p class="text-[11px] text-gray-400 mt-1">Slots are open but empty.</p></div>';
@@ -821,7 +839,7 @@ async function loadScheduledLeads(selectedDate, track) {
                         <div class="flex items-center gap-2">
                             <span class="bg-white border border-pru-border text-[#bd1512] text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm whitespace-nowrap">${timeStr}</span>
                             
-                            <button onclick="event.stopPropagation(); window.cancelAppointment('${appt.appointment_id}', '${slot.slot_date}')" 
+                            <button onclick="event.preventDefault(); event.stopPropagation(); window.cancelAppointment('${appt.appointment_id}', '${slot.slot_date}')"
                                     class="hidden group-hover:flex w-6 h-6 items-center justify-center rounded-full bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-colors"
                                     title="Cancel Appointment">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -838,10 +856,11 @@ async function loadScheduledLeads(selectedDate, track) {
         console.error("Schedule fetch error:", err);
         list.innerHTML = '<p class="text-xs text-red-500 py-2">Error loading leads.</p>';
     }
+}
 
-    // ==========================================\
+// ==========================================
 // CANCEL APPOINTMENT LOGIC
-// ==========================================\
+// ==========================================
 window.cancelAppointment = async (appointmentId, slotDate) => {
     if (!confirm("Are you sure you want to cancel this appointment? The lead will remain in the database.")) return;
 
@@ -861,6 +880,5 @@ window.cancelAppointment = async (appointmentId, slotDate) => {
     } catch (error) {
         console.error("Error cancelling appointment:", error);
         alert("Failed to cancel appointment. Check console.");
-        }
-    };
-}
+    }
+};
