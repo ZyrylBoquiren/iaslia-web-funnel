@@ -543,14 +543,21 @@ async function renderAdminCalendar() {
 
     const isOpenDay = openDatesSet.has(dbDate);
     dayDiv.className = isOpenDay
-      ? 'aspect-square flex items-center justify-center rounded-xl bg-e6f4ea text-[13px] font-bold text-gray-800 cursor-pointer hover:scale-105 transition-transform border border-green-200 shadow-sm'
-      : 'aspect-square flex items-center justify-center rounded-xl bg-fbf4f2 text-[13px] font-bold text-gray-800 cursor-pointer hover:scale-105 transition-transform border border-transparent';
+      ? 'aspect-square flex items-center justify-center rounded-xl bg-[#e2f1e7] text-[13px] font-bold text-gray-900 cursor-pointer hover:shadow-md transition-transform border border-green-200'
+      : 'aspect-square flex items-center justify-center rounded-xl bg-[#fdf4f2] text-[13px] text-gray-500 cursor-pointer hover:border-pru-red hover:border transition-all';
     dayDiv.textContent = i;
 
     dayDiv.addEventListener('click', (e) => {
       selectedDayEl = e.currentTarget;
-      const isOpen = selectedDayEl.classList.contains('bg-e6f4ea');
+      const isOpen = selectedDayEl.classList.contains('bg-[#e2f1e7]');
+      
+      // Load the available time pills
       loadTimeSlots(selectedDayEl.dataset.date, currentAdminTrack);
+      
+      // Fetch the booked leads for this specific date!
+      loadScheduledLeads(selectedDayEl.dataset.date, currentAdminTrack);
+      
+      // Update the right-side panel UI
       showDayDetails(isOpen ? 'booked' : 'empty', i, monthNames[month], year);
 
       const bookingSwitch = document.getElementById('booking-switch');
@@ -591,10 +598,10 @@ function initBookingSwitch() {
 
         try {
             if (isCurrentlyOpen) {
-                bookingSwitch.className = "w-12 h-6 bg-[#fbf4f2] rounded-full relative cursor-pointer border border-gray-200 shadow-sm";
+                bookingSwitch.className = "w-12 h-6 bg-[#fdf4f2] rounded-full relative cursor-pointer border border-gray-200 shadow-sm";
                 bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute left-0.5 top-0.5 shadow-sm border border-gray-200"></div>';
-                selectedDayEl.classList.remove('bg-[#e6f4ea]');
-                selectedDayEl.classList.add('bg-[#fbf4f2]');
+                selectedDayEl.classList.remove('bg-[#e2f1e7]', 'text-gray-900', 'font-bold');
+                selectedDayEl.classList.add('bg-[#fdf4f2]', 'text-gray-500');
 
                 // REMOVED 'window.' here
                 const { error } = await supabase.from('availability_slots').update({ is_open: false }).eq('slot_date', dbDate).eq('track', currentAdminTrack);
@@ -602,8 +609,8 @@ function initBookingSwitch() {
             } else {
                 bookingSwitch.className = "w-12 h-6 bg-[#00875a] rounded-full relative cursor-pointer border border-[#00875a] shadow-sm";
                 bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5 shadow-sm"></div>';
-                selectedDayEl.classList.remove('bg-[#fbf4f2]', 'border-pru-border');
-                selectedDayEl.classList.add('bg-[#e6f4ea]');
+                selectedDayEl.classList.remove('bg-[#fdf4f2]', 'text-gray-500', 'border-pru-border');
+                selectedDayEl.classList.add('bg-[#e2f1e7]', 'text-gray-900', 'font-bold');
 
                 // REMOVED 'window.' here
                 const { error } = await supabase.from('availability_slots').upsert(
@@ -759,6 +766,13 @@ async function loadScheduledLeads(selectedDate, track) {
 
         // 6. BUILD THE UI
         list.innerHTML = ''; // Clear the "Checking schedule" text
+        
+        // Update the red notification badge with the real number of appointments
+        const badge = document.getElementById('booked-count-badge');
+        if (badge) {
+            badge.textContent = appointments.length;
+            badge.classList.remove('hidden');
+        }
         
         appointments.forEach(appt => {
             const lead = leads.find(l => l.lead_id === appt.lead_id);
