@@ -165,15 +165,28 @@ async function loadAdminLeads() {
     if (!tableBody) return;
 
     try {
-        // Fetch leads from your Supabase database
+        // Fetch leads, BUT exclude anyone who has been 'archived' (Soft Delete)
         const { data: leads, error } = await supabase
             .from('leads')
             .select('*')
+            .neq('current_stage', 'archived') 
             .order('created_at', { ascending: false });
 
         if (error) throw error;
 
-        // Clear out the hardcoded HTML rows (Angeline, Ramon, Michelle)
+        // --- DASHBOARD CARDS SYNC LOGIC ---
+        const totalLeads = leads.length;
+        const agentLeads = leads.filter(l => l.track === "future_advisor").length;
+        const clientLeads = leads.filter(l => l.track === "future_client").length;
+        const convertedLeads = leads.filter(l => l.current_stage === "converted").length;
+
+        // Inject the math into the UI cards
+        document.getElementById('card-total-leads').textContent = totalLeads;
+        document.getElementById('card-agent-leads').textContent = agentLeads;
+        document.getElementById('card-client-leads').textContent = clientLeads;
+        document.getElementById('card-converted-leads').textContent = convertedLeads;
+        // ----------------------------------
+
         tableBody.innerHTML = '';
 
         if (leads.length === 0) {
@@ -213,13 +226,14 @@ async function loadAdminLeads() {
             
             const cBadge = `<div class="w-6 h-6 rounded-full border border-pru-border text-[9px] font-bold flex items-center justify-center text-gray-400 bg-[#fbf4f2]">C</div>`;
 
-            // Inject Your EXACT Figma HTML
             tr.innerHTML = `
-                <td class="px-6 py-4 flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-[#fce8e8] text-pru-red font-bold flex items-center justify-center text-sm border border-pru-border">${initials}</div>
-                    <div>
-                        <p class="font-bold text-gray-900">${fullName}</p>
-                        <p class="text-[11px] text-gray-400 mt-0.5">Added ${dateStr}</p>
+                <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-[#fce8e8] text-pru-red font-bold flex items-center justify-center text-sm border border-pru-border flex-shrink-0">${initials}</div>
+                        <div>
+                            <p class="font-bold text-gray-900">${fullName}</p>
+                            <p class="text-[11px] text-gray-400 mt-0.5">Added ${dateStr}</p>
+                        </div>
                     </div>
                 </td>
                 <td class="px-6 py-4"><span class="px-3 py-1 bg-[#f3e9e8] text-gray-700 text-[11px] font-bold rounded-full border border-pru-border">${typeLabel}</span></td>
@@ -228,17 +242,21 @@ async function loadAdminLeads() {
                     <p class="text-gray-500 text-[12px] mt-0.5">${mobile}</p>
                 </td>
                 <td class="px-6 py-4 text-gray-500">${source}</td>
-                <td class="px-6 py-4 flex gap-1 items-center h-full mt-2">
-                    ${mBadge}
-                    ${cBadge}
+                <td class="px-6 py-4">
+                    <div class="flex gap-1 items-center">
+                        ${mBadge}
+                        ${cBadge}
+                    </div>
                 </td>
                 <td class="px-6 py-4 text-right">
-                    <button onclick="viewLeadDetails('${lead.lead_id}')" class="w-8 h-8 border border-pru-border rounded-full inline-flex items-center justify-center text-gray-400 hover:text-pru-red transition-colors shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
-                    </button>
-                    <button class="w-8 h-8 border border-pru-border rounded-full inline-flex items-center justify-center text-gray-400 hover:text-pru-red transition-colors shadow-sm ml-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
-                    </button>
+                    <div class="flex gap-1 justify-end items-center">
+                        <button onclick="viewLeadDetails('${lead.lead_id}')" class="w-8 h-8 flex-shrink-0 border border-pru-border rounded-full inline-flex items-center justify-center text-gray-400 hover:text-pru-red transition-colors shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+                        </button>
+                        <button onclick="softDeleteLead('${lead.lead_id}')" class="w-8 h-8 flex-shrink-0 border border-pru-border rounded-full inline-flex items-center justify-center text-gray-400 hover:text-pru-red transition-colors shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                        </button>
+                    </div>
                 </td>
             `;
             tableBody.appendChild(tr);
@@ -248,6 +266,29 @@ async function loadAdminLeads() {
         console.error("Failed to load leads:", err.message);
     }
 }
+
+// ----------------------------------------------------
+// SOFT DELETE LOGIC (Hides from UI, keeps in Database)
+// ----------------------------------------------------
+window.softDeleteLead = async function(leadId) {
+    if (!confirm("Are you sure you want to archive this lead? They will be removed from your pipeline.")) return;
+    
+    try {
+        const { error } = await supabase
+            .from('leads')
+            .update({ current_stage: 'archived' })
+            .eq('lead_id', leadId);
+            
+        if (error) throw error;
+        
+        // Immediately reload the table and refresh the synced cards
+        loadAdminLeads();
+        
+    } catch (err) {
+        console.error("Error archiving lead:", err.message);
+        alert("Failed to archive lead. Please check the console.");
+    }
+};
 
 // ==========================================
 // 4. DYNAMIC MODAL INJECTION (LEAD DETAILS)
@@ -530,7 +571,7 @@ async function renderAdminCalendar() {
   if (error) console.error('SUPABASE ERROR', error);
 
   const openDatesSet = new Set(
-    (slotsData || []).filter(row => row.is_open).map(row => row.slot_date)
+    (slotsData || []).map(row => row.slot_date)
   );
 
   gridEl.innerHTML = '';
@@ -629,7 +670,7 @@ function initBookingSwitch() {
                 selectedDayEl.classList.add('bg-[#fdf4f2]', 'text-gray-500');
 
                 // REMOVED 'window.' here
-                const { error } = await supabase.from('availability_slots').update({ is_open: false }).eq('slot_date', dbDate).eq('track', currentAdminTrack);
+                const { error } = await supabase.from('availability_slots').delete().eq('slot_date', dbDate).eq('track', currentAdminTrack);
                 if (error) throw error;
             } else {
                 bookingSwitch.className = "w-12 h-6 bg-[#00875a] rounded-full relative cursor-pointer border border-[#00875a] shadow-sm";
@@ -744,6 +785,7 @@ function initAddSlotButton() {
 // ==========================================
 async function loadScheduledLeads(selectedDate, track) {
     // 1. Target the exact container holding the cards
+    const badge = document.getElementById('booked-count-badge');
     const list = document.getElementById('scheduled-leads-container'); 
     
     // Fallback if the ID doesn't exist (prevents crashes)
@@ -773,6 +815,7 @@ async function loadScheduledLeads(selectedDate, track) {
             .eq('track', track);
 
         if (!slots || slots.length === 0) {
+            if (badge) badge.textContent = '0';
             list.innerHTML = '<div class="text-center py-6"><p class="text-[13px] text-gray-500 font-medium">No scheduled leads today.</p><p class="text-[11px] text-gray-400 mt-1">Open slots to accept bookings.</p></div>';
             return;
         }
@@ -787,6 +830,7 @@ async function loadScheduledLeads(selectedDate, track) {
             .or('status.neq.cancelled,status.is.null');
 
         if (!appointments || appointments.length === 0) {
+            if (badge) badge.textContent = "0";
             list.innerHTML = '<div class="text-center py-6"><p class="text-[13px] text-gray-500 font-medium">No scheduled leads today.</p><p class="text-[11px] text-gray-400 mt-1">Slots are open but empty.</p></div>';
             return;
         }
@@ -803,7 +847,6 @@ async function loadScheduledLeads(selectedDate, track) {
         list.innerHTML = ''; // Clear the "Checking schedule" text
         
         // Update the red notification badge with the real number of appointments
-        const badge = document.getElementById('booked-count-badge');
         if (badge) {
             badge.textContent = appointments.length;
             badge.classList.remove('hidden');
@@ -880,5 +923,77 @@ window.cancelAppointment = async (appointmentId, slotDate) => {
     } catch (error) {
         console.error("Error cancelling appointment:", error);
         alert("Failed to cancel appointment. Check console.");
+    }
+};
+
+// ==========================================
+// 4. ADD LEAD MODAL LOGIC
+// ==========================================
+
+window.openAddLeadModal = function() {
+    const modal = document.getElementById('new-add-lead-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+};
+
+window.closeAddLeadModal = function() {
+    const modal = document.getElementById('new-add-lead-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        // Clear the form fields when closing
+        document.getElementById('add-lead-form').reset();
+    }
+};
+
+window.submitNewLead = async function(event) {
+    event.preventDefault(); // Prevents page from reloading
+    
+    const saveBtn = document.getElementById('save-lead-btn');
+    const originalText = saveBtn.textContent;
+    saveBtn.textContent = 'Saving...';
+    saveBtn.disabled = true;
+
+    // Grab values from inputs
+    const fullName = document.getElementById('new-lead-name').value.trim();
+    const email = document.getElementById('new-lead-email').value.trim();
+    const phone = document.getElementById('new-lead-phone').value.trim();
+    const trackType = document.getElementById('new-lead-type').value;
+    const notes = document.getElementById('new-lead-notes').value.trim();
+
+    try {
+        // Insert into Database
+        const { error } = await supabase
+            .from('leads')
+            .insert([{
+                full_name: fullName,
+                email: email,
+                mobile_number: phone,
+                track: trackType,
+                source: 'Admin Dashboard', // Hardcoded so you know it was manually added
+                current_stage: 'new',
+                notes: notes 
+            }]);
+
+        if (error) throw error;
+
+        // Success! Close modal and refresh UI
+        closeAddLeadModal();
+        
+        // This function from Part 1 will refresh the table and update the 4 Dashboard Cards instantly!
+        loadAdminLeads(); 
+        
+        // Small success alert
+        setTimeout(() => alert("Lead successfully added to the pipeline!"), 300);
+
+    } catch (err) {
+        console.error("Error adding lead:", err.message);
+        alert("Failed to add lead. Check console for details.");
+    } finally {
+        // Reset button state
+        saveBtn.textContent = originalText;
+        saveBtn.disabled = false;
     }
 };

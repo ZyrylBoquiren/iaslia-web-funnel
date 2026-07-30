@@ -162,25 +162,27 @@
                             </svg>
                             <input type="text" placeholder="Search name, email, mobile." class="pl-11 pr-4 py-2 border border-pru-border rounded-full text-[13px] font-medium w-72 bg-white focus:outline-none focus:border-pru-red text-gray-600">
                         </div>
-                        <button onclick="openModal('add-lead-modal')" class="bg-[#bd1512] text-white px-6 py-2 rounded-full text-[13px] font-bold shadow-sm hover:bg-red-900 transition-colors">+ Add Lead</button>
+                        <button onclick="openAddLeadModal()" class="bg-pru-red text-white px-4 py-2.5 rounded-lg text-[13px] font-bold hover:bg-red-800 transition shadow-sm">
+                            + Add Lead
+                        </button>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-4 gap-6 mb-8">
                     <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm">
-                        <p class="text-3xl font-serif font-bold text-pru-red mb-2">6</p>
+                        <p id="card-total-leads" class="text-3xl font-serif font-bold text-pru-red mb-2">0</p>
                         <p class="text-[12px] text-gray-500">Total Leads</p>
                     </div>
                     <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm">
-                        <p class="text-3xl font-serif font-bold text-pru-red mb-2">3</p>
+                        <p id="card-agent-leads" class="text-3xl font-serif font-bold text-pru-red mb-2">0</p>
                         <p class="text-[12px] text-gray-500">Agents</p>
                     </div>
                     <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm">
-                        <p class="text-3xl font-serif font-bold text-pru-red mb-2">3</p>
+                        <p id="card-client-leads" class="text-3xl font-serif font-bold text-pru-red mb-2">0</p>
                         <p class="text-[12px] text-gray-500">Clients</p>
                     </div>
                     <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm">
-                        <p class="text-3xl font-serif font-bold text-pru-red mb-2">2</p>
+                        <p id="card-converted-leads" class="text-3xl font-serif font-bold text-pru-red mb-2">0</p>
                         <p class="text-[12px] text-gray-500">Officially Converted</p>
                     </div>
                 </div>
@@ -831,6 +833,48 @@
         </div>
     </div>
 </div>
+
+<div id="new-add-lead-modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-[100] transition-opacity">
+        <div class="bg-white rounded-xl shadow-lg w-full max-w-md overflow-hidden">
+            <div class="px-6 py-4 border-b border-pru-border flex justify-between items-center bg-[#fbf8f7]">
+                <h3 class="font-bold text-gray-900 font-serif">Add New Lead</h3>
+                <button onclick="closeAddLeadModal()" class="text-gray-400 hover:text-pru-red transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <form id="add-lead-form" onsubmit="submitNewLead(event)" class="p-6 space-y-4 text-[13px]">
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Full Name <span class="text-pru-red">*</span></label>
+                    <input type="text" id="new-lead-name" required class="w-full border border-pru-border rounded-lg p-2.5 outline-none focus:border-pru-red shadow-sm text-gray-800" placeholder="e.g. John Doe">
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Email Address <span class="text-pru-red">*</span></label>
+                    <input type="email" id="new-lead-email" required class="w-full border border-pru-border rounded-lg p-2.5 outline-none focus:border-pru-red shadow-sm text-gray-800" placeholder="e.g. john@example.com">
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Phone Number <span class="text-pru-red">*</span></label>
+                    <input type="tel" id="new-lead-phone" required class="w-full border border-pru-border rounded-lg p-2.5 outline-none focus:border-pru-red shadow-sm text-gray-800" placeholder="e.g. 09123456789">
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Lead Type <span class="text-pru-red">*</span></label>
+                    <select id="new-lead-type" required class="w-full border border-pru-border rounded-lg p-2.5 outline-none focus:border-pru-red shadow-sm text-gray-800 bg-white">
+                        <option value="future_client">Client</option>
+                        <option value="future_advisor">Agent</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Notes <span class="text-gray-400 font-normal">(Optional)</span></label>
+                    <textarea id="new-lead-notes" rows="2" class="w-full border border-pru-border rounded-lg p-2.5 outline-none focus:border-pru-red shadow-sm text-gray-800" placeholder="Any initial notes..."></textarea>
+                </div>
+                <div class="pt-2 flex gap-3">
+                    <button type="button" onclick="closeAddLeadModal()" class="flex-1 px-4 py-2.5 border border-pru-border text-gray-600 rounded-lg font-bold hover:bg-gray-50 transition shadow-sm">Cancel</button>
+                    <button type="submit" id="save-lead-btn" class="flex-1 px-4 py-2.5 bg-pru-red text-white rounded-lg font-bold hover:bg-red-800 transition shadow-sm">Save Lead</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
 
 </body>
 </html>
