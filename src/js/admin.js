@@ -1078,30 +1078,32 @@ async function toggleEditMode(btn, defaultTableName, leadId) {
             field.classList.remove('border-b', 'border-[#b89569]', 'outline-none', 'bg-gray-50', 'px-1');
             
             const dbColumn = field.getAttribute('data-column');
-            // If the HTML field specifies a data-table (like leads), use it! Otherwise default to profile table.
             const targetTable = field.getAttribute('data-table') || defaultTableName; 
             
             let rawValue = field.innerText.trim();
-            let finalValue = rawValue || null;
+            let finalValue = rawValue === "" ? null : rawValue;
 
-            // SMART CLEANERS: Format data safely for Supabase strict columns
-            if (dbColumn === 'monthly_budget' && finalValue) {
-                // Strips "₱" and commas, leaving just pure numbers
-                finalValue = parseFloat(finalValue.replace(/[^0-9.-]+/g,"")) || null; 
-            }
-            if ((dbColumn === 'years_working' || dbColumn === 'no_of_dependents') && finalValue) {
-                // Strips letters (e.g. changes "5 years" into just 5)
-                finalValue = parseInt(finalValue.replace(/[^0-9]/g,"")) || 0; 
-            }
-            if (dbColumn === 'has_life_insurance' && finalValue) {
-                // Converts "Yes" to TRUE for the boolean column
-                finalValue = (finalValue.toLowerCase() === 'yes' || finalValue.toLowerCase() === 'true');
-            }
-            if (dbColumn === 'date_of_birth' && finalValue) {
-                // Parses standard text dates back into DB format "YYYY-MM-DD"
-                let d = new Date(finalValue);
-                if (!isNaN(d.getTime())) {
-                    finalValue = d.toISOString().split('T')[0];
+            // SMART CLEANERS: Bulletproof formatting
+            if (finalValue !== null) {
+                if (dbColumn === 'monthly_budget') {
+                    // Strips absolutely everything except numbers and decimals
+                    let cleanNum = String(finalValue).replace(/[^0-9.]/g, "");
+                    finalValue = cleanNum === "" ? null : parseFloat(cleanNum);
+                } 
+                else if (dbColumn === 'years_working' || dbColumn === 'no_of_dependents') {
+                    // Strips letters and decimals (e.g. changes "5 years" into just 5)
+                    let cleanNum = String(finalValue).replace(/[^0-9]/g, "");
+                    finalValue = cleanNum === "" ? null : parseInt(cleanNum, 10);
+                } 
+                else if (dbColumn === 'has_life_insurance') {
+                    // Converts boolean values safely
+                    let lower = String(finalValue).toLowerCase();
+                    finalValue = (lower === 'yes' || lower === 'true' || lower === '1');
+                } 
+                else if (dbColumn === 'date_of_birth') {
+                    // Parses standard text dates back into DB format "YYYY-MM-DD"
+                    let d = new Date(finalValue);
+                    finalValue = !isNaN(d.getTime()) ? d.toISOString().split('T')[0] : null;
                 }
             }
 
@@ -1111,20 +1113,21 @@ async function toggleEditMode(btn, defaultTableName, leadId) {
         });
 
         try {
-            // Loop through and fire an update for every table involved in this section (e.g. hits 'leads' AND 'client_profile' simultaneously)
+            // Loop through and fire an update for every table involved in this section
             for (const [table, data] of Object.entries(updatesByTable)) {
-                const { error } = await supabase
-                    .from(table)
-                    .update(data)
-                    .eq('lead_id', leadId);
-                if (error) throw error;
+                // Prevents sending empty updates if a section has no data for a specific table
+                if (Object.keys(data).length > 0) {
+                    const { error } = await supabase
+                        .from(table)
+                        .update(data)
+                        .eq('lead_id', leadId);
+                    if (error) throw error;
+                }
             }
             
             console.log("Successfully routed and saved edits:", updatesByTable);
             loadAdminLeads(); // Refresh background UI
-            
-            // Re-render the specific modal so Age recalculates based on new DOB
-            viewLeadDetails(leadId); 
+            viewLeadDetails(leadId); // Re-render modal to instantly format the new peso sign / age
             
         } catch (err) {
             console.error("Error saving lead edit:", err.message);
