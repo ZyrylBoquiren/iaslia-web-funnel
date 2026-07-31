@@ -220,11 +220,21 @@ async function loadAdminLeads() {
             const source = lead.source || `Funnel, ${isAgent ? 'Career Preview' : 'Financial Conversation'}`;
 
             // Determine Milestone colors (Demo logic: everyone gets standard UI for now)
-            const mBadge = isAgent 
-                ? `<div class="w-6 h-6 rounded-full border border-pru-red text-[9px] font-bold flex items-center justify-center text-white bg-[#bd1512]">M</div>`
-                : `<div class="w-6 h-6 rounded-full border border-pru-border text-[9px] font-bold flex items-center justify-center text-gray-400 bg-[#fbf4f2]">M</div>`;
-            
-            const cBadge = `<div class="w-6 h-6 rounded-full border border-pru-border text-[9px] font-bold flex items-center justify-center text-gray-400 bg-[#fbf4f2]">C</div>`;
+            // Determine dynamic milestone badges based on actual database stage
+            const stage = lead.current_stage || 'new';
+            const isMeetingDone = (stage === 'meeting' || stage === 'email_created' || stage === 'converted');
+            const isConverted = (stage === 'converted');
+
+            const mActive = isMeetingDone 
+                ? 'bg-[#bd1512] text-white border-pru-red' 
+                : 'bg-[#fbf4f2] text-gray-400 border-pru-border';
+                
+            const cActive = isConverted 
+                ? 'bg-[#00875a] text-white border-[#00875a]' // Lights up Green when Officially Converted!
+                : 'bg-[#fbf4f2] text-gray-400 border-pru-border';
+
+            const mBadge = `<div class="w-6 h-6 rounded-full border text-[9px] font-bold flex items-center justify-center shadow-sm transition-colors ${mActive}">M</div>`;
+            const cBadge = `<div class="w-6 h-6 rounded-full border text-[9px] font-bold flex items-center justify-center shadow-sm transition-colors ${cActive}">C</div>`;
 
             tr.innerHTML = `
                 <td class="px-6 py-4">
@@ -358,23 +368,41 @@ window.viewLeadDetails = async function(leadId) {
         const safeVal = (val) => val ? `<p class="text-[13px] text-gray-500 font-medium">${val}</p>` : `<p class="text-[13px] text-gray-400 italic">Not Recorded</p>`;
         const safeProfile = (key) => (profile && profile[key]) ? `<p class="text-[13px] text-gray-500 font-medium">${profile[key]}</p>` : `<p class="text-[13px] text-gray-400 italic">Not Recorded</p>`;
 
+        // Editable helpers to map UI text directly to Supabase columns
+        const editableVal = (val, col) => val ? `<p data-table="leads" data-column="${col}" class="text-[13px] text-gray-500 font-medium">${val}</p>` : `<p data-table="leads" data-column="${col}" class="text-[13px] text-gray-400 italic"></p>`;
+        
+        // Upgraded to accept formatted overrides (like Peso signs and Yes/No)
+        const editableProfile = (key, overrideVal) => {
+            const displayVal = overrideVal !== undefined ? overrideVal : profile?.[key];
+            return displayVal ? `<p data-column="${key}" class="text-[13px] text-gray-500 font-medium">${displayVal}</p>` : `<p data-column="${key}" class="text-[13px] text-gray-400 italic"></p>`;
+        };
+
         // 6. Build the specific middle section depending on track
         let specificSectionHTML = '';
         if (isAgent) {
             specificSectionHTML = `
-                <h3 class="text-[11px] font-bold text-[#b89569] uppercase tracking-widest mb-4">Education & Work</h3>
-                <div class="grid grid-cols-2 gap-y-6 gap-x-12 mb-8">
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">University/College (Graduated Form)</p>${safeProfile('university_college')}</div>
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">Degree</p>${safeProfile('degree')}</div>
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">Area of Business or Employment</p>${safeProfile('area_of_employment')}</div>
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">Work Experience</p>${safeProfile('work_experience')}</div>
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">Number of Years Working</p>${safeProfile('years_working')}</div>
+                <div class="mb-8">
+                    <div class="flex items-center gap-2 mb-4">
+                        <h3 class="text-[11px] font-bold text-[#b89569] uppercase tracking-widest">Education & Work</h3>
+                        <button onclick="toggleEditMode(this, 'recruit_profile', '${leadId}')" class="text-gray-400 hover:text-[#bd1512] transition"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-y-6 gap-x-12">
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">University/College (Graduated Form)</p>${editableProfile('university_college')}</div>
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Degree</p>${editableProfile('degree')}</div>
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Area of Business or Employment</p>${editableProfile('area_of_employment')}</div>
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Work Experience</p>${editableProfile('work_experience')}</div>
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Number of Years Working</p>${editableProfile('years_working')}</div>
+                    </div>
                 </div>
                 
-                <h3 class="text-[11px] font-bold text-[#b89569] uppercase tracking-widest mb-4">Recruitment</h3>
-                <div class="grid grid-cols-2 gap-y-6 gap-x-12">
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">Name of Recruiter</p><p class="text-[13px] text-gray-400 italic">Unassigned</p></div>
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">Immediate Manager</p><p class="text-[13px] text-gray-400 italic">Unassigned</p></div>
+                <div class="mb-8">
+                    <div class="flex items-center gap-2 mb-4">
+                        <h3 class="text-[11px] font-bold text-[#b89569] uppercase tracking-widest">Recruitment</h3>
+                    </div>
+                    <div class="grid grid-cols-2 gap-y-6 gap-x-12">
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Name of Recruiter</p><p class="text-[13px] text-gray-400 italic">Unassigned</p></div>
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Immediate Manager</p><p class="text-[13px] text-gray-400 italic">Unassigned</p></div>
+                    </div>
                 </div>
             `;
         } else {
@@ -382,13 +410,20 @@ window.viewLeadDetails = async function(leadId) {
             const insuranceFormat = profile?.has_life_insurance === true ? 'Yes' : (profile?.has_life_insurance === false ? 'No' : null);
             
             specificSectionHTML = `
-                <h3 class="text-[11px] font-bold text-[#b89569] uppercase tracking-widest mb-4">Financial & Lifestyle</h3>
-                <div class="grid grid-cols-2 gap-y-6 gap-x-12 mb-8">
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">Current Employment</p>${safeProfile('current_employment')}</div>
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">Marital Status</p>${safeProfile('marital_status')}</div>
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">Dependents</p>${safeProfile('no_of_dependents')}</div>
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">Has Life Insurance</p>${safeVal(insuranceFormat)}</div>
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">Monthly Budget</p>${safeVal(budgetFormat)}</div>
+                <div class="mb-8">
+                    <div class="flex items-center gap-2 mb-4">
+                        <h3 class="text-[11px] font-bold text-[#b89569] uppercase tracking-widest">Financial & Lifestyle</h3>
+                        <button onclick="toggleEditMode(this, 'client_profile', '${leadId}')" class="text-gray-400 hover:text-[#bd1512] transition"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-y-6 gap-x-12">
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Current Employment</p>${editableProfile('current_employment')}</div>
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Marital Status</p>${editableProfile('marital_status')}</div>
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Dependents</p>${editableProfile('no_of_dependents')}</div>
+                        
+                        <!-- These two use strict formatting (booleans/pesos) so we leave them uneditable to prevent DB crashes -->
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Has Life Insurance</p>${editableProfile('has_life_insurance', insuranceFormat)}</div>
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Monthly Budget</p>${editableProfile('monthly_budget', budgetFormat)}</div>
+                    </div>
                 </div>
             `;
         }
@@ -407,15 +442,18 @@ window.viewLeadDetails = async function(leadId) {
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <div class="flex-1 bg-white border border-pru-border rounded-full py-1.5 px-3 flex items-center gap-2 shadow-sm">
-                        <div class="w-3 h-3 rounded-full border border-gray-300"></div><span class="text-[10px] font-bold text-gray-700">Meeting Done</span>
-                    </div>
-                    <div class="flex-1 bg-white border border-pru-border rounded-full py-1.5 px-3 flex items-center gap-2 shadow-sm">
-                        <div class="w-3 h-3 rounded-full border border-gray-300"></div><span class="text-[10px] font-bold text-gray-700">PRU LIFE UK Email Created</span>
-                    </div>
-                    <div class="flex-1 bg-white border border-pru-border rounded-full py-1.5 px-3 flex items-center gap-2 opacity-50 shadow-sm">
-                        <div class="w-3 h-3 rounded-full border border-gray-300"></div><span class="text-[10px] font-bold text-gray-700">Officially Converted</span>
-                    </div>
+                    <label class="flex-1 bg-white border border-pru-border rounded-full py-1.5 px-3 flex items-center gap-2 shadow-sm cursor-pointer hover:bg-gray-50 transition">
+                        <input type="checkbox" id="checkbox-meeting" onchange="updateLeadStage(this, 'meeting', '${leadId}')" class="w-3.5 h-3.5 accent-[#bd1512] cursor-pointer" ${lead.current_stage === 'meeting' || lead.current_stage === 'email_created' || lead.current_stage === 'converted' ? 'checked' : ''}>
+                        <span class="text-[10px] font-bold text-gray-700">Meeting Done</span>
+                    </label>
+                    <label class="flex-1 bg-white border border-pru-border rounded-full py-1.5 px-3 flex items-center gap-2 shadow-sm cursor-pointer hover:bg-gray-50 transition">
+                        <input type="checkbox" id="checkbox-email" onchange="updateLeadStage(this, 'email_created', '${leadId}')" class="w-3.5 h-3.5 accent-[#bd1512] cursor-pointer" ${lead.current_stage === 'email_created' || lead.current_stage === 'converted' ? 'checked' : ''}>
+                        <span class="text-[10px] font-bold text-gray-700">PRU Email Created</span>
+                    </label>
+                    <label class="flex-1 bg-white border border-pru-border rounded-full py-1.5 px-3 flex items-center gap-2 shadow-sm cursor-pointer hover:bg-gray-50 transition">
+                        <input type="checkbox" id="checkbox-converted" onchange="updateLeadStage(this, 'converted', '${leadId}')" class="w-3.5 h-3.5 accent-[#bd1512] cursor-pointer" ${lead.current_stage === 'converted' ? 'checked' : ''}>
+                        <span class="text-[10px] font-bold text-gray-700">Officially Converted</span>
+                    </label>
                 </div>
             </div>
 
@@ -425,30 +463,43 @@ window.viewLeadDetails = async function(leadId) {
             </div>
 
             <div class="p-8 overflow-y-auto flex-grow bg-white">
-                <h3 class="text-[11px] font-bold text-[#b89569] uppercase tracking-widest mb-4">Contact</h3>
-                <div class="grid grid-cols-2 gap-y-6 gap-x-12 mb-8">
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">Full Name</p>${safeVal(fullName)}</div>
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">Email Address</p>${safeVal(lead.email)}</div>
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">Mobile Number</p>${safeVal(lead.mobile_number)}</div>
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">Source</p>${safeVal(lead.source)}</div>
+                
+                <div class="mb-8">
+                    <div class="flex items-center gap-2 mb-4">
+                        <h3 class="text-[11px] font-bold text-[#b89569] uppercase tracking-widest">Contact</h3>
+                        <button onclick="toggleEditMode(this, 'leads', '${leadId}')" class="text-gray-400 hover:text-[#bd1512] transition"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-y-6 gap-x-12">
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Full Name</p>${editableVal(fullName, 'full_name')}</div>
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Email Address</p>${editableVal(lead.email, 'email')}</div>
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Mobile Number</p>${editableVal(lead.mobile_number, 'mobile_number')}</div>
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Source</p>${editableVal(lead.source, 'source')}</div>
+                    </div>
                 </div>
 
-                <h3 class="text-[11px] font-bold text-[#b89569] uppercase tracking-widest mb-4">Basic Info</h3>
-                <div class="grid grid-cols-2 gap-y-6 gap-x-12 mb-8">
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">Date of Birth</p>${safeVal(dobStr)}</div>
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">Age</p>${safeVal(age)}</div>
-                    <div><p class="text-[12px] font-bold text-gray-900 mb-1">Area of Residence</p>${safeProfile('area_of_residence')}</div>
+                <div class="mb-8">
+                    <div class="flex items-center gap-2 mb-4">
+                        <h3 class="text-[11px] font-bold text-[#b89569] uppercase tracking-widest">Basic Info</h3>
+                        <button onclick="toggleEditMode(this, '${isAgent ? 'recruit_profile' : 'client_profile'}', '${leadId}')" class="text-gray-400 hover:text-[#bd1512] transition"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-y-6 gap-x-12">
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Date of Birth</p>${editableVal(dobStr, 'date_of_birth')}</div>
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Age</p>${safeVal(age)}</div>
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Area of Residence</p>${editableProfile('area_of_residence')}</div>
+                    </div>
                 </div>
 
                 ${specificSectionHTML}
             </div>
 
-            <div class="p-4 border-t border-pru-border flex justify-between items-center bg-white shrink-0">
-                <button class="px-5 py-2 text-[13px] font-bold text-pru-red border border-pru-border rounded-full hover:bg-red-50 transition-colors shadow-sm">Delete Lead</button>
-                <div class="flex gap-3">
-                    <button onclick="closeModals()" class="px-5 py-2 text-[13px] font-bold text-pru-red border border-pru-border rounded-full hover:bg-[#fbf4f2] transition-colors shadow-sm">Close</button>
-                    <button class="px-5 py-2 text-[13px] font-bold text-white bg-[#bd1512] rounded-full hover:bg-red-900 transition-colors shadow-sm">Edit Profile</button>
-                </div>
+            <div class="p-6 border-t border-pru-border flex justify-end gap-3 bg-gray-50">
+                <button onclick="deleteLeadProfile('${leadId}')" class="px-6 py-2.5 text-[13px] font-bold text-pru-red border border-pru-border rounded-full hover:bg-red-50 transition shadow-sm bg-white">
+                    Delete Profile
+                </button>
+                
+                <button onclick="closeModals();" class="px-6 py-2.5 text-[13px] font-bold text-white bg-[#bd1512] rounded-full hover:bg-red-900 transition shadow-sm">
+                    Done
+                </button>
             </div>
         `;
 
@@ -997,3 +1048,151 @@ window.submitNewLead = async function(event) {
         saveBtn.disabled = false;
     }
 };
+
+// ==========================================
+// INLINE EDITING ENGINE & CHECKBOX LOGIC
+// ==========================================
+
+async function toggleEditMode(btn, defaultTableName, leadId) {
+    const sectionContainer = btn.parentElement.parentElement; 
+    const editableFields = sectionContainer.querySelectorAll('[data-column]');
+    const isEditing = sectionContainer.classList.toggle('is-editing');
+
+    if (isEditing) {
+        // TURN ON EDIT MODE
+        btn.innerHTML = `<svg class="w-4 h-4 text-[#00875a]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+            
+        editableFields.forEach(field => {
+            field.contentEditable = "true";
+            field.classList.add('border-b', 'border-[#b89569]', 'outline-none', 'bg-gray-50', 'px-1');
+            field.focus();
+        });
+    } else {
+        // TURN OFF EDIT MODE & SAVE TO SUPABASE
+        btn.innerHTML = `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>`;
+            
+        let updatesByTable = {};
+        
+        editableFields.forEach(field => {
+            field.contentEditable = "false";
+            field.classList.remove('border-b', 'border-[#b89569]', 'outline-none', 'bg-gray-50', 'px-1');
+            
+            const dbColumn = field.getAttribute('data-column');
+            // If the HTML field specifies a data-table (like leads), use it! Otherwise default to profile table.
+            const targetTable = field.getAttribute('data-table') || defaultTableName; 
+            
+            let rawValue = field.innerText.trim();
+            let finalValue = rawValue || null;
+
+            // SMART CLEANERS: Format data safely for Supabase strict columns
+            if (dbColumn === 'monthly_budget' && finalValue) {
+                // Strips "₱" and commas, leaving just pure numbers
+                finalValue = parseFloat(finalValue.replace(/[^0-9.-]+/g,"")) || null; 
+            }
+            if ((dbColumn === 'years_working' || dbColumn === 'no_of_dependents') && finalValue) {
+                // Strips letters (e.g. changes "5 years" into just 5)
+                finalValue = parseInt(finalValue.replace(/[^0-9]/g,"")) || 0; 
+            }
+            if (dbColumn === 'has_life_insurance' && finalValue) {
+                // Converts "Yes" to TRUE for the boolean column
+                finalValue = (finalValue.toLowerCase() === 'yes' || finalValue.toLowerCase() === 'true');
+            }
+            if (dbColumn === 'date_of_birth' && finalValue) {
+                // Parses standard text dates back into DB format "YYYY-MM-DD"
+                let d = new Date(finalValue);
+                if (!isNaN(d.getTime())) {
+                    finalValue = d.toISOString().split('T')[0];
+                }
+            }
+
+            // Organize updates into their respective table objects
+            if (!updatesByTable[targetTable]) updatesByTable[targetTable] = {};
+            updatesByTable[targetTable][dbColumn] = finalValue;
+        });
+
+        try {
+            // Loop through and fire an update for every table involved in this section (e.g. hits 'leads' AND 'client_profile' simultaneously)
+            for (const [table, data] of Object.entries(updatesByTable)) {
+                const { error } = await supabase
+                    .from(table)
+                    .update(data)
+                    .eq('lead_id', leadId);
+                if (error) throw error;
+            }
+            
+            console.log("Successfully routed and saved edits:", updatesByTable);
+            loadAdminLeads(); // Refresh background UI
+            
+            // Re-render the specific modal so Age recalculates based on new DOB
+            viewLeadDetails(leadId); 
+            
+        } catch (err) {
+            console.error("Error saving lead edit:", err.message);
+            alert("Failed to save changes. " + err.message);
+        }
+    }
+}
+
+async function updateLeadStage(checkboxElem, clickedStage, leadId) {
+    // 1. Sync the visual checkboxes up or down based on what was checked/unchecked
+    if (checkboxElem.checked) {
+        if (clickedStage === 'converted') {
+            document.getElementById('checkbox-meeting').checked = true;
+            document.getElementById('checkbox-email').checked = true;
+        } else if (clickedStage === 'email_created') {
+            document.getElementById('checkbox-meeting').checked = true;
+        }
+    } else {
+        // If unchecking, uncheck dependencies above it
+        if (clickedStage === 'meeting') {
+            document.getElementById('checkbox-email').checked = false;
+            document.getElementById('checkbox-converted').checked = false;
+        } else if (clickedStage === 'email_created') {
+            document.getElementById('checkbox-converted').checked = false;
+        }
+    }
+
+    // 2. Determine the TRUE highest stage based on the current UI state
+    let finalStage = 'new';
+    if (document.getElementById('checkbox-converted').checked) finalStage = 'converted';
+    else if (document.getElementById('checkbox-email').checked) finalStage = 'email_created';
+    else if (document.getElementById('checkbox-meeting').checked) finalStage = 'meeting';
+
+    // 3. Save the final calculated stage to Supabase
+    try {
+        const { error } = await supabase
+            .from('leads')
+            .update({ current_stage: finalStage })
+            .eq('lead_id', leadId);
+
+        if (error) throw error;
+        console.log(`Stage correctly synced to: ${finalStage}`);
+        
+        // Instantly reload dashboard cards and background table
+        loadAdminLeads(); 
+    } catch (err) {
+        console.error("Error updating stage:", err.message);
+        alert("Failed to update lead stage. Check database rules.");
+        // Revert visual if it fails
+        checkboxElem.checked = !checkboxElem.checked; 
+    }
+}
+
+// ==========================================
+// MODAL DELETE FUNCTION
+// ==========================================
+async function deleteLeadProfile(leadId) {
+    if (!confirm("Are you sure you want to completely delete this lead? This cannot be undone.")) return;
+    
+    try {
+        const { error } = await supabase.from('leads').delete().eq('lead_id', leadId);
+        if (error) throw error;
+        
+        closeModals();
+        loadAdminLeads(); // Refresh UI instantly
+        console.log("Lead deleted successfully.");
+    } catch (err) {
+        console.error("Delete failed:", err.message);
+        alert("Failed to delete lead. Check console.");
+    }
+}
