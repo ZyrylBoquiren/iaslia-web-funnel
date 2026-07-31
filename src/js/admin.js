@@ -1015,34 +1015,44 @@ window.submitNewLead = async function(event) {
     const notes = document.getElementById('new-lead-notes').value.trim();
 
     try {
-        // Insert into Database
-        const { error } = await supabase
-            .from('leads')
-            .insert([{
-                full_name: fullName,
-                email: email,
-                mobile_number: phone,
-                track: trackType,
-                source: 'Admin Dashboard', // Hardcoded so you know it was manually added
-                current_stage: 'new',
-                notes: notes 
-            }]);
+            // 1. Insert into Database and ask Supabase to return the newly created row (.select().single())
+            const { data: newLead, error: leadError } = await supabase
+                .from('leads')
+                .insert([{
+                    full_name: fullName,
+                    email: email,
+                    mobile_number: phone,
+                    track: trackType,
+                    source: 'Admin Dashboard', // Hardcoded so you know it was manually added
+                    current_stage: 'new',
+                    notes: notes 
+                }])
+                .select()
+                .single();
 
-        if (error) throw error;
+            if (leadError) throw leadError;
 
-        // Success! Close modal and refresh UI
-        closeAddLeadModal();
-        
-        // This function from Part 1 will refresh the table and update the 4 Dashboard Cards instantly!
-        loadAdminLeads(); 
-        
-        // Small success alert
-        setTimeout(() => alert("Lead successfully added to the pipeline!"), 300);
+            // 2. Create the blank profile row immediately so the pencil icons have a row to edit!
+            const targetTable = (trackType === 'future_advisor') ? 'recruit_profile' : 'client_profile';
+            const { error: profileError } = await supabase
+                .from(targetTable)
+                .insert([{ lead_id: newLead.lead_id }]);
+                
+            if (profileError) throw profileError;
 
-    } catch (err) {
-        console.error("Error adding lead:", err.message);
-        alert("Failed to add lead. Check console for details.");
-    } finally {
+            // Success! Close modal and refresh UI
+            closeAddLeadModal();
+            
+            // This function from Part 1 will refresh the table and update the 4 Dashboard Cards instantly!
+            loadAdminLeads(); 
+            
+            // Small success alert
+            setTimeout(() => alert("Lead successfully added to the pipeline!"), 300);
+
+        } catch (err) {
+            console.error("Error adding lead:", err.message);
+            alert("Failed to add lead. Check console for details.");
+        } finally {
         // Reset button state
         saveBtn.textContent = originalText;
         saveBtn.disabled = false;
@@ -1115,13 +1125,27 @@ async function toggleEditMode(btn, defaultTableName, leadId) {
         try {
             // Loop through and fire an update for every table involved in this section
             for (const [table, data] of Object.entries(updatesByTable)) {
-                // Prevents sending empty updates if a section has no data for a specific table
                 if (Object.keys(data).length > 0) {
-                    const { error } = await supabase
+                    
+                    // Add .select() so Supabase tells us if it actually found a row to update
+                    const { data: updatedRows, error } = await supabase
                         .from(table)
                         .update(data)
-                        .eq('lead_id', leadId);
+                        .eq('lead_id', leadId)
+                        .select();
+                        
                     if (error) throw error;
+                    
+                    // SMART FALLBACK: If Supabase updated 0 rows, the profile table row is missing! 
+                    // (This fixes any broken leads you created before today). Let's create it on the fly!
+                    if (updatedRows && updatedRows.length === 0 && table !== 'leads') {
+                        data.lead_id = leadId; // Add the foreign key required for insertion
+                        const { error: insertError } = await supabase
+                            .from(table)
+                            .insert([data]);
+                            
+                        if (insertError) throw insertError;
+                    }
                 }
             }
             
