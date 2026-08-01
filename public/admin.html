@@ -518,8 +518,7 @@
                         <p class="text-[13px] text-gray-500">Manage the templates that appear inside each lead's Email tab.</p>
                     </div>
                     <div class="flex gap-4">
-                        <button class="px-6 py-2 text-[13px] font-bold text-gray-700 border border-pru-border rounded-full hover:bg-gray-50 transition-colors bg-white shadow-sm">Reset to Defaults</button>
-                        <button class="bg-[#bd1512] text-white px-6 py-2 rounded-full text-[13px] font-bold shadow-sm hover:bg-red-900 transition-colors">+ New Template</button>
+                        <button onclick="openTemplateModal('new')" class="bg-[#bd1512] text-white px-6 py-2 rounded-full text-[13px] font-bold shadow-sm hover:bg-red-900 transition-colors">+ New Template</button>
                     </div>
                 </div>
 
@@ -528,37 +527,8 @@
                         <h2 class="text-[16px] font-bold text-gray-900">Agent Templates</h2>
                         <p class="text-[13px] text-gray-500">Shown for Agent / Career Preview leads.</p>
                     </div>
-                    <div class="grid grid-cols-2 gap-5">
-                        <div class="border border-pru-border rounded-xl p-6 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-[14px] font-bold text-gray-900 mb-1">Interview Invite</h3>
-                                <p class="text-[12px] text-gray-500 mb-6 truncate">Your Career Preview Interview — PRU Life UK</p>
-                            </div>
-                            <div class="flex gap-3">
-                                <button onclick="openModal('edit-template-modal')" class="px-4 py-1.5 text-[11px] font-bold text-gray-700 border border-pru-border rounded-full hover:bg-gray-50 transition-colors">Edit</button>
-                                <button onclick="openModal('delete-template-modal')" class="px-4 py-1.5 text-[11px] font-bold text-pru-red border border-pru-border rounded-full hover:bg-[#fbf4f2] transition-colors">Delete</button>
-                            </div>
-                        </div>
-                        <div class="border border-pru-border rounded-xl p-6 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-[14px] font-bold text-gray-900 mb-1">Welcome Aboard</h3>
-                                <p class="text-[12px] text-gray-500 mb-6 truncate">Welcome to PRU Life UK — Your Official Email</p>
-                            </div>
-                            <div class="flex gap-3">
-                                <button onclick="openModal('edit-template-modal')" class="px-4 py-1.5 text-[11px] font-bold text-gray-700 border border-pru-border rounded-full hover:bg-gray-50 transition-colors">Edit</button>
-                                <button onclick="openModal('delete-template-modal')" class="px-4 py-1.5 text-[11px] font-bold text-pru-red border border-pru-border rounded-full hover:bg-[#fbf4f2] transition-colors">Delete</button>
-                            </div>
-                        </div>
-                        <div class="border border-pru-border rounded-xl p-6 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-[14px] font-bold text-gray-900 mb-1">Follow-up</h3>
-                                <p class="text-[12px] text-gray-500 mb-6 truncate">Following Up — PRU Life UK</p>
-                            </div>
-                            <div class="flex gap-3">
-                                <button onclick="openModal('edit-template-modal')" class="px-4 py-1.5 text-[11px] font-bold text-gray-700 border border-pru-border rounded-full hover:bg-gray-50 transition-colors">Edit</button>
-                                <button onclick="openModal('delete-template-modal')" class="px-4 py-1.5 text-[11px] font-bold text-pru-red border border-pru-border rounded-full hover:bg-[#fbf4f2] transition-colors">Delete</button>
-                            </div>
-                        </div>
+                    <!-- ID added here, hardcoded blocks removed -->
+                    <div id="agent-templates-grid" class="grid grid-cols-2 gap-5">
                     </div>
                 </div>
 
@@ -567,40 +537,10 @@
                         <h2 class="text-[16px] font-bold text-gray-900">Client Templates</h2>
                         <p class="text-[13px] text-gray-500">Shown for Client / Financial Conversation leads.</p>
                     </div>
-                    <div class="grid grid-cols-2 gap-5">
-                        <div class="border border-pru-border rounded-xl p-6 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-[14px] font-bold text-gray-900 mb-1">Meeting Confirmation</h3>
-                                <p class="text-[12px] text-gray-500 mb-6 truncate">Your Financial Conversation — PRU Life UK</p>
-                            </div>
-                            <div class="flex gap-3">
-                                <button onclick="openModal('edit-template-modal')" class="px-4 py-1.5 text-[11px] font-bold text-gray-700 border border-pru-border rounded-full hover:bg-gray-50 transition-colors">Edit</button>
-                                <button onclick="openModal('delete-template-modal')" class="px-4 py-1.5 text-[11px] font-bold text-pru-red border border-pru-border rounded-full hover:bg-[#fbf4f2] transition-colors">Delete</button>
-                            </div>
-                        </div>
-                        <div class="border border-pru-border rounded-xl p-6 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-[14px] font-bold text-gray-900 mb-1">Welcome Aboard</h3>
-                                <p class="text-[12px] text-gray-500 mb-6 truncate">Welcome to PRU Life UK</p>
-                            </div>
-                            <div class="flex gap-3">
-                                <button onclick="openModal('edit-template-modal')" class="px-4 py-1.5 text-[11px] font-bold text-gray-700 border border-pru-border rounded-full hover:bg-gray-50 transition-colors">Edit</button>
-                                <button onclick="openModal('delete-template-modal')" class="px-4 py-1.5 text-[11px] font-bold text-pru-red border border-pru-border rounded-full hover:bg-[#fbf4f2] transition-colors">Delete</button>
-                            </div>
-                        </div>
-                        <div class="border border-pru-border rounded-xl p-6 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-[14px] font-bold text-gray-900 mb-1">Follow-up</h3>
-                                <p class="text-[12px] text-gray-500 mb-6 truncate">Following Up — PRU Life UK</p>
-                            </div>
-                            <div class="flex gap-3">
-                                <button onclick="openModal('edit-template-modal')" class="px-4 py-1.5 text-[11px] font-bold text-gray-700 border border-pru-border rounded-full hover:bg-gray-50 transition-colors">Edit</button>
-                                <button onclick="openModal('delete-template-modal')" class="px-4 py-1.5 text-[11px] font-bold text-pru-red border border-pru-border rounded-full hover:bg-[#fbf4f2] transition-colors">Delete</button>
-                            </div>
-                        </div>
+                    <!-- ID added here, hardcoded blocks removed -->
+                    <div id="client-templates-grid" class="grid grid-cols-2 gap-5">
                     </div>
                 </div>
-            </div>
 
             <div id="view-settings" class="hidden max-w-6xl mx-auto">
                 <div class="mb-8">
@@ -731,50 +671,42 @@
 
     <div id="edit-template-modal" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white rounded-2xl z-50 shadow-2xl border border-pru-border overflow-hidden">
         <div class="p-6 border-b border-pru-border flex justify-between items-center bg-white">
-            <h2 class="text-[18px] font-serif font-bold text-gray-900">Edit Template</h2>
+            <h2 id="template-modal-title" class="text-[18px] font-serif font-bold text-gray-900">Edit Template</h2>
             <button onclick="closeModals()" class="text-gray-400 border border-pru-border rounded-full w-7 h-7 flex items-center justify-center hover:bg-gray-50 focus:outline-none transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
             </button>
         </div>
-        <div class="p-6 space-y-4 bg-white">
-            <div>
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">Template Name</label>
-                <input type="text" value="Interview Invite" class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] outline-none focus:border-pru-red shadow-sm text-gray-800">
+        <form id="template-form" onsubmit="saveTemplate(event)">
+            <!-- Hidden input to determine Insert vs Update -->
+            <input type="hidden" id="modal-template-id" value="">
+            <div class="p-6 space-y-4 bg-white">
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-700 mb-1">Template Name</label>
+                    <input type="text" id="modal-template-name" required class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] outline-none focus:border-pru-red shadow-sm text-gray-800">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-700 mb-1">Lead Type</label>
+                    <!-- Changed to a select dropdown for locking logic -->
+                    <select id="modal-template-track" required class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] outline-none focus:border-pru-red shadow-sm text-gray-800 bg-white">
+                        <option value="future_advisor">Agent</option>
+                        <option value="future_client">Client</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-700 mb-1">Subject</label>
+                    <input type="text" id="modal-template-subject" required class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] outline-none focus:border-pru-red shadow-sm text-gray-800">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-700 mb-1">Message</label>
+                    <textarea id="modal-template-body" rows="5" required class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] outline-none focus:border-pru-red shadow-sm text-gray-800"></textarea>
+                </div>
+                <p class="text-[10px] text-gray-500">Available placeholders: {name}, {fullName}, {appointmentDate}, {appointmentTime}, {advisor}</p>
             </div>
-            <div>
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">Lead Type</label>
-                <input type="text" value="Agent" class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] outline-none focus:border-pru-red shadow-sm text-gray-800">
+            <div class="p-4 border-t border-pru-border flex justify-end gap-3 bg-white">
+                <button type="button" onclick="closeModals()" class="px-5 py-2 text-[13px] font-bold text-gray-800 border border-pru-border rounded-full hover:bg-gray-50 transition-colors shadow-sm bg-white">Cancel</button>
+                <button type="submit" id="save-template-btn" class="px-5 py-2 text-[13px] font-bold text-white bg-[#bd1512] rounded-full hover:bg-red-900 transition-colors shadow-sm">Save Template</button>
             </div>
-            <div>
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">Subject</label>
-                <input type="text" value="Your Career Preview Interview — PRU Life UK" class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] outline-none focus:border-pru-red shadow-sm text-gray-800">
-            </div>
-            <div>
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">Message</label>
-                <textarea rows="5" class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] outline-none focus:border-pru-red shadow-sm text-gray-800">Hi {name},&#10;&#10;Thanks for your interest in becoming a financial advisor with PRU Life UK. We would love to schedule your interview at our branch office on {appointmentDate} at {appointmentTime}.&#10;&#10;Let us know if this works for you.&#10;&#10;Warm regards,&#10;PRU Life UK Recruitment Team</textarea>
-            </div>
-            <p class="text-[10px] text-gray-500">Available placeholders: {name}, {fullName}, {appointmentDate}, {appointmentTime}, {advisor}</p>
-        </div>
-        <div class="p-4 border-t border-pru-border flex justify-end gap-3 bg-white">
-            <button onclick="closeModals()" class="px-5 py-2 text-[13px] font-bold text-gray-800 border border-pru-border rounded-full hover:bg-gray-50 transition-colors shadow-sm bg-white">Cancel</button>
-            <button class="px-5 py-2 text-[13px] font-bold text-white bg-[#bd1512] rounded-full hover:bg-red-900 transition-colors shadow-sm">Save Template</button>
-        </div>
-    </div>
-
-    <div id="delete-template-modal" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-2xl z-50 shadow-2xl border border-pru-border overflow-hidden">
-        <div class="p-6 border-b border-pru-border flex justify-between items-center bg-white">
-            <h2 class="text-[18px] font-serif font-bold text-gray-900">Delete Template</h2>
-            <button onclick="closeModals()" class="text-gray-400 border border-pru-border rounded-full w-7 h-7 flex items-center justify-center hover:bg-gray-50 focus:outline-none transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
-            </button>
-        </div>
-        <div class="p-6 bg-white">
-            <p class="text-[13px] text-gray-600">Delete the "Interview Invite" template? This cannot be undone.</p>
-        </div>
-        <div class="p-4 border-t border-pru-border flex justify-end gap-3 bg-white">
-            <button onclick="closeModals()" class="px-5 py-2 text-[13px] font-bold text-gray-800 border border-pru-border rounded-full hover:bg-gray-50 transition-colors shadow-sm bg-white">Cancel</button>
-            <button onclick="closeModals()" class="px-5 py-2 text-[13px] font-bold text-white bg-[#cc3333] rounded-full hover:bg-red-900 transition-colors shadow-sm">Delete Template</button>
-        </div>
+        </form>
     </div>
 
     <div id="reset-data-modal" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-2xl z-50 shadow-2xl border border-pru-border overflow-hidden">

@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (typeof renderAdminCalendar === 'function') {
     await renderAdminCalendar();
     setupCalendarArrows();
+    loadEmailTemplates();
     initBookingSwitch();
     initAddSlotButton();
   }
@@ -1223,3 +1224,167 @@ async function deleteLeadProfile(leadId) {
         alert("Failed to delete lead. Check console.");
     }
 }
+
+function openTemplateModal(mode, leadType = 'Unassigned') {
+    const modalTypeInput = document.getElementById('template-modal-type');
+    
+    if (mode === 'new') {
+        // You could change this to a <select> dropdown later if you want them to choose
+        modalTypeInput.value = "Select later / General"; 
+    } else {
+        // Locks it to Agent or Client based on where they clicked
+        modalTypeInput.value = leadType;
+    }
+    
+    openModal('edit-template-modal');
+}
+
+// ==========================================
+// 6. EMAIL TEMPLATES ENGINE
+// ==========================================
+
+async function loadEmailTemplates() {
+    const agentGrid = document.getElementById('agent-templates-grid');
+    const clientGrid = document.getElementById('client-templates-grid');
+    if (!agentGrid || !clientGrid) return;
+    
+    agentGrid.innerHTML = '<p class="text-[13px] text-gray-500 col-span-2 py-4">Fetching templates...</p>';
+    clientGrid.innerHTML = '<p class="text-[13px] text-gray-500 col-span-2 py-4">Fetching templates...</p>';
+
+    try {
+        const { data: templates, error } = await supabase
+            .from('email_templates')
+            .select('*')
+            .order('template_name', { ascending: true });
+
+        if (error) throw error;
+
+        agentGrid.innerHTML = '';
+        clientGrid.innerHTML = '';
+
+        const agentTemplates = templates.filter(t => t.track === 'future_advisor');
+        const clientTemplates = templates.filter(t => t.track === 'future_client');
+        
+        const renderCard = (t) => `
+            <div class="border border-pru-border rounded-xl p-6 flex flex-col justify-between bg-white shadow-sm hover:border-gray-300 transition-colors">
+                <div>
+                    <h3 class="text-[14px] font-bold text-gray-900 mb-1">${t.template_name}</h3>
+                    <p class="text-[12px] text-gray-500 mb-6 truncate" title="${t.subject}">${t.subject}</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="openTemplateModal('edit', '${t.template_id}')" class="px-4 py-1.5 text-[11px] font-bold text-gray-700 border border-pru-border rounded-full hover:bg-gray-50 transition-colors">Edit</button>
+                    <button onclick="deleteTemplate('${t.template_id}')" class="px-4 py-1.5 text-[11px] font-bold text-pru-red border border-pru-border rounded-full hover:bg-[#fbf4f2] transition-colors">Delete</button>
+                </div>
+            </div>
+        `;
+
+        if (agentTemplates.length === 0) agentGrid.innerHTML = '<p class="text-[12px] text-gray-400 italic col-span-2">No agent templates found.</p>';
+        else agentTemplates.forEach(t => agentGrid.innerHTML += renderCard(t));
+        
+        if (clientTemplates.length === 0) clientGrid.innerHTML = '<p class="text-[12px] text-gray-400 italic col-span-2">No client templates found.</p>';
+        else clientTemplates.forEach(t => clientGrid.innerHTML += renderCard(t));
+
+    } catch (err) {
+        console.error("Error loading templates:", err);
+        agentGrid.innerHTML = '<p class="text-[12px] text-red-500 col-span-2">Database error. Check console.</p>';
+        clientGrid.innerHTML = '<p class="text-[12px] text-red-500 col-span-2">Database error. Check console.</p>';
+    }
+}
+
+window.openTemplateModal = async function(mode, templateId = null) {
+    const modal = document.getElementById('edit-template-modal');
+    const form = document.getElementById('template-form');
+    const title = document.getElementById('template-modal-title');
+    const trackSelect = document.getElementById('modal-template-track');
+    
+    form.reset();
+    document.getElementById('modal-template-id').value = '';
+    
+    if (mode === 'new') {
+        title.textContent = "New Template";
+        // Unlocks dropdown for a brand new template
+        trackSelect.disabled = false;
+        trackSelect.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
+        trackSelect.classList.add('bg-white', 'text-gray-800');
+    } else {
+        title.textContent = "Edit Template";
+        // Locks the dropdown to the template's designated track
+        trackSelect.disabled = true;
+        trackSelect.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
+        trackSelect.classList.remove('bg-white', 'text-gray-800');
+        
+        try {
+            const { data, error } = await supabase
+                .from('email_templates')
+                .select('*')
+                .eq('template_id', templateId)
+                .single();
+                
+            if (error) throw error;
+            
+            // Populate the modal fields directly from the database row
+            document.getElementById('modal-template-id').value = data.template_id;
+            document.getElementById('modal-template-name').value = data.template_name;
+            trackSelect.value = data.track;
+            document.getElementById('modal-template-subject').value = data.subject;
+            document.getElementById('modal-template-body').value = data.message_body;
+            
+        } catch (err) {
+            console.error("Fetch template error:", err);
+            return;
+        }
+    }
+    
+    document.getElementById('modal-overlay').classList.remove('hidden');
+    modal.classList.remove('hidden');
+};
+
+window.saveTemplate = async function(event) {
+    event.preventDefault();
+    const saveBtn = document.getElementById('save-template-btn');
+    saveBtn.textContent = 'Saving...';
+    saveBtn.disabled = true;
+    
+    const id = document.getElementById('modal-template-id').value;
+    
+    const payload = {
+        template_name: document.getElementById('modal-template-name').value,
+        track: document.getElementById('modal-template-track').value,
+        subject: document.getElementById('modal-template-subject').value,
+        message_body: document.getElementById('modal-template-body').value
+    };
+    
+    try {
+        if (id) {
+            // Edit Existing
+            const { error } = await supabase.from('email_templates').update(payload).eq('template_id', id);
+            if (error) throw error;
+        } else {
+            // Create New
+            const { error } = await supabase.from('email_templates').insert([payload]);
+            if (error) throw error;
+        }
+        
+        closeModals();
+        loadEmailTemplates(); // Instant reload of UI
+    } catch (err) {
+        alert("Failed to save: " + err.message);
+        console.error(err);
+    } finally {
+        saveBtn.textContent = 'Save Template';
+        saveBtn.disabled = false;
+    }
+};
+
+window.deleteTemplate = async function(templateId) {
+    if (!confirm("Are you sure you want to delete this template? This cannot be undone.")) return;
+    
+    try {
+        const { error } = await supabase.from('email_templates').delete().eq('template_id', templateId);
+        if (error) throw error;
+        loadEmailTemplates(); 
+    } catch(err) {
+        alert("Delete failed: " + err.message);
+        console.error(err);
+    }
+};
