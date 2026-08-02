@@ -322,6 +322,16 @@ function resetBookingForm(form) {
 // 1. RECRUITMENT (AGENT) FUNNEL
 window.agentForm.addEventListener("submit", async function (e) {
     e.preventDefault();
+    // ==========================================
+    // CLOUDFLARE TURNSTILE SECURITY CHECK
+    // ==========================================
+    const formData = new FormData(e.target);
+    const turnstileResponse = formData.get('cf-turnstile-response');
+
+    if (!turnstileResponse) {
+        alert("Security Check Failed: Please verify you are human before submitting.");
+        return; // Kills the function instantly
+    }
     if (!validateForm(window.agentForm)) return;
 
     const submitBtn = window.agentForm.querySelector("button[type='submit']");
@@ -436,6 +446,16 @@ window.agentForm.addEventListener("submit", async function (e) {
 // 2. CLIENT FUNNEL
 window.clientForm.addEventListener("submit", async function (e) {
     e.preventDefault();
+    // ==========================================
+    // CLOUDFLARE TURNSTILE SECURITY CHECK
+    // ==========================================
+    const formData = new FormData(e.target);
+    const turnstileResponse = formData.get('cf-turnstile-response');
+
+    if (!turnstileResponse) {
+        alert("Security Check Failed: Please verify you are human before submitting.");
+        return; // Kills the function instantly
+    }
     if (!validateForm(window.clientForm)) return;
 
     const submitBtn = window.clientForm.querySelector("button[type='submit']");

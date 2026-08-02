@@ -28,6 +28,8 @@
 
     <link rel="stylesheet" href="../src/css/style.css">
     <script src="/src/js/script.js" defer></script>
+    <!-- Cloudflare Turnstile Script -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 
 <body>
@@ -387,6 +389,11 @@
             </div>
           </div>
 
+          <!-- Cloudflare Turnstile (Agent) -->
+          <div class="w-full flex justify-end px-5 lg:px-10 pb-4 bg-[#faf8f8]">
+              <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA"></div>
+          </div>
+
           <div class="w-full bg-[#edeae8] p-5 lg:px-10 flex justify-between items-center border-t border-gray-300">
             <p class="text-sm text-gray-500">Track: <strong class="text-gray-900">Career Preview</strong> — pick a date and time.</p>
             <button type="submit" class="bg-[#e31d1a] hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:-translate-y-0.5">Confirm My Slot</button>
@@ -530,6 +537,11 @@
              </div>
 
             </div>
+          </div>
+
+          <!-- Cloudflare Turnstile (Client) -->
+          <div class="w-full flex justify-end px-5 lg:px-10 pb-4 bg-[#faf8f8]">
+              <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA"></div>
           </div>
 
           <div class="w-full bg-[#edeae8] p-5 lg:px-10 flex justify-between items-center border-t border-gray-300">
