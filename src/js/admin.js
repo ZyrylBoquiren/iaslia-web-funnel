@@ -55,7 +55,24 @@ async function handleLogin(event) {
     const email = document.getElementById('login-username').value;
     const pass = document.getElementById('login-password').value;
     const submitBtn = event.target.querySelector('button[type="submit"]');
+    const errorMsg = document.getElementById('login-error-msg');
     
+    // Hide previous errors every time they click submit
+    errorMsg.classList.add('hidden');
+    errorMsg.textContent = "";
+
+    // ==========================================
+    // CLOUDFLARE TURNSTILE SECURITY CHECK
+    // ==========================================
+    const formData = new FormData(event.target);
+    const turnstileResponse = formData.get('cf-turnstile-response');
+
+    if (!turnstileResponse) {
+        errorMsg.textContent = "Security Check Failed: Please verify you are human.";
+        errorMsg.classList.remove('hidden');
+        return; // Kills the function instantly
+    }
+
     // UI Feedback
     const originalText = submitBtn.textContent;
     submitBtn.textContent = "Authenticating...";
@@ -74,7 +91,7 @@ async function handleLogin(event) {
         document.getElementById('login-view').classList.add('hidden');
         document.getElementById('admin-app').classList.remove('hidden');
         
-        // NOW we load the sensitive data
+        // Load the data
         if (typeof loadAdminLeads === 'function') loadAdminLeads();
         if (typeof loadEmailTemplates === 'function') loadEmailTemplates();
         if (typeof renderAdminCalendar === 'function') {
@@ -85,7 +102,9 @@ async function handleLogin(event) {
         }
 
     } catch (error) {
-        alert('Access Denied: ' + error.message);
+        // SHOW ERROR IN UI INSTEAD OF ALERT
+        errorMsg.textContent = 'Access Denied: Invalid email or password.';
+        errorMsg.classList.remove('hidden');
         console.error("Auth Error:", error);
     } finally {
         submitBtn.textContent = originalText;
@@ -631,19 +650,21 @@ function setupCalendarArrows() {
     const nextBtn = document.getElementById('admin-next-month');
     
     if (prevBtn) {
-        prevBtn.addEventListener('click', (e) => {
+        // CHANGED to .onclick to prevent ghost duplications on re-login
+        prevBtn.onclick = (e) => {
             e.preventDefault(); // Prevents page reload
             adminNavDate.setMonth(adminNavDate.getMonth() - 1);
             renderAdminCalendar();
-        });
+        };
     }
     
     if (nextBtn) {
-        nextBtn.addEventListener('click', (e) => {
+        // CHANGED to .onclick to prevent ghost duplications on re-login
+        nextBtn.onclick = (e) => {
             e.preventDefault(); // Prevents page reload
             adminNavDate.setMonth(adminNavDate.getMonth() + 1);
             renderAdminCalendar();
-        });
+        };
     }
 }
 
