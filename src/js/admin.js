@@ -117,22 +117,34 @@ async function handleLogin(event) {
 // ==========================================
 async function handleLogout() {
     try {
-        // Tell Supabase to destroy the active session
+        // Attempt to tell the server to kill the session
         const { error } = await supabase.auth.signOut();
         
-        if (error) throw error;
-
-        // Hide dashboard, show login screen
-        document.getElementById('admin-app').classList.add('hidden');
-        document.getElementById('login-view').classList.remove('hidden');
-
-        // Clear the input fields so the next person doesn't see them
-        document.getElementById('login-username').value = '';
-        document.getElementById('login-password').value = '';
-
+        if (error) {
+            console.warn("Server session already dead or expired:", error.message);
+        }
     } catch (error) {
-        alert('Error logging out: ' + error.message);
         console.error("Logout Error:", error);
+    } finally {
+        
+        // Hide dashboard, show login screen
+        const adminApp = document.getElementById('admin-app');
+        const loginView = document.getElementById('login-view');
+        
+        if (adminApp) adminApp.classList.add('hidden');
+        if (loginView) loginView.classList.remove('hidden');
+
+        // Clear the input fields and error messages
+        const usernameInput = document.getElementById('login-username');
+        const passwordInput = document.getElementById('login-password');
+        const errorMsg = document.getElementById('login-error-msg');
+        
+        if (usernameInput) usernameInput.value = '';
+        if (passwordInput) passwordInput.value = '';
+        if (errorMsg) {
+            errorMsg.classList.add('hidden');
+            errorMsg.textContent = '';
+        }
     }
 }
 
