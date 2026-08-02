@@ -12,14 +12,33 @@ if (window.supabase) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  if (window.supabase) loadAdminLeads();
-  if (typeof renderAdminCalendar === 'function') {
-    await renderAdminCalendar();
-    setupCalendarArrows();
-    loadEmailTemplates();
-    initBookingSwitch();
-    initAddSlotButton();
-  }
+    if (!window.supabase) {
+        console.warn("Supabase script not loaded. Real data will not fetch.");
+        return;
+    }
+
+    // Check if the admin is already logged in from a previous session
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (session) {
+        // Skip login screen
+        document.getElementById('login-view').classList.add('hidden');
+        document.getElementById('admin-app').classList.remove('hidden');
+        
+        // Load data
+        loadAdminLeads();
+        if (typeof renderAdminCalendar === 'function') {
+            await renderAdminCalendar();
+            setupCalendarArrows();
+            loadEmailTemplates();
+            initBookingSwitch();
+            initAddSlotButton();
+        }
+    } else {
+        // Show login screen (default HTML state)
+        document.getElementById('login-view').classList.remove('hidden');
+        document.getElementById('admin-app').classList.add('hidden');
+    }
 });
 
 // ==========================================
@@ -27,10 +46,75 @@ document.addEventListener('DOMContentLoaded', async () => {
 // ==========================================
 
 // Login Handler
-function handleLogin(event) {
+// ==========================================
+// SUPABASE AUTHENTICATION
+// ==========================================
+async function handleLogin(event) {
     event.preventDefault(); 
-    document.getElementById('login-view').classList.add('hidden');
-    document.getElementById('admin-app').classList.remove('hidden');
+    
+    const email = document.getElementById('login-username').value;
+    const pass = document.getElementById('login-password').value;
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    
+    // UI Feedback
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = "Authenticating...";
+    submitBtn.disabled = true;
+
+    try {
+        // The actual call to Supabase
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: pass,
+        });
+
+        if (error) throw error;
+
+        // If successful, hide login, show dashboard
+        document.getElementById('login-view').classList.add('hidden');
+        document.getElementById('admin-app').classList.remove('hidden');
+        
+        // NOW we load the sensitive data
+        if (typeof loadAdminLeads === 'function') loadAdminLeads();
+        if (typeof loadEmailTemplates === 'function') loadEmailTemplates();
+        if (typeof renderAdminCalendar === 'function') {
+            await renderAdminCalendar();
+            setupCalendarArrows();
+            initBookingSwitch();
+            initAddSlotButton();
+        }
+
+    } catch (error) {
+        alert('Access Denied: ' + error.message);
+        console.error("Auth Error:", error);
+    } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    }
+}
+
+// ==========================================
+// SUPABASE LOGOUT
+// ==========================================
+async function handleLogout() {
+    try {
+        // Tell Supabase to destroy the active session
+        const { error } = await supabase.auth.signOut();
+        
+        if (error) throw error;
+
+        // Hide dashboard, show login screen
+        document.getElementById('admin-app').classList.add('hidden');
+        document.getElementById('login-view').classList.remove('hidden');
+
+        // Clear the input fields so the next person doesn't see them
+        document.getElementById('login-username').value = '';
+        document.getElementById('login-password').value = '';
+
+    } catch (error) {
+        alert('Error logging out: ' + error.message);
+        console.error("Logout Error:", error);
+    }
 }
 
 // SPA Tab Navigation
@@ -1386,5 +1470,73 @@ window.deleteTemplate = async function(templateId) {
     } catch(err) {
         alert("Delete failed: " + err.message);
         console.error(err);
+    }
+};
+
+// ==========================================
+// GOD-MODE TAB SWITCHING ENGINE
+// ==========================================
+window.switchTab = function(tabId) {
+    try {
+        // 1. Master array of your 5 tabs and their matching navigation buttons
+        const tabs = [
+            { view: 'view-leads', btn: 'nav-leads' },
+            { view: 'view-analytics', btn: 'nav-analytics' },
+            { view: 'view-calendar', btn: 'nav-calendar' },
+            { view: 'view-email-templates', btn: 'nav-email-templates' },
+            { view: 'view-settings', btn: 'nav-settings' }
+        ];
+
+        // 2. Safely hide EVERYTHING and reset all button colors
+        tabs.forEach(tab => {
+            // Hide the view container safely
+            const viewEl = document.getElementById(tab.view);
+            if (viewEl) {
+                viewEl.classList.add('hidden');
+                viewEl.classList.remove('block');
+                viewEl.style.display = 'none'; // Force hide just in case
+            }
+
+            // Reset sidebar buttons to gray/inactive
+            const btnEl = document.getElementById(tab.btn);
+            if (btnEl) {
+                btnEl.classList.remove('bg-[#3a2727]', 'text-white');
+                btnEl.classList.add('text-gray-300', 'hover:bg-[#3a2727]', 'hover:text-white');
+                
+                // Turn the little dot gray
+                const dot = btnEl.querySelector('span');
+                if (dot) {
+                    dot.classList.remove('bg-[#b89569]');
+                    dot.classList.add('bg-[#6b7280]');
+                }
+            }
+        });
+
+        // 3. FORCE SHOW the one you actually clicked
+        const targetView = document.getElementById(tabId);
+        if (targetView) {
+            targetView.classList.remove('hidden');
+            targetView.classList.add('block');
+            targetView.style.display = 'block'; // Force show to kill the white screen
+        }
+
+        // 4. Highlight the active sidebar button
+        const activeBtnId = tabId.replace('view-', 'nav-'); // e.g., turns 'view-leads' into 'nav-leads'
+        const activeBtn = document.getElementById(activeBtnId);
+        if (activeBtn) {
+            // Make button dark background with white text
+            activeBtn.classList.add('bg-[#3a2727]', 'text-white');
+            activeBtn.classList.remove('text-gray-300', 'hover:bg-[#3a2727]', 'hover:text-white');
+            
+            // Light up the gold dot!
+            const activeDot = activeBtn.querySelector('span');
+            if (activeDot) {
+                activeDot.classList.remove('bg-[#6b7280]');
+                activeDot.classList.add('bg-[#b89569]');
+            }
+        }
+
+    } catch (err) {
+        console.error("CRITICAL: Tab switch failed:", err);
     }
 };
