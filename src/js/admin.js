@@ -58,8 +58,10 @@ async function handleLogin(event) {
     const errorMsg = document.getElementById('login-error-msg');
     
     // Hide previous errors every time they click submit
-    errorMsg.classList.add('hidden');
-    errorMsg.textContent = "";
+    if (errorMsg) {
+        errorMsg.classList.add('hidden');
+        errorMsg.textContent = "";
+    }
 
     // ==========================================
     // CLOUDFLARE TURNSTILE SECURITY CHECK
@@ -68,8 +70,10 @@ async function handleLogin(event) {
     const turnstileResponse = formData.get('cf-turnstile-response');
 
     if (!turnstileResponse) {
-        errorMsg.textContent = "Security Check Failed: Please verify you are human.";
-        errorMsg.classList.remove('hidden');
+        if (errorMsg) {
+            errorMsg.textContent = "Security Check Failed: Please verify you are human.";
+            errorMsg.classList.remove('hidden');
+        }
         return; // Kills the function instantly
     }
 
@@ -103,8 +107,10 @@ async function handleLogin(event) {
 
     } catch (error) {
         // SHOW ERROR IN UI INSTEAD OF ALERT
-        errorMsg.textContent = 'Access Denied: Invalid email or password.';
-        errorMsg.classList.remove('hidden');
+        if (errorMsg) {
+            errorMsg.textContent = 'Access Denied: Invalid email or password.';
+            errorMsg.classList.remove('hidden');
+        }
         console.error("Auth Error:", error);
     } finally {
         submitBtn.textContent = originalText;
