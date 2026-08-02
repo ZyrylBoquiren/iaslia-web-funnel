@@ -1540,3 +1540,135 @@ window.switchTab = function(tabId) {
         console.error("CRITICAL: Tab switch failed:", err);
     }
 };
+
+// ==========================================
+// CSV EXPORT ENGINE
+// ==========================================
+
+// Helper function to turn JSON objects into clean CSV text
+function convertToCSV(objArray) {
+    if (!objArray || objArray.length === 0) return '';
+    const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+    let str = '';
+    
+    // Extract headers
+    const headers = Object.keys(array[0]);
+    str += headers.join(',') + '\r\n';
+
+    // Loop through rows
+    for (let i = 0; i < array.length; i++) {
+        let line = '';
+        for (let index in array[i]) {
+            if (line !== '') line += ',';
+            
+            // Catch nulls and clean up quotes/commas so it doesn't break Excel
+            let cellValue = array[i][index] === null || array[i][index] === undefined ? '' : String(array[i][index]);
+            cellValue = cellValue.replace(/"/g, '""');
+            if (cellValue.search(/("|,|\n)/g) >= 0) {
+                cellValue = '"' + cellValue + '"';
+            }
+            line += cellValue;
+        }
+        str += line + '\r\n';
+    }
+    return str;
+}
+
+// Helper function to force browser download
+function triggerDownload(csvContent, fileName) {
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", fileName);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// 1. Export Leads Function
+window.exportLeadsCSV = async function(event) {
+    const btn = event.target;
+    const originalText = btn.textContent;
+    btn.textContent = "Exporting...";
+    btn.disabled = true;
+
+    try {
+        const { data, error } = await supabase
+            .from('leads')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        
+        if (!data || data.length === 0) {
+            alert("No leads found in the database to export.");
+            return;
+        }
+
+        const csvData = convertToCSV(data);
+        const dateStr = new Date().toISOString().split('T')[0];
+        triggerDownload(csvData, `IASLIA_Leads_Export_${dateStr}.csv`);
+
+    } catch (err) {
+        console.error("Export error:", err.message);
+        alert("Failed to export leads: " + err.message);
+    } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+    }
+};
+
+// 2. Export Appointments Function
+window.exportAppointmentsCSV = async function(event) {
+    const btn = event.target;
+    const originalText = btn.textContent;
+    btn.textContent = "Exporting...";
+    btn.disabled = true;
+
+    try {
+        // Fetch appointments AND join the related lead and slot data!
+        const { data, error } = await supabase
+            .from('appointments')
+            .select(`
+                appointment_id,
+                reference_code,
+                status,
+                admin_notes,
+                leads ( full_name, email, mobile_number, track ),
+                availability_slots ( slot_date, slot_time )
+            `);
+
+        if (error) throw error;
+        
+        if (!data || data.length === 0) {
+            alert("No appointments found in the database to export.");
+            return;
+        }
+
+        // Flatten the nested JSON so the CSV is perfectly readable for the boss
+        const formattedData = data.map(appt => ({
+            reference_code: appt.reference_code,
+            client_name: appt.leads?.full_name || 'Unknown',
+            client_email: appt.leads?.email || 'Unknown',
+            client_phone: appt.leads?.mobile_number || 'Unknown',
+            track: appt.leads?.track === 'future_advisor' ? 'Agent' : 'Client',
+            date: appt.availability_slots?.slot_date || 'Unscheduled',
+            time: appt.availability_slots?.slot_time || 'N/A',
+            status: appt.status,
+            admin_notes: appt.admin_notes || ''
+        }));
+
+        const csvData = convertToCSV(formattedData);
+        const dateStr = new Date().toISOString().split('T')[0];
+        triggerDownload(csvData, `IASLIA_Appointments_Export_${dateStr}.csv`);
+
+    } catch (err) {
+        console.error("Export error:", err.message);
+        alert("Failed to export appointments: " + err.message);
+    } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+    }
+};

@@ -305,106 +305,109 @@
 
             <div id="view-analytics" class="hidden max-w-6xl mx-auto">
                 <div class="mb-8">
-                    <h1 class="text-3xl font-serif font-bold text-gray-900 mb-1">Analytics</h1>
+                    <h1 class="text-3xl font-serif font-bold text-gray-900 mb-1">Analytics (WIP)</h1>
                     <p class="text-[13px] text-gray-500">A live snapshot of your pipeline, calculated from your current lead data.</p>
                 </div>
                 
-                <div class="grid grid-cols-4 gap-6 mb-6">
-                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">6</p><p class="text-[12px] text-gray-500">Total Leads</p></div>
-                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">3</p><p class="text-[12px] text-gray-500">Agent Leads</p></div>
-                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">3</p><p class="text-[12px] text-gray-500">Client Leads</p></div>
-                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">2</p><p class="text-[12px] text-gray-500">Converted Leads</p></div>
-                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">33%</p><p class="text-[12px] text-gray-500">Conversion Rate</p></div>
-                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">2</p><p class="text-[12px] text-gray-500">New Leads</p></div>
-                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">4</p><p class="text-[12px] text-gray-500">Meetings Completed</p></div>
-                    <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">1</p><p class="text-[12px] text-gray-500">PRU Life UK Emails Created</p></div>
-                </div>
+                <!-- Wrapper to ghost out the entire UI -->
+                <div class="opacity-50 pointer-events-none select-none">
+                    <div class="grid grid-cols-4 gap-6 mb-6">
+                        <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">6</p><p class="text-[12px] text-gray-500">Total Leads</p></div>
+                        <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">3</p><p class="text-[12px] text-gray-500">Agent Leads</p></div>
+                        <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">3</p><p class="text-[12px] text-gray-500">Client Leads</p></div>
+                        <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">2</p><p class="text-[12px] text-gray-500">Converted Leads</p></div>
+                        <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">33%</p><p class="text-[12px] text-gray-500">Conversion Rate</p></div>
+                        <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">2</p><p class="text-[12px] text-gray-500">New Leads</p></div>
+                        <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">4</p><p class="text-[12px] text-gray-500">Meetings Completed</p></div>
+                        <div class="bg-white border border-pru-border rounded-xl p-6 shadow-sm"><p class="text-3xl font-serif font-bold text-pru-red mb-2">1</p><p class="text-[12px] text-gray-500">PRU Life UK Emails Created</p></div>
+                    </div>
 
-                <div class="grid grid-cols-2 gap-6 mb-6">
-                    <div class="bg-white border border-pru-border rounded-xl p-7 shadow-sm">
-                        <h3 class="font-bold text-[14px] text-gray-900 mb-1">Agent vs. Client</h3>
-                        <p class="text-[11px] text-gray-500 mb-8">Split of your total pipeline by lead type.</p>
-                        
-                        <div class="space-y-4">
-                            <div class="flex items-center gap-4">
-                                <span class="w-16 text-[12px] text-gray-600">Agents</span>
-                                <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
-                                    <div class="h-full bg-[#9f1b21] w-1/2 rounded-full"></div>
+                    <div class="grid grid-cols-2 gap-6 mb-6">
+                        <div class="bg-white border border-pru-border rounded-xl p-7 shadow-sm">
+                            <h3 class="font-bold text-[14px] text-gray-900 mb-1">Agent vs. Client</h3>
+                            <p class="text-[11px] text-gray-500 mb-8">Split of your total pipeline by lead type.</p>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-4">
+                                    <span class="w-16 text-[12px] text-gray-600">Agents</span>
+                                    <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
+                                        <div class="h-full bg-[#9f1b21] w-1/2 rounded-full"></div>
+                                    </div>
+                                    <span class="text-[12px] font-bold text-gray-900 w-4 text-right">3</span>
                                 </div>
-                                <span class="text-[12px] font-bold text-gray-900 w-4 text-right">3</span>
+                                <div class="flex items-center gap-4">
+                                    <span class="w-16 text-[12px] text-gray-600">Clients</span>
+                                    <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
+                                        <div class="h-full bg-[#b89569] w-1/2 rounded-full"></div>
+                                    </div>
+                                    <span class="text-[12px] font-bold text-gray-900 w-4 text-right">3</span>
+                                </div>
                             </div>
-                            <div class="flex items-center gap-4">
-                                <span class="w-16 text-[12px] text-gray-600">Clients</span>
-                                <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
-                                    <div class="h-full bg-[#b89569] w-1/2 rounded-full"></div>
+                        </div>
+                        
+                        <div class="bg-white border border-pru-border rounded-xl p-7 shadow-sm">
+                            <h3 class="font-bold text-[14px] text-gray-900 mb-1">Stage Breakdown</h3>
+                            <p class="text-[11px] text-gray-500 mb-8">Where every lead currently sits.</p>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-4">
+                                    <span class="w-48 text-[12px] text-gray-600">New Lead</span>
+                                    <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
+                                        <div class="h-full bg-[#9f1b21] w-1/3 rounded-full"></div>
+                                    </div>
+                                    <span class="text-[12px] font-bold text-gray-900 w-4 text-right">2</span>
                                 </div>
-                                <span class="text-[12px] font-bold text-gray-900 w-4 text-right">3</span>
+                                <div class="flex items-center gap-4">
+                                    <span class="w-48 text-[12px] text-gray-600">Meeting Done</span>
+                                    <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
+                                        <div class="h-full bg-[#9f1b21] w-1/3 rounded-full"></div>
+                                    </div>
+                                    <span class="text-[12px] font-bold text-gray-900 w-4 text-right">2</span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span class="w-48 text-[12px] text-gray-600">PRU Life UK Email Created</span>
+                                    <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
+                                        <div class="h-full bg-[#9f1b21] w-[0%] rounded-full"></div>
+                                    </div>
+                                    <span class="text-[12px] font-bold text-gray-900 w-4 text-right">0</span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span class="w-48 text-[12px] text-gray-600">Officially Converted</span>
+                                    <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
+                                        <div class="h-full bg-[#6a8770] w-1/3 rounded-full"></div>
+                                    </div>
+                                    <span class="text-[12px] font-bold text-gray-900 w-4 text-right">2</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="bg-white border border-pru-border rounded-xl p-7 shadow-sm">
-                        <h3 class="font-bold text-[14px] text-gray-900 mb-1">Stage Breakdown</h3>
-                        <p class="text-[11px] text-gray-500 mb-8">Where every lead currently sits.</p>
+                        <h3 class="font-bold text-[14px] text-gray-900 mb-1">Source Breakdown</h3>
+                        <p class="text-[11px] text-gray-500 mb-8">Where your leads are coming from.</p>
                         
                         <div class="space-y-4">
                             <div class="flex items-center gap-4">
-                                <span class="w-48 text-[12px] text-gray-600">New Lead</span>
+                                <span class="w-48 text-[12px] text-gray-600">Funnel, Career Preview</span>
                                 <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
                                     <div class="h-full bg-[#9f1b21] w-1/3 rounded-full"></div>
                                 </div>
                                 <span class="text-[12px] font-bold text-gray-900 w-4 text-right">2</span>
                             </div>
                             <div class="flex items-center gap-4">
-                                <span class="w-48 text-[12px] text-gray-600">Meeting Done</span>
+                                <span class="w-48 text-[12px] text-gray-600">Referral</span>
                                 <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
                                     <div class="h-full bg-[#9f1b21] w-1/3 rounded-full"></div>
                                 </div>
                                 <span class="text-[12px] font-bold text-gray-900 w-4 text-right">2</span>
                             </div>
                             <div class="flex items-center gap-4">
-                                <span class="w-48 text-[12px] text-gray-600">PRU Life UK Email Created</span>
+                                <span class="w-48 text-[12px] text-gray-600">Funnel, Financial Conversation</span>
                                 <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
-                                    <div class="h-full bg-[#9f1b21] w-[0%] rounded-full"></div>
-                                </div>
-                                <span class="text-[12px] font-bold text-gray-900 w-4 text-right">0</span>
-                            </div>
-                            <div class="flex items-center gap-4">
-                                <span class="w-48 text-[12px] text-gray-600">Officially Converted</span>
-                                <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
-                                    <div class="h-full bg-[#6a8770] w-1/3 rounded-full"></div>
+                                    <div class="h-full bg-[#9f1b21] w-1/3 rounded-full"></div>
                                 </div>
                                 <span class="text-[12px] font-bold text-gray-900 w-4 text-right">2</span>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white border border-pru-border rounded-xl p-7 shadow-sm">
-                    <h3 class="font-bold text-[14px] text-gray-900 mb-1">Source Breakdown</h3>
-                    <p class="text-[11px] text-gray-500 mb-8">Where your leads are coming from.</p>
-                    
-                    <div class="space-y-4">
-                        <div class="flex items-center gap-4">
-                            <span class="w-48 text-[12px] text-gray-600">Funnel, Career Preview</span>
-                            <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
-                                <div class="h-full bg-[#9f1b21] w-1/3 rounded-full"></div>
-                            </div>
-                            <span class="text-[12px] font-bold text-gray-900 w-4 text-right">2</span>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <span class="w-48 text-[12px] text-gray-600">Referral</span>
-                            <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
-                                <div class="h-full bg-[#9f1b21] w-1/3 rounded-full"></div>
-                            </div>
-                            <span class="text-[12px] font-bold text-gray-900 w-4 text-right">2</span>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <span class="w-48 text-[12px] text-gray-600">Funnel, Financial Conversation</span>
-                            <div class="flex-grow h-2.5 bg-[#fbf4f2] rounded-full overflow-hidden">
-                                <div class="h-full bg-[#9f1b21] w-1/3 rounded-full"></div>
-                            </div>
-                            <span class="text-[12px] font-bold text-gray-900 w-4 text-right">2</span>
                         </div>
                     </div>
                 </div>
@@ -557,69 +560,80 @@
                 
                 <div class="grid grid-cols-2 gap-6 items-start">
                     
-                    <div class="bg-white border border-pru-border rounded-xl p-8 shadow-sm">
-                        <h2 class="text-[16px] font-bold text-gray-900 mb-6">Unit Manager</h2>
+                    <div class="bg-white border border-pru-border rounded-xl p-8 shadow-sm opacity-70">
+                        <h2 class="text-[15px] font-serif font-bold text-gray-900 mb-6 flex justify-between items-center">
+                            Unit Manager
+                            <span class="text-[9px] bg-gray-100 text-gray-500 px-2 py-1 rounded uppercase tracking-widest">Work In Progress</span>
+                        </h2>
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-[11px] font-bold text-gray-700 mb-1">Name</label>
-                                <input type="text" value="Admin User" class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] outline-none focus:border-pru-red shadow-sm text-gray-800">
+                                <label class="block text-[11px] font-bold text-gray-400 mb-1">Name</label>
+                                <input type="text" value="Admin User" readonly class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-[13px] outline-none shadow-sm text-gray-400 bg-gray-50 cursor-not-allowed">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-bold text-gray-700 mb-1">Branch</label>
-                                <input type="text" value="Manila Main Branch" class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] outline-none focus:border-pru-red shadow-sm text-gray-800">
+                                <label class="block text-[11px] font-bold text-gray-400 mb-1">Branch</label>
+                                <input type="text" value="Manila Main Branch" readonly class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-[13px] outline-none shadow-sm text-gray-400 bg-gray-50 cursor-not-allowed">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-bold text-gray-700 mb-1">Email</label>
-                                <input type="email" value="isaacadmin@iaslia.com" class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] outline-none focus:border-pru-red shadow-sm text-gray-800">
+                                <label class="block text-[11px] font-bold text-gray-400 mb-1">Email</label>
+                                <input type="email" value="isaacadmin@iaslia.com" readonly class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-[13px] outline-none shadow-sm text-gray-400 bg-gray-50 cursor-not-allowed">
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-white border border-pru-border rounded-xl p-8 shadow-sm">
-                        <h2 class="text-[16px] font-bold text-gray-900 mb-6">Calendar</h2>
+                    <div class="bg-white border border-pru-border rounded-xl p-8 shadow-sm opacity-70">
+                        <h2 class="text-[15px] font-serif font-bold text-gray-900 mb-6 flex justify-between items-center">
+                            Calendar
+                            <span class="text-[9px] bg-gray-100 text-gray-500 px-2 py-1 rounded uppercase tracking-widest">WORK IN PROGRESS</span>
+                        </h2>
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-[11px] font-bold text-gray-700 mb-1">Default Appointment Duration</label>
-                                <input type="text" value="30 minutes" class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] outline-none focus:border-pru-red shadow-sm text-gray-800">
+                                <label class="block text-[11px] font-bold text-gray-400 mb-1">Default Appointment Duration</label>
+                                <input type="text" value="30 minutes" readonly class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-[13px] outline-none shadow-sm text-gray-400 bg-gray-50 cursor-not-allowed">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-bold text-gray-700 mb-1">Location</label>
-                                <input type="text" value="Branch Office — 5F PRU Tower" class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] outline-none focus:border-pru-red shadow-sm text-gray-800">
+                                <label class="block text-[11px] font-bold text-gray-400 mb-1">Location</label>
+                                <input type="text" value="Branch Office — 5F PRU Tower" readonly class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-[13px] outline-none shadow-sm text-gray-400 bg-gray-50 cursor-not-allowed">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-bold text-gray-700 mb-1">Timezone</label>
-                                <input type="text" value="Asia/Manila" class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] outline-none focus:border-pru-red shadow-sm text-gray-800">
+                                <label class="block text-[11px] font-bold text-gray-400 mb-1">Timezone</label>
+                                <input type="text" value="Asia/Manila" readonly class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-[13px] outline-none shadow-sm text-gray-400 bg-gray-50 cursor-not-allowed">
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-white border border-pru-border rounded-xl p-8 shadow-sm">
-                        <h2 class="text-[16px] font-bold text-gray-900 mb-6">Booking Rules</h2>
+                    <div class="bg-white border border-pru-border rounded-xl p-8 shadow-sm opacity-70">
+                        <h2 class="text-[15px] font-serif font-bold text-gray-900 mb-6 flex justify-between items-center">
+                            Booking Rules
+                            <span class="text-[9px] bg-gray-100 text-gray-500 px-2 py-1 rounded uppercase tracking-widest">WORK IN PROGRESS</span>
+                        </h2>
                         <div class="space-y-4 mb-8">
-                            <label class="flex items-center gap-3 cursor-pointer">
-                                <div class="w-4 h-4 rounded bg-[#bd1512] flex items-center justify-center text-white text-[10px]">✓</div>
-                                <span class="text-[13px] font-medium text-gray-800">Enable Agent bookings (Career Preview)</span>
+                            <label class="flex items-center gap-3 cursor-not-allowed">
+                                <div class="w-4 h-4 rounded bg-gray-300 flex items-center justify-center text-white text-[10px]">✓</div>
+                                <span class="text-[13px] font-medium text-gray-400">Enable Agent bookings (Career Preview)</span>
                             </label>
-                            <label class="flex items-center gap-3 cursor-pointer">
-                                <div class="w-4 h-4 rounded bg-[#bd1512] flex items-center justify-center text-white text-[10px]">✓</div>
-                                <span class="text-[13px] font-medium text-gray-800">Enable Client bookings (Financial Conversation)</span>
+                            <label class="flex items-center gap-3 cursor-not-allowed">
+                                <div class="w-4 h-4 rounded bg-gray-300 flex items-center justify-center text-white text-[10px]">✓</div>
+                                <span class="text-[13px] font-medium text-gray-400">Enable Client bookings (Financial Conversation)</span>
                             </label>
                             <div class="pt-2">
-                                <label class="block text-[11px] font-bold text-gray-700 mb-1">Default Capacity per Slot</label>
-                                <input type="text" placeholder="Leave blank for unlimited" class="w-full border border-pru-border rounded-lg px-4 py-2.5 text-[13px] outline-none focus:border-pru-red shadow-sm text-gray-600">
+                                <label class="block text-[11px] font-bold text-gray-400 mb-1">Default Capacity per Slot</label>
+                                <input type="text" placeholder="Leave blank for unlimited" readonly class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-[13px] outline-none shadow-sm text-gray-400 bg-gray-50 cursor-not-allowed">
                             </div>
                         </div>
-                        <button class="bg-[#bd1512] text-white px-6 py-2 rounded-full text-[13px] font-bold shadow-sm hover:bg-red-900 transition-colors">Save Settings</button>
+                        <button disabled class="bg-gray-200 text-gray-400 px-6 py-2 rounded-full text-[13px] font-bold shadow-sm cursor-not-allowed">Save Settings</button>
                     </div>
 
                     <div class="bg-white border border-pru-border rounded-xl p-8 shadow-sm">
-                        <h2 class="text-[15px] font-bold text-gray-900 mb-6">Data Management</h2>
+                        <h2 class="text-[15px] font-serif font-bold text-gray-900 mb-6">Data Management</h2>
                         <div class="space-y-3">
-                            <button class="w-full py-2.5 text-[13px] font-bold text-gray-800 border border-pru-border rounded-full hover:bg-gray-50 transition-colors shadow-sm">Export All Data (JSON)</button>
-                            <button class="w-full py-2.5 text-[13px] font-bold text-gray-800 border border-pru-border rounded-full hover:bg-gray-50 transition-colors shadow-sm">Import Data (JSON)</button>
-                            <button class="w-full py-2.5 text-[13px] font-bold text-gray-800 border border-pru-border rounded-full hover:bg-gray-50 transition-colors shadow-sm">Export Leads (CSV)</button>
-                            <button class="w-full py-2.5 text-[13px] font-bold text-gray-800 border border-pru-border rounded-full hover:bg-gray-50 transition-colors shadow-sm">Export Appointments (CSV)</button>
-                            <button onclick="openModal('reset-data-modal')" class="w-full py-2.5 text-[13px] font-bold text-pru-red border border-pru-border rounded-full hover:bg-[#fbf4f2] transition-colors shadow-sm">Reset Demo Data</button>
+                            <button class="w-full py-2.5 text-[13px] font-bold text-gray-400 border border-gray-200 rounded-full cursor-not-allowed shadow-sm">Export All Data (JSON)</button>
+                            <button class="w-full py-2.5 text-[13px] font-bold text-gray-400 border border-gray-200 rounded-full cursor-not-allowed shadow-sm">Import Data (JSON)</button>
+                            
+                            <button onclick="exportLeadsCSV(event)" class="w-full py-2.5 text-[13px] font-bold text-gray-800 border border-pru-border rounded-full hover:bg-gray-50 transition-colors shadow-sm">Export Leads (CSV)</button>
+                            <button onclick="exportAppointmentsCSV(event)" class="w-full py-2.5 text-[13px] font-bold text-gray-800 border border-pru-border rounded-full hover:bg-gray-50 transition-colors shadow-sm">Export Appointments (CSV)</button>
+                            
+                            <button onclick="openModal('reset-data-modal')" class="w-full py-2.5 text-[13px] font-bold text-pru-red border border-pru-border rounded-full hover:bg-[#fbf4f2] transition-colors shadow-sm">Reset Data</button>
                         </div>
                     </div>
 
