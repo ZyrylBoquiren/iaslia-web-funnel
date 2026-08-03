@@ -4,12 +4,13 @@
 const SUPABASE_URL = 'https://refufwvilgtgqpcnejhs.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZnVmd3ZpbGd0Z3FwY25lamhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4Nzk4MTMsImV4cCI6MjEwMDQ1NTgxM30.lPL_AWB1uMHS8Bac7jNtuPJJD7FUDpPNiuP0J7v6DII';
 
-let supabase;
+var supabase;
 if (window.supabase) {
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 } else {
     console.warn("Supabase script not loaded. Real data will not fetch.");
 }
+
 
 document.addEventListener('DOMContentLoaded', async () => {
     if (!window.supabase) {
