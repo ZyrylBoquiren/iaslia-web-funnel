@@ -65,11 +65,11 @@
                 <a href="#path" class="btn btn-primary">Find My Path</a>
                 <a href="#family" class="btn btn-outline">See the Family &nbsp;→</a>
             </div>
-            <div class="connect">
-                <span>Connect to one of us:</span>
-                <a href="#" class="icon-circle" aria-label="Email">✉</a>
-                <a href="#" class="icon-circle" aria-label="LinkedIn">in</a>
-                <a href="#" class="icon-circle" aria-label="Facebook">f</a>
+            <div class="connect flex items-center gap-3 mt-6">
+                <span class="text-gray-600 font-medium">Connect to one of us:</span>
+                <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-gray-300 text-gray-600 hover:border-[#e31d1a] hover:text-[#e31d1a] transition-colors font-bold" aria-label="Email">✉</a>
+                <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-gray-300 text-gray-600 hover:border-[#e31d1a] hover:text-[#e31d1a] transition-colors font-bold" aria-label="LinkedIn">in</a>
+                <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-gray-300 text-gray-600 hover:border-[#e31d1a] hover:text-[#e31d1a] transition-colors font-bold" aria-label="Facebook">f</a>
             </div>
         </div>
     </section>
@@ -106,31 +106,31 @@
                 future.</p>
 
             <div class="offer-grid">
-                <div class="offer-card">
+                <div class="offer-card flex flex-col items-center text-center">
                     <div class="offer-icon"><img src="../public/assets/images/icons/life-protection.png"
-                            alt="Life protection icon"></div>
+                            alt="Life protection icon" class="mx-auto"></div>
                     <h3>Life Protection</h3>
                     <p>Term and whole life insurance that locks in a secured future for you and your loved ones, no
                         matter what happens.</p>
                 </div>
 
-                <div class="offer-card">
-                    <div class="offer-icon"><img src="../public/assets/images/icons/health.png" alt="Health icon"></div>
+                <div class="offer-card flex flex-col items-center text-center">
+                    <div class="offer-icon"><img src="../public/assets/images/icons/health.png" alt="Health icon" class="mx-auto"></div>
                     <h3>Health Protection</h3>
                     <p>Critical illness and medical plans that help cover treatment costs so a diagnosis never becomes a
                         financial crisis.</p>
                 </div>
 
-                <div class="offer-card">
-                    <div class="offer-icon"><img src="../public/assets/images/icons/insurance.png" alt="Insurance icon">
+                <div class="offer-card flex flex-col items-center text-center">
+                    <div class="offer-icon"><img src="../public/assets/images/icons/insurance.png" alt="Insurance icon" class="mx-auto">
                     </div>
                     <h3>Insurance with Investment</h3>
                     <p>PRULink and unit-linked plans that combine life coverage with fund growth potential for long-term
                         wealth building.</p>
                 </div>
 
-                <div class="offer-card">
-                    <div class="offer-icon"><img src="../public/assets/images/icons/savings.png" alt="Savings icon">
+                <div class="offer-card flex flex-col items-center text-center">
+                    <div class="offer-icon"><img src="../public/assets/images/icons/savings.png" alt="Savings icon" class="mx-auto">
                     </div>
                     <h3>Savings &amp; Education</h3>
                     <p>Purpose-built plans to help you save steadily toward milestones — a child's education,
@@ -216,6 +216,49 @@
     </section>
 
     <!-- MILESTONES -->
+     <section class="milestones" id="milestones">
+        <div class="wrap">
+            <h2 class="section-title">MILESTONES</h2>
+            <p class="section-desc">Three decades of firsts in the Philippine life insurance industry from a
+                two-year-old challenger to the <strong>country's leading life insurer</strong>.</p>
+
+
+            <div class="m-list">
+                <ul>
+                    <li>
+                        <p class="m-date">1996</p>
+                        <p class="m-title">FOUNDATION</p>
+                        <p class="m-desc">Incorporated as Pru Life Insurance Corporation of U.K. <strong>granting
+                                license in the Philippines</strong> by the Insurance Commission.</p>
+                    </li>
+                    <li>
+                        <p class="m-date">2002</p>
+                        <p class="m-title">PIONEERED INVESTMENT-INSURANCE</p>
+                        <p class="m-desc">Launched PRULink Investor Account, introducing <strong>investment-linked
+                                life insurance</strong> to Philippine market for first time.</p>
+                    </li>
+                    <li>
+                        <p class="m-date">2007</p>
+                        <p class="m-title">CROSSED PhP1-BILLION</p>
+                        <p class="m-desc">A 130% growth from prior years, marking major financial scale milestone
+                            signaling company's rapid growth.</p>
+                    </li>
+                    <li>
+                        <p class="m-date">2011</p>
+                        <p class="m-title">LAUNCHED CHA-CHING</p>
+                        <p class="m-desc">Marked a <strong>shift toward public engagements</strong> and
+                            brand-building. Cha-Ching financial literacy cartoon that soon became education program.</p>
+                    </li>
+                    <li>
+                        <p class="m-date">2020</p>
+                        <p class="m-title">LAUNCHED PULSE</p>
+                        <p class="m-desc">Represents company's digital transformation era. <strong>Ranking
+                                1st</strong> for consecutive years in ASEAN Corporate Governance Scorecard.</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
 
     <!-- CHOOSE YOUR PATH -->
     <section class="path" id="path">
@@ -226,26 +269,32 @@
                 wrong answers, just a different first step.</p>
 
             <div class="path-grid">
-                <div onclick="switchTrack('agent')" class="path-card cursor-pointer border-2 border-[#e31d1a]/20 hover:border-[#e31d1a] transition-all group">
-                    <span class="inline-block bg-[#e31d1a] text-white text-[0.65rem] font-medium px-3.5 py-1.5 rounded-full mb-2 self-start tracking-[0.15em] uppercase">FOR FUTURE ADVISORS</span>
-                    <h3 class="path-title mt-2">Become an <span>Agent</span></h3>
+                <!-- AGENT CARD -->
+                <div onclick="switchTrack('agent')" class="path-card group cursor-pointer border-2 border-[#fce8e8] hover:border-[#e31d1a] transition-colors duration-300">
+                    <span class="path-tag bg-[#fce8e8] text-[#e31d1a] group-hover:bg-[#e31d1a] group-hover:text-white transition-colors duration-300">
+                        FOR FUTURE ADVISORS
+                    </span>
+                    <h3 class="path-title">Become an <span>Agent</span></h3>
                     <ul>
                         <li>Uncapped, flexible income</li>
                         <li>Mentorship and PRU Agent Academy Training</li>
                         <li>Sell, Recruit, Manage - build your own team</li>
                     </ul>
-                    <span class="path-link group-hover:text-[#e31d1a] transition-colors mt-auto block">See CAREER PREVIEW dates →</span>
+                    <span class="path-link group-hover:text-[#e31d1a] transition-colors duration-300">See CAREER PREVIEW dates →</span>
                 </div>
 
-                <div onclick="switchTrack('client')" class="path-card cursor-pointer border-2 border-[#e31d1a]/20 hover:border-[#e31d1a] transition-all group">
-                    <span class="inline-block bg-[#e31d1a] text-white text-[0.65rem] font-medium px-3.5 py-1.5 rounded-full mb-2 self-start tracking-[0.15em] uppercase">FOR FUTURE CLIENTS</span>
-                    <h3 class="path-title mt-2">Become a <span>Client</span></h3>
+                <!-- CLIENT CARD -->
+                <div onclick="switchTrack('client')" class="path-card group cursor-pointer border-2 border-[#fce8e8] hover:border-[#e31d1a] transition-colors duration-300">
+                    <span class="path-tag bg-[#fce8e8] text-[#e31d1a] group-hover:bg-[#e31d1a] group-hover:text-white transition-colors duration-300">
+                        FOR FUTURE CLIENTS
+                    </span>
+                    <h3 class="path-title">Become a <span>Client</span></h3>
                     <ul>
                         <li>Protection for what matters</li>
                         <li>Savings &amp; investment-linked growth</li>
                         <li>A plan built around your goals</li>
                     </ul>
-                    <span class="path-link group-hover:text-[#e31d1a] transition-colors mt-auto block">Book a FINANCIAL CONVERSATION →</span>
+                    <span class="path-link group-hover:text-[#e31d1a] transition-colors duration-300">Book a FINANCIAL CONVERSATION →</span>
                 </div>
             </div>
             <div class="path-photo"></div>
@@ -258,6 +307,7 @@
       <img src="./assets/images/ribbon.png" alt="" aria-hidden="true" 
            class="absolute top-0 right-0 w-[800px] lg:w-[1000px] max-w-none object-contain pointer-events-none -z-10 translate-x-[20%] -translate-y-[10%] opacity-90">
 
+      <!-- ===================== AGENT FORM ===================== -->
       <div id="agent-form-container" class="relative z-10 block">
         <div class="mb-10 max-w-2xl">
           <div class="flex items-center gap-4 mb-4">
@@ -273,82 +323,83 @@
           </div>
         </div>
 
-        <form id="appointment-form" action="/api/submit-agent" method="POST" class="booking-form bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden relative flex flex-col">
+        <form id="appointment-form" action="/api/submit-agent" method="POST" class="booking-form bg-white rounded-3xl shadow-xl border border-[#f1d9d8] overflow-hidden relative flex flex-col">
           
           <input type="hidden" name="appointment_date" id="agent_appt_date" class="appt-date-input" value="">
           <input type="hidden" name="appointment_time" id="agent_appt_time" class="appt-time-input" value="">
 
           <div class="flex flex-col lg:flex-row flex-grow">
-            <div class="w-full lg:w-1/2 p-8 lg:p-10 bg-[#f6f3f2] border-r border-gray-200 space-y-8">
+            <!-- LEFT COLUMN (Stretches full height) -->
+            <div class="w-full lg:w-1/2 p-8 lg:p-10 bg-white border-r border-[#f1d9d8] space-y-8">
               <div class="space-y-4">
                 <div>
-                  <label class="block text-xs font-bold text-gray-600 mb-1">Full Name</label>
-                  <input type="text" name="full_name" value="Juan Dela Cruz" required class="w-full bg-white border border-[#e31d1a] rounded-md px-4 py-2.5 text-sm text-gray-800 focus:outline-none">
+                  <label class="block text-xs font-bold text-gray-600 mb-1">Full Name <span class="text-[#e31d1a]">*</span></label>
+                  <input type="text" name="full_name" placeholder="e.g. Juan Dela Cruz" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#e31d1a]">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                   <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">Email Address</label>
-                    <input type="email" name="email" value="juan@email.com" required class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Email Address <span class="text-[#e31d1a]">*</span></label>
+                    <input type="email" name="email" placeholder="e.g. juan@email.com" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
                   </div>
                   <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">Mobile Number</label>
-                    <input type="tel" name="mobile" value="09XX XXX XXXX" required class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Mobile Number <span class="text-[#e31d1a]">*</span></label>
+                    <input type="tel" id="mobile" name="mobile" pattern="09[0-9]{9}" maxlength="11" placeholder="e.g. 09123456789" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
                   </div>
                 </div>
                 <div>
                   <label class="block text-xs font-bold text-gray-600 mb-1">Preferred Track</label>
-                  <input type="text" name="track" value="Career Preview" readonly class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-800 font-medium outline-none cursor-default">
+                  <input type="text" name="track" value="Career Preview" readonly class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-800 font-medium outline-none cursor-default">
                 </div>
               </div>
 
               <div>
-                <h3 class="text-[11px] font-bold text-[#e31d1a] tracking-wider uppercase mb-5 border-t border-dashed border-gray-300 pt-8">
+                <h3 class="text-[11px] font-bold text-[#e31d1a] tracking-wider uppercase mb-5 border-t border-dashed border-[#f1d9d8] pt-8">
                   Recruit Profile - A few more details for future advisors
                 </h3>
                 <div class="space-y-4">
                   <div class="grid grid-cols-2 gap-4">
                     <div>
-                      <label class="block text-xs font-bold text-gray-600 mb-1">Date of Birth</label>
-                      <input type="date" name="dob" required class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Date of Birth <span class="text-[#e31d1a]">*</span></label>
+                      <input type="date" id="birthday" name="dob" min="1900-01-01" max="2026-12-31" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
                     </div>
                     <div>
-                      <label class="block text-xs font-bold text-gray-600 mb-1">Age</label>
-                      <input type="number" name="age" placeholder="e.g. 28" required class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
-                    </div>
-                  </div>
-                  <div class="grid grid-cols-2 gap-4">
-                    <div>
-                      <label class="block text-xs font-bold text-gray-600 mb-1">University/College</label>
-                      <input type="text" name="university" value="UST" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
-                    </div>
-                    <div>
-                      <label class="block text-xs font-bold text-gray-600 mb-1">Degree</label>
-                      <input type="text" name="degree" value="BSCS" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Age <span class="text-[#e31d1a]">*</span></label>
+                      <input type="number" name="age" placeholder="e.g. 28" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
                     </div>
                   </div>
                   <div class="grid grid-cols-2 gap-4">
                     <div>
-                      <label class="block text-xs font-bold text-gray-600 mb-1">Area of Residence</label>
-                      <input type="text" name="residence" value="Caloocan City" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                      <label class="block text-xs font-bold text-gray-600 mb-1">University/College <span class="text-[#e31d1a]">*</span></label>
+                      <input type="text" name="university" placeholder="e.g. PUP" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
                     </div>
                     <div>
-                      <label class="block text-xs font-bold text-gray-600 mb-1">Area of Business/Employment</label>
-                      <input type="text" name="employment_field" placeholder="e.g. Finance & Accounting" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Degree <span class="text-[#e31d1a]">*</span></label>
+                      <input type="text" name="degree" placeholder="e.g. Accounting" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
                     </div>
                   </div>
                   <div class="grid grid-cols-2 gap-4">
                     <div>
-                      <label class="block text-xs font-bold text-gray-600 mb-1">Work Experience</label>
-                      <input type="text" name="work_exp" value="Sales Officer" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Area of Residence <span class="text-[#e31d1a]">*</span></label>
+                      <input type="text" name="residence" placeholder="e.g. Caloocan City" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
                     </div>
                     <div>
-                      <label class="block text-xs font-bold text-gray-600 mb-1">Years Working</label>
-                      <input type="number" name="years_working" placeholder="e.g. 5" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Area of Business/Employment <span class="text-[#e31d1a]">*</span></label>
+                      <input type="text" name="employment_field" placeholder="e.g. Finance & Accounting" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Work Experience <span class="text-[#e31d1a]">*</span></label>
+                      <input type="text" name="work_exp" placeholder="e.g. Sales Officer" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Years Working <span class="text-[#e31d1a]">*</span></label>
+                      <input type="number" name="years_working" placeholder="e.g. 5" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
                     </div>
                   </div>
                   <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">Attended BYB in Pru Life UK?</label>
-                    <select name="attended_byb" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-800 font-medium appearance-none focus:outline-none focus:border-[#e31d1a]">
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Attended BYB in Pru Life UK? <span class="text-[#e31d1a]">*</span></label>
+                    <select name="attended_byb" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-800 font-medium appearance-none focus:outline-none focus:border-[#e31d1a]">
                       <option value="" disabled selected>Select one</option>
                       <option value="yes">Yes</option>
                       <option value="no">No</option>
@@ -358,8 +409,8 @@
               </div>
             </div>
 
-            <div class="w-full lg:w-1/2 p-8 lg:p-10 bg-[#faf8f8]">
-              
+            <!-- RIGHT COLUMN (Contains Turnstile at the bottom) -->
+            <div class="w-full lg:w-1/2 p-8 lg:p-10 bg-white flex flex-col">
               <div class="flex justify-between items-center mb-6">
                 <h3 class="calendar-title text-xl font-serif font-bold text-gray-900">August 2026</h3>
                 <div class="flex gap-2">
@@ -376,9 +427,9 @@
                 </div>
               </div>
 
-              <div class="mt-8 border-t border-gray-200 pt-6">
-                <h4 class="text-sm font-bold text-gray-900 mb-1">Available times</h4>
-                <p class="times-hint text-xs text-gray-500 mb-4">Select a highlighted date to see open times.</p>
+              <div class="mt-8 border-t border-[#f1d9d8] pt-6">
+                <h4 class="text-sm font-bold text-[#e31d1a] mb-1 text-center">Available times <span class="text-[#e31d1a]">*</span></h4>
+                <p class="times-hint text-xs text-gray-500 mb-4 text-center">Select a highlighted date to see open times.</p>
                 <div class="times-grid grid grid-cols-2 gap-3">
                   <button type="button" class="time-btn w-full">9:00 AM</button>
                   <button type="button" class="time-btn w-full">11:00 AM</button>
@@ -386,21 +437,23 @@
                   <button type="button" class="time-btn w-full">4:30 PM</button>
                 </div>
               </div>
+              
+              <!-- TURNSTILE MOVED HERE: Pushed to the bottom of the right column -->
+              <div class="mt-auto pt-8 flex justify-end">
+                  <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA"></div>
+              </div>
             </div>
           </div>
 
-          <!-- Cloudflare Turnstile (Agent) -->
-          <div class="w-full flex justify-end px-5 lg:px-10 pb-4 bg-[#faf8f8]">
-              <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA"></div>
-          </div>
-
-          <div class="w-full bg-[#edeae8] p-5 lg:px-10 flex justify-between items-center border-t border-gray-300">
+          <!-- FORM FOOTER (Matches input fields) -->
+          <div class="w-full bg-[#fbf4f2] p-5 lg:px-10 flex justify-between items-center border-t border-[#f1d9d8]">
             <p class="text-sm text-gray-500">Track: <strong class="text-gray-900">Career Preview</strong> — pick a date and time.</p>
             <button type="submit" class="bg-[#e31d1a] hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:-translate-y-0.5">Confirm My Slot</button>
           </div>
         </form>
       </div>
 
+      <!-- ===================== CLIENT FORM ===================== -->
       <div id="client-form-container" class="relative z-10 hidden">
         <div class="mb-10 max-w-2xl">
           <div class="flex items-center gap-4 mb-4">
@@ -416,96 +469,89 @@
           </div>
         </div>
 
-        <form id="client-appointment-form" action="/api/submit-client" method="POST" class="booking-form bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden relative flex flex-col">
+        <form id="client-appointment-form" action="/api/submit-client" method="POST" class="booking-form bg-white rounded-3xl shadow-xl border border-[#f1d9d8] overflow-hidden relative flex flex-col">
           
           <input type="hidden" name="appointment_date" id="client_appt_date" class="appt-date-input" value="">
           <input type="hidden" name="appointment_time" id="client_appt_time" class="appt-time-input" value="">
 
           <div class="flex flex-col lg:flex-row flex-grow">
-            <div class="w-full lg:w-1/2 p-8 lg:p-10 bg-[#f6f3f2] border-r border-gray-200 space-y-8">
+            <!-- LEFT COLUMN (Stretches full height) -->
+            <div class="w-full lg:w-1/2 p-8 lg:p-10 bg-white border-r border-[#f1d9d8] space-y-8">
               <div class="space-y-4">
                 <div>
-                  <label class="block text-xs font-bold text-gray-600 mb-1">Full Name</label>
-                  <input type="text" name="full_name" value="Juan Dela Cruz" required class="w-full bg-white border border-[#e31d1a] rounded-md px-4 py-2.5 text-sm text-gray-800 focus:outline-none">
+                  <label class="block text-xs font-bold text-gray-600 mb-1">Full Name <span class="text-[#e31d1a]">*</span></label>
+                  <input type="text" name="full_name" placeholder="e.g. Juan Dela Cruz" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#e31d1a]">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                   <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">Email Address</label>
-                    <input type="email" name="email" value="juan@email.com" required class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Email Address <span class="text-[#e31d1a]">*</span></label>
+                    <input type="email" name="email" placeholder="e.g. juan@email.com" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
                   </div>
                   <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">Mobile Number</label>
-                    <input type="tel" name="mobile" value="09XX XXX XXXX" required class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Mobile Number <span class="text-[#e31d1a]">*</span></label>
+                    <input type="tel" name="mobile" pattern="09[0-9]{9}" maxlength="11" placeholder="e.g. 09123456789" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
                   </div>
                 </div>
                 <div>
                   <label class="block text-xs font-bold text-gray-600 mb-1">Preferred Track</label>
-                  <input type="text" name="track" value="Become a Client" readonly class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-800 font-medium cursor-default">
+                  <input type="text" name="track" value="Become a Client" readonly class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-800 font-medium cursor-default">
                 </div>
               </div>
 
               <div>
-                <h3 class="text-[11px] font-bold text-[#e31d1a] tracking-wider uppercase mb-5 border-t border-dashed border-gray-300 pt-8">
+                <h3 class="text-[11px] font-bold text-[#e31d1a] tracking-wider uppercase mb-5 border-t border-dashed border-[#f1d9d8] pt-8">
                   Client Profile - A few more details for future advisors
                 </h3>
                 <div class="space-y-4">
                   <div class="grid grid-cols-2 gap-4">
                     <div>
-                      <label class="block text-xs font-bold text-gray-600 mb-1">Date of Birth</label>
-                      <input type="date" name="dob" required class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Date of Birth <span class="text-[#e31d1a]">*</span></label>
+                      <input type="date" id="birthday-client" name="dob" min="1900-01-01" max="2026-12-31" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
                     </div>
                     <div>
-                      <label class="block text-xs font-bold text-gray-600 mb-1">Age</label>
-                      <input type="number" name="age" placeholder="e.g. 28" required class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Age <span class="text-[#e31d1a]">*</span></label>
+                      <input type="number" name="age" placeholder="e.g. 28" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
                     </div>
                   </div>
                   <div class="grid grid-cols-2 gap-4">
                     <div>
-                      <label class="block text-xs font-bold text-gray-600 mb-1">Current Employment</label>
-                      <input type="text" name="employment" placeholder="e.g. Factory Worker" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Current Employment <span class="text-[#e31d1a]">*</span></label>
+                      <input type="text" name="employment" placeholder="e.g. Project Manager" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-600 mb-1">
-                            Area of Residence
+                            Area of Residence <span class="text-[#e31d1a]">*</span>
                         </label>
-                        <input
-                            type="text"
-                            name="residence"
-                            placeholder="e.g. Quezon City"
-                            class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]"
-                        >
+                        <input type="text" name="residence" placeholder="e.g. Quezon City" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
                     </div>
                     <div>
-                      <label class="block text-xs font-bold text-gray-600 mb-1">Marital Status</label>
-                      <input type="text" name="marital_status" placeholder="e.g. Single" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                      <label class="block text-xs font-bold text-gray-600 mb-1">Marital Status <span class="text-[#e31d1a]">*</span></label>
+                      <input type="text" name="marital_status" placeholder="e.g. Single" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
                     </div>
                   </div>
                   <div class="w-1/2 pr-2">
-                    <label class="block text-xs font-bold text-gray-600 mb-1">No. of Dependents</label>
-                    <input type="number" name="dependents" value="8" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    <label class="block text-xs font-bold text-gray-600 mb-1">No. of Dependents <span class="text-[#e31d1a]">*</span></label>
+                    <input type="number" name="dependents" placeholder="e.g. 8" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
                   </div>
                   <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-2">Personal life insurance?</label>
+                    <label class="block text-xs font-bold text-gray-600 mb-2">Personal life insurance? <span class="text-[#e31d1a]">*</span></label>
                     <div class="toggle-group flex gap-4">
-                      <input type="hidden" name="has_insurance" id="has_insurance" value="">
+                      <input type="hidden" name="has_insurance" id="has_insurance" value="" required>
                       <button type="button" onclick="selectToggle(this, 'has_insurance', 'yes')" class="toggle-btn">Yes</button>
                       <button type="button" onclick="selectToggle(this, 'has_insurance', 'no')" class="toggle-btn">No</button>
                     </div>
                   </div>
                   <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">Budget to start immediately?</label>
-                    <input type="text" name="budget" class="w-full bg-transparent border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Budget to start immediately? <span class="text-[#e31d1a]">*</span></label>
+                    <input type="text" name="budget" placeholder="₱ 20000" required class="w-full bg-[#fbf4f2] border border-[#f1d9d8] rounded-md px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#e31d1a]">
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="w-full lg:w-1/2 p-8 lg:p-10 bg-[#faf8f8]">
-
-              <p class="text-sm font-bold text-[#e31d1a] text-center mb-8">
-                Please select the most convenient time for us to meet
-              </p>
-
+            <!-- RIGHT COLUMN (Contains Turnstile at the bottom) -->
+            <div class="w-full lg:w-1/2 p-8 lg:p-10 bg-white flex flex-col">
+              
               <div class="flex justify-between items-center mb-6">
                 <h3 class="calendar-title text-xl font-serif font-bold text-gray-900">August 2026</h3>
                 <div class="flex gap-2">
@@ -522,9 +568,9 @@
                 </div>
               </div>
               
-              <div class="mt-8 border-t border-gray-200 pt-6">
-                <h4 class="text-sm font-bold text-gray-900 mb-1">Available times</h4>
-                <p class="times-hint text-xs text-gray-500 mb-4">
+              <div class="mt-8 border-t border-[#f1d9d8] pt-6">
+                <h4 class="text-sm font-bold text-[#e31d1a] mb-1 text-center">Available times <span class="text-[#e31d1a]">*</span></h4>
+                <p class="times-hint text-xs text-gray-500 mb-4 text-center">
                     Select a highlighted date to see open times.
                 </p>
 
@@ -535,16 +581,17 @@
                   <button type="button" class="time-btn w-full">4:30 PM</button>
                 </div>
              </div>
+             
+             <!-- TURNSTILE MOVED HERE: Pushed to the bottom of the right column -->
+             <div class="mt-auto pt-8 flex justify-end">
+                 <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA"></div>
+             </div>
 
             </div>
           </div>
 
-          <!-- Cloudflare Turnstile (Client) -->
-          <div class="w-full flex justify-end px-5 lg:px-10 pb-4 bg-[#faf8f8]">
-              <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA"></div>
-          </div>
-
-          <div class="w-full bg-[#edeae8] p-5 lg:px-10 flex justify-between items-center border-t border-gray-300">
+          <!-- FORM FOOTER (Matches input fields) -->
+          <div class="w-full bg-[#fbf4f2] p-5 lg:px-10 flex justify-between items-center border-t border-[#f1d9d8]">
             <p class="text-sm text-gray-500">Track: <strong class="text-gray-900">Financial Conversation</strong></p>
             <button type="submit" class="bg-[#e31d1a] hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:-translate-y-0.5">Confirm My Slot</button>
           </div>
@@ -552,6 +599,7 @@
       </div>
     </section>
 
+    <!-- FOOTER -->
     <footer class="bg-[#e31d1a] text-white pt-10 pb-6 px-6 lg:px-10 mt-10">
       <div class="max-w-7xl mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-white/20 pb-8">
@@ -579,5 +627,4 @@
     </footer>
 
 </body>
-
 </html>
