@@ -41,6 +41,11 @@ a {
 	padding: 0 40px;
 }
 
+img {
+	width: 100%;
+	display: block;
+}
+
 /* ---------- HEADER ---------- */
 header {
 	display: flex;
@@ -317,8 +322,10 @@ header .btn-primary {
 }
 
 .offer-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 	background-color: var(--beige);
-	/* border: 1px solid #e31d1a33; */
 	border: 1px solid rgba(28, 28, 28, 0.1);
 	padding: 28px 24px;
 	border-radius: 20px;
@@ -585,6 +592,7 @@ header .btn-primary {
 }
 
 .path-card:hover {
+	border-color: var(--red);
 	transform: translateY(-4px);
 	box-shadow: 0 12px 30px rgba(0, 0, 0, 0.09);
 }
@@ -603,6 +611,11 @@ header .btn-primary {
 	border-radius: 30px;
 	margin-bottom: 0.5rem;
 	align-self: flex-start;
+}
+
+.path-card:hover .path-tag {
+	background-color: var(--red);
+	color: #fff;
 }
 
 .path-title {
@@ -712,6 +725,7 @@ header .btn-primary {
 	background: #fff;
 	border-radius: 1.5rem;
 	/* box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); */
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 	border: 1px solid #e3c3c8;
 	overflow: hidden;
 	position: relative;
@@ -990,12 +1004,6 @@ header .btn-primary {
 	cursor: pointer;
 }
 
-.time-btn-disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
 .time-btn:hover,
 .time-btn.selected {
 	background: #e31d1a;
@@ -1064,7 +1072,7 @@ header .btn-primary {
 	background: #e31d1a;
 	color: #fff;
 	padding: 2.5rem 2.5rem 1.5rem;
-	margin-top: 2.5rem;
+	/* margin-top: 2.5rem; */
 }
 
 .footer-wrap {
@@ -1265,6 +1273,12 @@ header .btn-primary {
 		font-size: 0.6rem;
 	}
 
+	/* OUR GROWING FAMILY */
+	.btn-sm {
+		padding: 9px 16px;
+		font-size: 0.8rem;
+	}
+
 	/* WHAT WE OFFER */
 	.section-title {
 		font-size: 1.9rem;
@@ -1277,7 +1291,20 @@ header .btn-primary {
 	}
 
 	.offer-icon img {
-		height: 4rem;
+		height: 5rem;
+	}
+
+	.offer-card {
+		padding: 1rem;
+		flex-direction: row;
+		/* justify-content: space-between; */
+		align-items: center;
+		text-align: start;
+		gap: 10px;
+	}
+
+	.offer-content {
+		width: 80%;
 	}
 
 	/* MILESTONES */
@@ -1325,7 +1352,7 @@ header .btn-primary {
 
 	.form-col {
 		width: 100%;
-		padding: 2.5rem;
+		padding: 2rem 1.5rem;
 	}
 
 	.form-col.left {
