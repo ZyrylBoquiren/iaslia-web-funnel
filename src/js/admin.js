@@ -523,7 +523,7 @@ window.viewLeadDetails = async function(leadId) {
                         <h3 class="text-[11px] font-bold text-[#b89569] uppercase tracking-widest">Recruitment</h3>
                     </div>
                     <div class="grid grid-cols-2 gap-y-6 gap-x-12">
-                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Name of Recruiter</p><p class="text-[13px] text-gray-400 italic">Unassigned</p></div>
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Name of Recruiter / Assigned To</p>${editableVal(lead.assigned_to, 'assigned_to')}</div>
                         <div><p class="text-[12px] font-bold text-gray-900 mb-1">Immediate Manager</p><p class="text-[13px] text-gray-400 italic">Unassigned</p></div>
                     </div>
                 </div>
@@ -596,6 +596,7 @@ window.viewLeadDetails = async function(leadId) {
                         <div><p class="text-[12px] font-bold text-gray-900 mb-1">Full Name</p>${editableVal(fullName, 'full_name')}</div>
                         <div><p class="text-[12px] font-bold text-gray-900 mb-1">Email Address</p>${editableVal(lead.email, 'email')}</div>
                         <div><p class="text-[12px] font-bold text-gray-900 mb-1">Mobile Number</p>${editableVal(lead.mobile_number, 'mobile_number')}</div>
+                        <div><p class="text-[12px] font-bold text-gray-900 mb-1">Assigned To</p>${editableVal(lead.assigned_to, 'assigned_to')}</div>
                         <div><p class="text-[12px] font-bold text-gray-900 mb-1">Source</p>${editableVal(lead.source, 'source')}</div>
                     </div>
                 </div>
@@ -1310,15 +1311,24 @@ async function updateLeadStage(checkboxElem, clickedStage, leadId) {
     else if (document.getElementById('checkbox-email').checked) finalStage = 'email_created';
     else if (document.getElementById('checkbox-meeting').checked) finalStage = 'meeting';
 
-    // 3. Save the final calculated stage to Supabase
+    // 3. Save the final calculated stage AND the individual True/False columns to Supabase
     try {
+        const isMeeting = document.getElementById('checkbox-meeting').checked;
+        const isEmail = document.getElementById('checkbox-email').checked;
+        const isConverted = document.getElementById('checkbox-converted').checked;
+
         const { error } = await supabase
             .from('leads')
-            .update({ current_stage: finalStage })
+            .update({ 
+                current_stage: finalStage,
+                meeting_done: isMeeting,
+                email_created: isEmail,
+                officially_converted: isConverted
+            })
             .eq('lead_id', leadId);
 
         if (error) throw error;
-        console.log(`Stage correctly synced to: ${finalStage}`);
+        console.log(`Stage correctly synced to: ${finalStage} and Boolean columns updated!`);
         
         // Instantly reload dashboard cards and background table
         loadAdminLeads(); 
