@@ -280,6 +280,34 @@ function filterLeads(category) {
 }
 
 // ==========================================
+// SEARCH BAR FILTERING
+// ==========================================
+window.filterLeadsBySearch = function() {
+    const searchInput = document.getElementById('lead-search-input').value.toLowerCase();
+    const rows = document.querySelectorAll('.lead-row');
+
+    rows.forEach(row => {
+        // Grab the text from the entire row (Name, Email, Mobile, Source)
+        const rowText = row.textContent.toLowerCase();
+        
+        if (rowText.includes(searchInput)) {
+            // Show it if it matches (but respect the active Tab filter!)
+            const activeTabBtn = document.querySelector('button.bg-\\[\\#bd1512\\][id^="filter-"]');
+            const currentTab = activeTabBtn ? activeTabBtn.id.replace('filter-', '') : 'all';
+            const rowType = row.getAttribute('data-type');
+            
+            if (currentTab === 'all' || rowType === currentTab) {
+                row.classList.remove('hidden');
+            }
+        } else {
+            // Hide it if it doesn't match the search
+            row.classList.add('hidden');
+        }
+    });
+};
+
+
+// ==========================================
 // 3. DATABASE FETCH & RENDER
 // ==========================================
 

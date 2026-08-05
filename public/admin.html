@@ -172,7 +172,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                             </svg>
-                            <input type="text" placeholder="Search name, email, mobile." class="pl-11 pr-4 py-2 border border-pru-border rounded-full text-[13px] font-medium w-72 bg-white focus:outline-none focus:border-pru-red text-gray-600">
+                            <input type="text" id="lead-search-input" onkeyup="filterLeadsBySearch()" placeholder="Search name, email, mobile." class="pl-11 pr-4 py-2 border border-pru-border rounded-full text-[13px] font-medium w-72 bg-white focus:outline-none focus:border-pru-red text-gray-600">
                         </div>
                         <button onclick="openAddLeadModal()" class="bg-pru-red text-white px-4 py-2.5 rounded-lg text-[13px] font-bold hover:bg-red-800 transition shadow-sm">
                             + Add Lead
