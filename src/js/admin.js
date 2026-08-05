@@ -260,47 +260,69 @@ function closeModals() {
 }
 document.getElementById('modal-overlay')?.addEventListener('click', closeModals);
 
-// Sub-Tab Filter (All / Agents / Clients)
-function filterLeads(category) {
+// ==========================================
+// UNIFIED FILTER ENGINE (TABS, SEARCH, STAGE)
+// ==========================================
+
+window.currentActiveTab = 'all'; // Remembers if All, Agent, or Client is clicked
+
+window.filterLeads = function(category) {
+    window.currentActiveTab = category;
+    
+    // Update button colors visually
     const filters = ['all', 'agent', 'client'];
     filters.forEach(type => {
         const btn = document.getElementById(`filter-${type}`);
         if (btn) btn.className = "px-5 py-1.5 text-[12px] font-bold text-gray-600 rounded-full hover:bg-white transition-colors";
     });
-
     const activeBtn = document.getElementById(`filter-${category}`);
     if (activeBtn) activeBtn.className = "px-5 py-1.5 text-[12px] font-bold text-white bg-[#bd1512] rounded-full shadow-sm";
 
+    window.applyAllFilters();
+};
+
+window.filterLeadsBySearch = function() {
+    window.applyAllFilters();
+};
+
+window.filterLeadsByStage = function() {
+    window.applyAllFilters();
+};
+
+window.applyAllFilters = function() {
+    const activeTab = window.currentActiveTab;
+    
+    const searchEl = document.getElementById('lead-search-input');
+    const searchText = searchEl ? searchEl.value.toLowerCase().trim() : '';
+    
+    const stageEl = document.getElementById('stage-filter-dropdown');
+    const selectedStage = stageEl ? stageEl.value : 'all';
+
     const rows = document.querySelectorAll('.lead-row');
+
     rows.forEach(row => {
         const rowType = row.getAttribute('data-type');
-        if (category === 'all' || rowType === category) row.classList.remove('hidden');
-        else row.classList.add('hidden');
-    });
-}
-
-// ==========================================
-// SEARCH BAR FILTERING
-// ==========================================
-window.filterLeadsBySearch = function() {
-    const searchInput = document.getElementById('lead-search-input').value.toLowerCase();
-    const rows = document.querySelectorAll('.lead-row');
-
-    rows.forEach(row => {
-        // Grab the text from the entire row (Name, Email, Mobile, Source)
+        const isMeeting = row.getAttribute('data-meeting') === 'true';
+        const isEmail = row.getAttribute('data-email') === 'true';
+        const isConverted = row.getAttribute('data-converted') === 'true';
         const rowText = row.textContent.toLowerCase();
-        
-        if (rowText.includes(searchInput)) {
-            // Show it if it matches (but respect the active Tab filter!)
-            const activeTabBtn = document.querySelector('button.bg-\\[\\#bd1512\\][id^="filter-"]');
-            const currentTab = activeTabBtn ? activeTabBtn.id.replace('filter-', '') : 'all';
-            const rowType = row.getAttribute('data-type');
-            
-            if (currentTab === 'all' || rowType === currentTab) {
-                row.classList.remove('hidden');
-            }
+
+        // Check 1: Does it match the pill button?
+        const passesTab = (activeTab === 'all' || rowType === activeTab);
+
+        // Check 2: Does it match the search bar?
+        const passesSearch = (searchText === '' || rowText.includes(searchText));
+
+        // Check 3: Does it match the Boolean Checkboxes?
+        let passesStage = true;
+        if (selectedStage === 'meeting_done' && !isMeeting) passesStage = false;
+        if (selectedStage === 'email_created' && !isEmail) passesStage = false;
+        if (selectedStage === 'officially_converted' && !isConverted) passesStage = false;
+
+        // Apply visual toggle
+        if (passesTab && passesSearch && passesStage) {
+            row.classList.remove('hidden');
         } else {
-            // Hide it if it doesn't match the search
             row.classList.add('hidden');
         }
     });
@@ -356,6 +378,13 @@ async function loadAdminLeads() {
             // Set Row attributes for the Filter function
             tr.className = "lead-row hover:bg-gray-50 transition-colors";
             tr.setAttribute('data-type', dataType);
+            
+            // NEW: Embed the exact database booleans directly into the row!
+            tr.setAttribute('data-meeting', lead.meeting_done === true ? 'true' : 'false');
+            tr.setAttribute('data-email', lead.email_created === true ? 'true' : 'false');
+            tr.setAttribute('data-converted', lead.officially_converted === true ? 'true' : 'false');
+            
+            // Format Date (e.g. 2026-07-11)
             
             // Format Date (e.g. 2026-07-11)
             const dateObj = new Date(lead.created_at);
@@ -422,6 +451,11 @@ async function loadAdminLeads() {
             `;
             tableBody.appendChild(tr);
         });
+
+        // Re-apply any active filters immediately so the table doesn't glitch!
+        if (typeof window.applyAllFilters === 'function') {
+            window.applyAllFilters();
+        }
 
     } catch (err) {
         console.error("Failed to load leads:", err.message);

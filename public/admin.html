@@ -205,8 +205,11 @@
                         <button id="filter-agent" onclick="filterLeads('agent')" class="px-5 py-1.5 text-[12px] font-bold text-gray-600 rounded-full hover:bg-white transition-colors">Agents</button>
                         <button id="filter-client" onclick="filterLeads('client')" class="px-5 py-1.5 text-[12px] font-bold text-gray-600 rounded-full hover:bg-white transition-colors">Client</button>
                     </div>
-                    <select class="border border-pru-border bg-white text-[12px] font-bold text-gray-700 rounded-full px-5 py-2 w-48 focus:outline-none shadow-sm">
-                        <option>All Stages</option>
+                    <select id="stage-filter-dropdown" onchange="filterLeadsByStage()" class="border border-pru-border bg-white text-[12px] font-bold text-gray-700 rounded-full px-5 py-2 w-48 focus:outline-none shadow-sm">
+                        <option value="all">All Stages</option>
+                        <option value="meeting_done">Meeting Done</option>
+                        <option value="email_created">PRU Life UK Email Created</option>
+                        <option value="officially_converted">Officially Converted</option>
                     </select>
                 </div>
 
