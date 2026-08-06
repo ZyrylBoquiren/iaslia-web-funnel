@@ -351,9 +351,16 @@ window.agentForm.addEventListener("submit", async function (e) {
         };
 
         const { data: lead, error: leadError } = await supabaseClient
-            .from("leads")
-            .insert([leadData])
-            .select()
+            .rpc('insert_lead_secure', {
+                p_full_name: leadData.full_name,
+                p_email: leadData.email,
+                p_mobile_number: leadData.mobile_number,
+                p_assigned_to: leadData.assigned_to,
+                p_track: leadData.track,
+                p_source: leadData.source,
+                p_current_stage: leadData.current_stage,
+                p_date_of_birth: leadData.date_of_birth
+            })
             .single();
 
 			if (leadError) {
@@ -476,9 +483,16 @@ window.clientForm.addEventListener("submit", async function (e) {
         };
 
         const { data: lead, error: leadError } = await supabaseClient
-            .from("leads")
-            .insert([leadData])
-            .select()
+            .rpc('insert_lead_secure', {
+                p_full_name: leadData.full_name,
+                p_email: leadData.email,
+                p_mobile_number: leadData.mobile_number,
+                p_assigned_to: leadData.assigned_to,
+                p_track: leadData.track,
+                p_source: leadData.source,
+                p_current_stage: leadData.current_stage,
+                p_date_of_birth: leadData.date_of_birth
+            })
             .single();
 
 			if (leadError) {
