@@ -632,10 +632,17 @@ window.viewLeadDetails = async function(leadId) {
                     <div class="border border-pru-border rounded-xl p-5 mb-4 bg-white shadow-sm hover:border-pru-red transition">
                         <h4 class="font-bold text-[13px] text-gray-900 mb-1">${t.template_name}</h4>
                         <p class="text-[12px] text-gray-500 mb-4 truncate">${t.subject}</p>
-                        <a href="mailto:${lead.email}?subject=${subject}&body=${body}" 
-                           class="inline-block px-4 py-1.5 text-[11px] font-bold text-white bg-[#bd1512] rounded-full hover:bg-red-900 transition-colors shadow-sm">
-                           Draft Email
-                        </a>
+                        
+                        <div class="flex gap-2">
+                            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=${lead.email}&su=${subject}&body=${body}" target="_blank"
+                               class="inline-block px-4 py-1.5 text-[11px] font-bold text-white bg-[#bd1512] rounded-full hover:bg-red-900 transition-colors shadow-sm">
+                               Draft in Gmail
+                            </a>
+                            <a href="mailto:${lead.email}?subject=${subject}&body=${body}" 
+                               class="inline-block px-4 py-1.5 text-[11px] font-bold text-gray-700 bg-gray-50 border border-gray-300 rounded-full hover:bg-gray-100 transition-colors shadow-sm">
+                               Default App
+                            </a>
+                        </div>
                     </div>
                     `;
                 }).join('');
@@ -659,15 +666,15 @@ window.viewLeadDetails = async function(leadId) {
                 </div>
                 <div class="flex gap-2">
                     <label class="flex-1 bg-white border border-pru-border rounded-full py-1.5 px-3 flex items-center gap-2 shadow-sm cursor-pointer hover:bg-gray-50 transition">
-                        <input type="checkbox" id="checkbox-meeting" onchange="updateLeadStage(this, 'meeting', '${leadId}')" class="w-3.5 h-3.5 accent-[#bd1512] cursor-pointer" ${lead.current_stage === 'meeting' || lead.current_stage === 'email_created' || lead.current_stage === 'converted' ? 'checked' : ''}>
+                        <input type="checkbox" id="checkbox-meeting" onchange="updateLeadStage(this, 'meeting', '${leadId}')" class="w-3.5 h-3.5 accent-[#bd1512] cursor-pointer" ${lead.meeting_done ? 'checked' : ''}>
                         <span class="text-[10px] font-bold text-gray-700">Meeting Done</span>
                     </label>
                     <label class="flex-1 bg-white border border-pru-border rounded-full py-1.5 px-3 flex items-center gap-2 shadow-sm cursor-pointer hover:bg-gray-50 transition">
-                        <input type="checkbox" id="checkbox-email" onchange="updateLeadStage(this, 'email_created', '${leadId}')" class="w-3.5 h-3.5 accent-[#bd1512] cursor-pointer" ${lead.current_stage === 'email_created' || lead.current_stage === 'converted' ? 'checked' : ''}>
+                        <input type="checkbox" id="checkbox-email" onchange="updateLeadStage(this, 'email_created', '${leadId}')" class="w-3.5 h-3.5 accent-[#bd1512] cursor-pointer" ${lead.email_created ? 'checked' : ''}>
                         <span class="text-[10px] font-bold text-gray-700">PRU Email Created</span>
                     </label>
                     <label class="flex-1 bg-white border border-pru-border rounded-full py-1.5 px-3 flex items-center gap-2 shadow-sm cursor-pointer hover:bg-gray-50 transition">
-                        <input type="checkbox" id="checkbox-converted" onchange="updateLeadStage(this, 'converted', '${leadId}')" class="w-3.5 h-3.5 accent-[#bd1512] cursor-pointer" ${lead.current_stage === 'converted' ? 'checked' : ''}>
+                        <input type="checkbox" id="checkbox-converted" onchange="updateLeadStage(this, 'converted', '${leadId}')" class="w-3.5 h-3.5 accent-[#bd1512] cursor-pointer" ${lead.officially_converted ? 'checked' : ''}>
                         <span class="text-[10px] font-bold text-gray-700">Officially Converted</span>
                     </label>
                 </div>
@@ -871,7 +878,7 @@ async function renderAdminCalendar() {
     gridEl.appendChild(blank);
   }
 
-// FETCH BOOKED DATES FOR RED DOT
+// Fetch Booked Dates for the Red Dot
   const { data: bookedData } = await supabase
     .from('appointments')
     .select('availability_slots!inner(slot_date, track)')
@@ -949,13 +956,16 @@ function initBookingSwitch() {
         }
 
         try {
+            const timeSlotsSection = document.getElementById('time-slots-section');
+
             if (isCurrentlyOpen) {
                 bookingSwitch.className = "w-12 h-6 bg-[#fdf4f2] rounded-full relative cursor-pointer border border-gray-200 shadow-sm";
                 bookingSwitch.innerHTML = '<div class="w-5 h-5 bg-white rounded-full absolute left-0.5 top-0.5 shadow-sm border border-gray-200"></div>';
                 selectedDayEl.classList.remove('bg-[#e2f1e7]', 'text-gray-900', 'font-bold');
                 selectedDayEl.classList.add('bg-[#fdf4f2]', 'text-gray-500');
 
-                // REMOVED 'window.' here
+                if (timeSlotsSection) timeSlotsSection.classList.add('hidden');
+
                 const { error } = await supabase.from('availability_slots').delete().eq('slot_date', dbDate).eq('track', currentAdminTrack);
                 if (error) throw error;
             } else {
@@ -964,14 +974,21 @@ function initBookingSwitch() {
                 selectedDayEl.classList.remove('bg-[#fdf4f2]', 'text-gray-500', 'border-pru-border');
                 selectedDayEl.classList.add('bg-[#e2f1e7]', 'text-gray-900', 'font-bold');
 
-                // REMOVED 'window.' here
+                if (timeSlotsSection) timeSlotsSection.classList.remove('hidden');
+
                 const { error } = await supabase.from('availability_slots').upsert(
                     { slot_date: dbDate, track: currentAdminTrack, is_open: true, slot_time: '09:00:00' },
                     { onConflict: 'slot_date, track, slot_time' }
                     );
                 if (error) throw error;
             }
+            
             loadTimeSlots(dbDate, currentAdminTrack);
+            
+            if (typeof loadScheduledLeads === 'function') {
+                loadScheduledLeads(dbDate, currentAdminTrack); 
+            }
+            
         } catch (error) {
             console.error("SUPABASE ERROR:", error);
             alert("Database Error: " + error.message + "\n(Hint: Check if RLS is blocking this or if a unique constraint is missing)");
@@ -1050,7 +1067,6 @@ function initAddSlotButton() {
     const dbDate = selectedDayEl.dataset.date;
     const track = currentAdminTrack;
 
-    // Supabase needs "HH:MM:SS", so we just slap ":00" onto the end.
     const formattedTime = timeVal + ':00';
 
     const { error } = await supabase
@@ -1130,7 +1146,7 @@ async function loadScheduledLeads(selectedDate, track) {
             .in('lead_id', leadIds);
 
         // 6. BUILD THE UI
-        list.innerHTML = ''; // Clear the "Checking schedule" text
+        list.innerHTML = '';
         
         // Update the red notification badge with the real number of appointments
         if (badge) {
@@ -1144,7 +1160,7 @@ async function loadScheduledLeads(selectedDate, track) {
             
             if (lead && slot) {
                 // Force raw database time to AM/PM without timezone shifting
-                const rawTime = slot.slot_time; // Looks like "09:00:00"
+                const rawTime = slot.slot_time;
                 const [hours, minutes] = rawTime.split(':');
                 const hourNum = parseInt(hours, 10);
                 const ampm = hourNum >= 12 ? 'PM' : 'AM';
@@ -1258,7 +1274,7 @@ window.submitNewLead = async function(event) {
                     email: email,
                     mobile_number: phone,
                     track: trackType,
-                    source: 'Admin Dashboard', // Hardcoded so you know it was manually added
+                    source: 'Admin Dashboard',
                     current_stage: 'new',
                     notes: notes 
                 }])
@@ -1267,7 +1283,6 @@ window.submitNewLead = async function(event) {
 
             if (leadError) throw leadError;
 
-            // 2. Create the blank profile row immediately so the pencil icons have a row to edit!
             const targetTable = (trackType === 'future_advisor') ? 'recruit_profile' : 'client_profile';
             const { error: profileError } = await supabase
                 .from(targetTable)
@@ -1278,7 +1293,7 @@ window.submitNewLead = async function(event) {
             // Success! Close modal and refresh UI
             closeAddLeadModal();
             
-            // This function from Part 1 will refresh the table and update the 4 Dashboard Cards instantly!
+            // Refresh the table and update the 4 Dashboard Cards instantly
             loadAdminLeads(); 
             
             // Small success alert
@@ -1336,7 +1351,7 @@ async function toggleEditMode(btn, defaultTableName, leadId) {
                     finalValue = cleanNum === "" ? null : parseFloat(cleanNum);
                 } 
                 else if (dbColumn === 'years_working' || dbColumn === 'no_of_dependents') {
-                    // Strips letters and decimals (e.g. changes "5 years" into just 5)
+                    // Strips letters and decimals
                     let cleanNum = String(finalValue).replace(/[^0-9]/g, "");
                     finalValue = cleanNum === "" ? null : parseInt(cleanNum, 10);
                 } 
@@ -1371,8 +1386,7 @@ async function toggleEditMode(btn, defaultTableName, leadId) {
                         
                     if (error) throw error;
                     
-                    // SMART FALLBACK: If Supabase updated 0 rows, the profile table row is missing! 
-                    // (This fixes any broken leads you created before today). Let's create it on the fly!
+                    // SMART FALLBACK: If Supabase updated 0 rows, the profile table row is missing. 
                     if (updatedRows && updatedRows.length === 0 && table !== 'leads') {
                         data.lead_id = leadId; // Add the foreign key required for insertion
                         const { error: insertError } = await supabase
@@ -1472,10 +1486,8 @@ function openTemplateModal(mode, leadType = 'Unassigned') {
     const modalTypeInput = document.getElementById('template-modal-type');
     
     if (mode === 'new') {
-        // You could change this to a <select> dropdown later if you want them to choose
         modalTypeInput.value = "Select later / General"; 
     } else {
-        // Locks it to Agent or Client based on where they clicked
         modalTypeInput.value = leadType;
     }
     
@@ -1787,7 +1799,7 @@ window.exportAppointmentsCSV = async function(event) {
     btn.disabled = true;
 
     try {
-        // Fetch appointments AND join the related lead and slot data!
+        // Fetch appointments AND join the related lead and slot data
         const { data, error } = await supabase
             .from('appointments')
             .select(`
@@ -1806,7 +1818,7 @@ window.exportAppointmentsCSV = async function(event) {
             return;
         }
 
-        // Flatten the nested JSON so the CSV is perfectly readable for the boss
+        // Flatten the nested JSON so the CSV is perfectly readable
         const formattedData = data.map(appt => ({
             reference_code: appt.reference_code,
             client_name: appt.leads?.full_name || 'Unknown',

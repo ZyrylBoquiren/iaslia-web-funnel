@@ -101,7 +101,7 @@ function renderCalendar(form, availableDates) {
     attachDayCellListeners(form);
 }
 
-// Exported to window so your inline HTML onclicks actually work
+// Exported to window so inline HTML onclicks works
 window.changeMonth = function(form, direction) {
     const state = calendarState.get(form);
     if (!state) return;
@@ -185,7 +185,7 @@ function attachDayCellListeners(form) {
                     openTimesFormatted.forEach(timeStr => {
                         const btn = document.createElement("button");
                         btn.type = "button";
-                        btn.className = "time-btn w-full"; // Automatically grabs your style.css properties!
+                        btn.className = "time-btn w-full"; // Automatically grabs style.css properties
                         btn.textContent = timeStr;
                         
                         btn.addEventListener('click', () => {
