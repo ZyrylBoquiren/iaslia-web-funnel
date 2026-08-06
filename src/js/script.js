@@ -322,15 +322,12 @@ function resetBookingForm(form) {
 // 1. RECRUITMENT (AGENT) FUNNEL
 window.agentForm.addEventListener("submit", async function (e) {
     e.preventDefault();
-    // ==========================================
-    // CLOUDFLARE TURNSTILE SECURITY CHECK
-    // ==========================================
     const formData = new FormData(e.target);
     const turnstileResponse = formData.get('cf-turnstile-response');
 
     if (!turnstileResponse) {
         alert("Security Check Failed: Please verify you are human before submitting.");
-        return; // Kills the function instantly
+        return; 
     }
     if (!validateForm(window.agentForm)) return;
 
@@ -351,46 +348,20 @@ window.agentForm.addEventListener("submit", async function (e) {
         };
 
         const { data: lead, error: leadError } = await supabaseClient
-            .rpc('insert_lead_secure', {
-                p_full_name: leadData.full_name,
-                p_email: leadData.email,
-                p_mobile_number: leadData.mobile_number,
-                p_assigned_to: leadData.assigned_to,
-                p_track: leadData.track,
-                p_source: leadData.source,
-                p_current_stage: leadData.current_stage,
-                p_date_of_birth: leadData.date_of_birth
-            })
+            .from("leads")
+            .insert([leadData])
+            .select()
             .single();
 
-			if (leadError) {
-			if (leadError.code === '23505') {
-				alert("Hold up! It looks like you've already registered with this email address.");
-				
-				
-				submitBtn.disabled = false; 
-				submitBtn.textContent = "Confirm My Slot"; 
-				
-				return; // Stops the script completely
-			}
-			throw leadError; 
-		}
-
-			
-		if (leadError) {
-			if (leadError.code === '23505') {
-				alert("Hold up! It looks like you've already registered with this email address.");
-				
-				
-				submitBtn.disabled = false; 
-				submitBtn.textContent = "Confirm My Slot"; 
-				
-				return; // Stops the script completely
-			}
-			throw leadError; 
-		}
-
-        if (leadError) throw leadError;
+        if (leadError) {
+            if (leadError.code === '23505') {
+                alert("Hold up! It looks like you've already registered with this email address.");
+                submitBtn.disabled = false; 
+                submitBtn.textContent = "Confirm My Slot"; 
+                return; 
+            }
+            throw leadError; 
+        }
 
         const recruitData = {
             lead_id: lead.lead_id, 
@@ -454,15 +425,12 @@ window.agentForm.addEventListener("submit", async function (e) {
 // 2. CLIENT FUNNEL
 window.clientForm.addEventListener("submit", async function (e) {
     e.preventDefault();
-    // ==========================================
-    // CLOUDFLARE TURNSTILE SECURITY CHECK
-    // ==========================================
     const formData = new FormData(e.target);
     const turnstileResponse = formData.get('cf-turnstile-response');
 
     if (!turnstileResponse) {
         alert("Security Check Failed: Please verify you are human before submitting.");
-        return; // Kills the function instantly
+        return; 
     }
     if (!validateForm(window.clientForm)) return;
 
@@ -483,32 +451,20 @@ window.clientForm.addEventListener("submit", async function (e) {
         };
 
         const { data: lead, error: leadError } = await supabaseClient
-            .rpc('insert_lead_secure', {
-                p_full_name: leadData.full_name,
-                p_email: leadData.email,
-                p_mobile_number: leadData.mobile_number,
-                p_assigned_to: leadData.assigned_to,
-                p_track: leadData.track,
-                p_source: leadData.source,
-                p_current_stage: leadData.current_stage,
-                p_date_of_birth: leadData.date_of_birth
-            })
+            .from("leads")
+            .insert([leadData])
+            .select()
             .single();
 
-			if (leadError) {
-			if (leadError.code === '23505') {
-				alert("Hold up! It looks like you've already registered with this email address.");
-				
-				
-				submitBtn.disabled = false; 
-				submitBtn.textContent = "Confirm My Slot"; 
-				
-				return; // Stops the script completely
-			}
-			throw leadError; 
-		}
-
-        if (leadError) throw leadError;
+        if (leadError) {
+            if (leadError.code === '23505') {
+                alert("Hold up! It looks like you've already registered with this email address.");
+                submitBtn.disabled = false; 
+                submitBtn.textContent = "Confirm My Slot"; 
+                return; 
+            }
+            throw leadError; 
+        }
 
         const insuranceInput = window.clientForm.querySelector("#has_insurance") ? window.clientForm.querySelector("#has_insurance").value : "";
         let hasInsuranceBool = null;

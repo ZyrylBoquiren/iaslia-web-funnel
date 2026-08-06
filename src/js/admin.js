@@ -463,15 +463,15 @@ async function loadAdminLeads() {
 }
 
 // ----------------------------------------------------
-// SOFT DELETE LOGIC (Hides from UI, keeps in Database)
+// HARD DELETE LOGIC (Matches the Eye Icon Delete)
 // ----------------------------------------------------
 window.softDeleteLead = async function(leadId) {
-    if (!confirm("Are you sure you want to archive this lead? They will be removed from your pipeline.")) return;
+    if (!confirm("Are you sure you want to completely delete this lead? This cannot be undone.")) return;
     
     try {
         const { error } = await supabase
             .from('leads')
-            .update({ current_stage: 'archived' })
+            .delete()
             .eq('lead_id', leadId);
             
         if (error) throw error;
@@ -480,8 +480,8 @@ window.softDeleteLead = async function(leadId) {
         loadAdminLeads();
         
     } catch (err) {
-        console.error("Error archiving lead:", err.message);
-        alert("Failed to archive lead. Please check the console.");
+        console.error("Error deleting lead:", err.message);
+        alert("Failed to delete lead. Please check the console.");
     }
 };
 
