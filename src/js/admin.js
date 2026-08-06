@@ -613,7 +613,38 @@ window.viewLeadDetails = async function(leadId) {
             `;
         }
 
-        // 7. Inject the FULL UI directly into the modal container
+        // 7. Fetch Email Templates for this specific track
+        let emailTemplatesHTML = '<p class="text-[13px] text-gray-500">No templates found for this track.</p>';
+        try {
+            const { data: templates } = await supabase
+                .from('email_templates')
+                .select('*')
+                .eq('track', lead.track);
+
+            if (templates && templates.length > 0) {
+                emailTemplatesHTML = templates.map(t => {
+                    // Pre-fill the variables
+                    const safeName = lead.full_name.split(' ')[0] || 'there';
+                    const subject = encodeURIComponent(t.subject.replace('{name}', safeName).replace('{fullName}', lead.full_name));
+                    const body = encodeURIComponent(t.message_body.replace('{name}', safeName).replace('{fullName}', lead.full_name));
+                    
+                    return `
+                    <div class="border border-pru-border rounded-xl p-5 mb-4 bg-white shadow-sm hover:border-pru-red transition">
+                        <h4 class="font-bold text-[13px] text-gray-900 mb-1">${t.template_name}</h4>
+                        <p class="text-[12px] text-gray-500 mb-4 truncate">${t.subject}</p>
+                        <a href="mailto:${lead.email}?subject=${subject}&body=${body}" 
+                           class="inline-block px-4 py-1.5 text-[11px] font-bold text-white bg-[#bd1512] rounded-full hover:bg-red-900 transition-colors shadow-sm">
+                           Draft Email
+                        </a>
+                    </div>
+                    `;
+                }).join('');
+            }
+        } catch (e) {
+            console.error("Template fetch failed:", e);
+        }
+
+        // 8. Inject the FULL UI directly into the modal container
         contentDiv.innerHTML = `
             <div class="p-6 pb-4 bg-[#fbf4f2] border-b border-pru-border relative shrink-0">
                 <button onclick="closeModals()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 focus:outline-none">
@@ -623,7 +654,7 @@ window.viewLeadDetails = async function(leadId) {
                     <div class="w-12 h-12 rounded-full ${avatarBg} text-white font-bold flex items-center justify-center text-lg shadow-sm">${initials}</div>
                     <div>
                         <h2 class="text-xl font-serif font-bold text-gray-900 leading-tight">${fullName}</h2>
-                        <p class="text-[11px] font-bold text-gray-600 mt-1">${lead.track || 'Lead'} Added ${addedDate}</p>
+                        <p class="text-[11px] font-bold text-gray-600 mt-1">${lead.track === 'future_advisor' ? 'Agent' : 'Client'} Lead</p>
                     </div>
                 </div>
                 <div class="flex gap-2">
@@ -643,12 +674,11 @@ window.viewLeadDetails = async function(leadId) {
             </div>
 
             <div class="flex px-6 border-b border-pru-border bg-white pt-2 shrink-0">
-                <button class="px-4 py-2 border-b-2 border-pru-red text-pru-red text-[13px] font-bold">Profile</button>
-                <button class="px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 text-[13px] font-bold transition-colors">Email</button>
+                <button id="tab-btn-profile" onclick="switchProfileTab('profile')" class="px-4 py-2 border-b-2 border-pru-red text-pru-red text-[13px] font-bold">Profile</button>
+                <button id="tab-btn-email" onclick="switchProfileTab('email')" class="px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 text-[13px] font-bold transition-colors">Email</button>
             </div>
 
-            <div class="p-8 overflow-y-auto flex-grow bg-white">
-                
+            <div id="modal-profile-view" class="p-8 overflow-y-auto flex-grow bg-white block">
                 <div class="mb-8">
                     <div class="flex items-center gap-2 mb-4">
                         <h3 class="text-[11px] font-bold text-[#b89569] uppercase tracking-widest">Contact</h3>
@@ -678,7 +708,24 @@ window.viewLeadDetails = async function(leadId) {
                 ${specificSectionHTML}
             </div>
 
-            <div class="p-6 border-t border-pru-border flex justify-end gap-3 bg-gray-50">
+            <div id="modal-email-view" class="p-8 overflow-y-auto flex-grow bg-gray-50 hidden">
+                <div class="max-w-xl mx-auto">
+                    <h3 class="text-[16px] font-serif font-bold text-gray-900 mb-2">Send an Email to ${lead.full_name.split(' ')[0]}</h3>
+                    <p class="text-[12px] text-gray-500 mb-6">Select a template below. It will automatically open your default email app (Outlook, Mail, Gmail) with the subject and message pre-filled.</p>
+                    
+                    ${emailTemplatesHTML}
+                    
+                    <div class="mt-8 p-4 border border-pru-border rounded-lg bg-white shadow-sm">
+                        <p class="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-1">Custom Email</p>
+                        <p class="text-[12px] text-gray-500 mb-3">Want to write something from scratch?</p>
+                        <a href="mailto:${lead.email}" class="inline-block px-4 py-2 text-[12px] font-bold text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors shadow-sm">
+                            Open Blank Email
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-pru-border flex justify-end gap-3 bg-gray-50 shrink-0">
                 <button onclick="deleteLeadProfile('${leadId}')" class="px-6 py-2.5 text-[13px] font-bold text-pru-red border border-pru-border rounded-full hover:bg-red-50 transition shadow-sm bg-white">
                     Delete Profile
                 </button>
@@ -1784,3 +1831,27 @@ window.exportAppointmentsCSV = async function(event) {
         btn.disabled = false;
     }
 };
+
+// ==========================================
+// EMAIL TAB LOGIC
+// ==========================================
+window.switchProfileTab = function(tabName) {
+    const profileTab = document.getElementById('tab-btn-profile');
+    const emailTab = document.getElementById('tab-btn-email');
+    const profileContent = document.getElementById('modal-profile-view');
+    const emailContent = document.getElementById('modal-email-view');
+
+    if (!profileTab || !emailTab || !profileContent || !emailContent) return;
+
+    if (tabName === 'profile') {
+        profileTab.className = "px-4 py-2 border-b-2 border-pru-red text-pru-red text-[13px] font-bold";
+        emailTab.className = "px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 text-[13px] font-bold transition-colors";
+        profileContent.classList.remove('hidden');
+        emailContent.classList.add('hidden');
+    } else {
+        emailTab.className = "px-4 py-2 border-b-2 border-pru-red text-pru-red text-[13px] font-bold";
+        profileTab.className = "px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 text-[13px] font-bold transition-colors";
+        profileContent.classList.add('hidden');
+        emailContent.classList.remove('hidden');
+    }
+}
