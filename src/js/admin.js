@@ -18,6 +18,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    // Password Toggle Logic
+    const passwordInput = document.getElementById('login-password');
+    const eyeIcon = document.querySelector('#login-password + span');
+    
+    if (passwordInput && eyeIcon) {
+        eyeIcon.addEventListener('click', () => {
+            const isPassword = passwordInput.getAttribute('type') === 'password';
+            passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+            // Optional: change the icon slightly to show it's unlocked
+            eyeIcon.style.opacity = isPassword ? '0.5' : '1'; 
+        });
+    }
+
     // Check if the admin is already logged in from a previous session
     const { data: { session } } = await supabase.auth.getSession();
     
@@ -1867,3 +1880,6 @@ window.switchProfileTab = function(tabName) {
         emailContent.classList.remove('hidden');
     }
 }
+
+// Silently refresh the dashboard data every 60 seconds
+setInterval(() => { if (!document.getElementById('admin-app').classList.contains('hidden')) { loadAdminLeads(); } }, 60000);
