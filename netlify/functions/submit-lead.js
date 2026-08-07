@@ -80,18 +80,29 @@ exports.handler = async (event) => {
             throw new Error("Could not find an open slot for this date.");
         }
 
-        // 2. Book the Appointment
+        const appointmentPayload = {
+            lead_id: leadId,
+            slot_id: slotData[0].slot_id,
+            status: 'pending',
+            admin_notes: appointmentData.adminNotes
+        };
+
+        console.log("Appointment payload:", appointmentPayload);
+
         const appointmentRes = await fetch(`${SUPABASE_URL}/rest/v1/appointments`, {
             method: 'POST',
-            headers: headers,
-            body: JSON.stringify({
-                lead_id: leadId,
-                slot_id: slotData[0].slot_id,
-                status: 'pending',
-                admin_notes: appointmentData.adminNotes
-            })
+            headers,
+            body: JSON.stringify(appointmentPayload)
         });
-        if (!appointmentRes.ok) throw new Error('Failed to save appointment');
+
+        const appointmentText = await appointmentRes.text();
+
+        console.log("Status:", appointmentRes.status);
+        console.log("Body:", appointmentText);
+
+        if (!appointmentRes.ok) {
+            throw new Error(appointmentText);
+        }
 
         // ==========================================
         // STEP D: SUCCESS!
