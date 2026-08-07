@@ -1,8 +1,3 @@
-// ============= SUPABASE INITIALIZATION =============
-const SUPABASE_URL = "https://refufwvilgtgqpcnejhs.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlZnVmd3ZpbGd0Z3FwY25lamhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4Nzk4MTMsImV4cCI6MjEwMDQ1NTgxM30.lPL_AWB1uMHS8Bac7jNtuPJJD7FUDpPNiuP0J7v6DII";
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
 // ============= FORM REFERENCES (Global Scope) =============
 window.agentForm = document.getElementById("appointment-form");
 window.clientForm = document.getElementById("client-appointment-form");
@@ -336,50 +331,7 @@ window.agentForm.addEventListener("submit", async function (e) {
     submitBtn.textContent = "Submitting...";
 
     try {
-        const leadData = {
-            full_name: window.agentForm.querySelector("input[name='full_name']").value,
-            email: window.agentForm.querySelector("input[name='email']").value,
-            mobile_number: window.agentForm.querySelector("input[name='mobile']").value,
-            assigned_to: window.agentForm.querySelector("input[name='assigned_to']").value,
-            track: "future_advisor", 
-            source: "Website Funnel",
-            current_stage: "new",
-            date_of_birth: window.agentForm.querySelector("input[name='dob']")?.value || null
-        };
-
-        const { data: lead, error: leadError } = await supabaseClient
-            .from("leads")
-            .insert([leadData])
-            .select()
-            .single();
-
-        if (leadError) {
-            if (leadError.code === '23505') {
-                alert("Hold up! It looks like you've already registered with this email address.");
-                submitBtn.disabled = false; 
-                submitBtn.textContent = "Confirm My Slot"; 
-                return; 
-            }
-            throw leadError; 
-        }
-
-        const recruitData = {
-            lead_id: lead.lead_id, 
-            area_of_residence: window.agentForm.querySelector("input[name='residence']").value,
-            university_college: window.agentForm.querySelector("input[name='university']").value,
-            degree: window.agentForm.querySelector("input[name='degree']").value,
-            area_of_employment: window.agentForm.querySelector("input[name='employment_field']").value,
-            work_experience: window.agentForm.querySelector("input[name='work_exp']").value,
-            years_working: parseInt(window.agentForm.querySelector("input[name='years_working']").value) || 0,
-            attended_byb_session: window.agentForm.querySelector("select[name='attended_byb']").value === 'yes'
-        };
-
-        const { error: profileError } = await supabaseClient
-            .from("recruit_profile")
-            .insert([recruitData]);
-
-        if (profileError) throw profileError;
-
+        // 1. Format the Date and Time for the Database
         const rawDate = window.agentForm.querySelector(".appt-date-input").value; 
         const apptDateObj = new Date(rawDate);
         const tzOffset = apptDateObj.getTimezoneOffset() * 60000;
@@ -388,34 +340,57 @@ window.agentForm.addEventListener("submit", async function (e) {
         const apptTime = window.agentForm.querySelector(".appt-time-input").value;
         const formattedTime24 = convert12HourTo24Hour(apptTime);
 
-        const { data: slotData, error: slotError } = await supabaseClient
-        .from('availability_slots')
-        .select('slot_id')
-        .eq('slot_date', dbDate)
-        .eq('track', 'future_advisor')
-        .eq('slot_time', formattedTime24)
-        .eq('is_open', true)
-        .single();
+        // 2. Package everything for the Netlify Backend
+        const payload = {
+            leadData: {
+                full_name: window.agentForm.querySelector("input[name='full_name']").value,
+                email: window.agentForm.querySelector("input[name='email']").value,
+                mobile_number: window.agentForm.querySelector("input[name='mobile']").value,
+                assigned_to: window.agentForm.querySelector("input[name='assigned_to']").value,
+                track: "future_advisor",
+                source: "Website Funnel",
+                current_stage: "new",
+                date_of_birth: window.agentForm.querySelector("input[name='dob']")?.value || null
+            },
+            profileData: {
+                area_of_residence: window.agentForm.querySelector("input[name='residence']").value,
+                university_college: window.agentForm.querySelector("input[name='university']").value,
+                degree: window.agentForm.querySelector("input[name='degree']").value,
+                area_of_employment: window.agentForm.querySelector("input[name='employment_field']").value,
+                work_experience: window.agentForm.querySelector("input[name='work_exp']").value,
+                years_working: parseInt(window.agentForm.querySelector("input[name='years_working']").value) || 0,
+                attended_byb_session: window.agentForm.querySelector("select[name='attended_byb']").value === 'yes'
+            },
+            appointmentData: {
+                dbDate: dbDate,
+                formattedTime24: formattedTime24,
+                adminNotes: `Time requested: ${apptTime}`
+            }
+        };
 
-        if (slotError || !slotData) throw new Error("Could not find an open slot for this date in the database.");
+        // 3. Send to the Middleman (Netlify Function)
+        const response = await fetch('/.netlify/functions/submit-lead', {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: { 'Content-Type': 'application/json' }
+        });
 
-        const { error: appointmentError } = await supabaseClient
-            .from('appointments')
-            .insert([{
-                lead_id: lead.lead_id,
-                slot_id: slotData.slot_id,
-                status: 'pending',
-                admin_notes: `Time requested: ${apptTime}` 
-            }]);
+        const result = await response.json();
 
-        if (appointmentError) throw appointmentError;
+        if (!response.ok) {
+            if (response.status === 409) {
+                alert("Hold up! It looks like you've already registered with this email address.");
+                return;
+            }
+            throw new Error(result.error || "Failed to book slot.");
+        }
 
         alert("Success! Your Agent Career Preview slot has been reserved.");
         resetBookingForm(window.agentForm);
 
     } catch (error) {
-        console.error("Supabase Error:", error);
-        alert("Error saving booking. Please try again. Check console for details.");
+        console.error("Backend Error:", error);
+        alert("Error saving booking. Please try again or refresh the page.");
     } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = "Confirm My Slot";
@@ -439,54 +414,7 @@ window.clientForm.addEventListener("submit", async function (e) {
     submitBtn.textContent = "Submitting...";
 
     try {
-        const leadData = {
-            full_name: window.clientForm.querySelector("input[name='full_name']").value,
-            email: window.clientForm.querySelector("input[name='email']").value,
-            mobile_number: window.clientForm.querySelector("input[name='mobile']").value,
-            assigned_to: window.clientForm.querySelector("input[name='assigned_to']").value,
-            track: "future_client",
-            source: "Website Funnel",
-            current_stage: "new",
-            date_of_birth: window.clientForm.querySelector("input[name='dob']")?.value || null
-        };
-
-        const { data: lead, error: leadError } = await supabaseClient
-            .from("leads")
-            .insert([leadData])
-            .select()
-            .single();
-
-        if (leadError) {
-            if (leadError.code === '23505') {
-                alert("Hold up! It looks like you've already registered with this email address.");
-                submitBtn.disabled = false; 
-                submitBtn.textContent = "Confirm My Slot"; 
-                return; 
-            }
-            throw leadError; 
-        }
-
-        const insuranceInput = window.clientForm.querySelector("#has_insurance") ? window.clientForm.querySelector("#has_insurance").value : "";
-        let hasInsuranceBool = null;
-        if (insuranceInput === "yes") hasInsuranceBool = true;
-        if (insuranceInput === "no") hasInsuranceBool = false;
-
-        const clientData = {
-            lead_id: lead.lead_id,
-            has_life_insurance: hasInsuranceBool,
-            current_employment: window.clientForm.querySelector("input[name='employment']").value,
-            marital_status: window.clientForm.querySelector("input[name='marital_status']").value,
-            no_of_dependents: parseInt(window.clientForm.querySelector("input[name='dependents']").value) || 0,
-            monthly_budget: parseFloat(window.clientForm.querySelector("input[name='budget']").value.replace(/[^0-9.-]+/g,"")) || 0,
-            area_of_residence: window.clientForm.querySelector("input[name='residence']").value,
-        };
-
-        const { error: profileError } = await supabaseClient
-            .from("client_profile")
-            .insert([clientData]);
-
-        if (profileError) throw profileError;
-
+        // 1. Format the Date and Time for the Database
         const rawDate = window.clientForm.querySelector(".appt-date-input").value; 
         const apptDateObj = new Date(rawDate);
         const tzOffset = apptDateObj.getTimezoneOffset() * 60000;
@@ -495,34 +423,62 @@ window.clientForm.addEventListener("submit", async function (e) {
         const apptTime = window.clientForm.querySelector(".appt-time-input").value;
         const formattedTime24 = convert12HourTo24Hour(apptTime);
 
-        const { data: slotData, error: slotError } = await supabaseClient
-        .from('availability_slots')
-        .select('slot_id')
-        .eq('slot_date', dbDate)
-        .eq('track', 'future_client')
-        .eq('slot_time', formattedTime24)
-        .eq('is_open', true)
-        .single();
+        // Format Insurance Boolean
+        const insuranceInput = window.clientForm.querySelector("#has_insurance") ? window.clientForm.querySelector("#has_insurance").value : "";
+        let hasInsuranceBool = null;
+        if (insuranceInput === "yes") hasInsuranceBool = true;
+        if (insuranceInput === "no") hasInsuranceBool = false;
 
-        if (slotError || !slotData) throw new Error("Could not find an open slot for this date in the database.");
+        // 2. Package everything for the Netlify Backend
+        const payload = {
+            leadData: {
+                full_name: window.clientForm.querySelector("input[name='full_name']").value,
+                email: window.clientForm.querySelector("input[name='email']").value,
+                mobile_number: window.clientForm.querySelector("input[name='mobile']").value,
+                assigned_to: window.clientForm.querySelector("input[name='assigned_to']").value,
+                track: "future_client",
+                source: "Website Funnel",
+                current_stage: "new",
+                date_of_birth: window.clientForm.querySelector("input[name='dob']")?.value || null
+            },
+            profileData: {
+                has_life_insurance: hasInsuranceBool,
+                current_employment: window.clientForm.querySelector("input[name='employment']").value,
+                marital_status: window.clientForm.querySelector("input[name='marital_status']").value,
+                no_of_dependents: parseInt(window.clientForm.querySelector("input[name='dependents']").value) || 0,
+                monthly_budget: parseFloat(window.clientForm.querySelector("input[name='budget']").value.replace(/[^0-9.-]+/g,"")) || 0,
+                area_of_residence: window.clientForm.querySelector("input[name='residence']").value,
+            },
+            appointmentData: {
+                dbDate: dbDate,
+                formattedTime24: formattedTime24,
+                adminNotes: `Time requested: ${apptTime}`
+            }
+        };
 
-        const { error: appointmentError } = await supabaseClient
-            .from('appointments')
-            .insert([{
-                lead_id: lead.lead_id,
-                slot_id: slotData.slot_id,
-                status: 'pending',
-                admin_notes: `Time requested: ${apptTime}` 
-            }]);
+        // 3. Send to the Middleman (Netlify Function)
+        const response = await fetch('/.netlify/functions/submit-lead', {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: { 'Content-Type': 'application/json' }
+        });
 
-        if (appointmentError) throw appointmentError;
+        const result = await response.json();
+
+        if (!response.ok) {
+            if (response.status === 409) {
+                alert("Hold up! It looks like you've already registered with this email address.");
+                return;
+            }
+            throw new Error(result.error || "Failed to book slot.");
+        }
 
         alert("Success! Your Financial Conversation slot has been reserved.");
         resetBookingForm(window.clientForm);
 
     } catch (error) {
-        console.error("Supabase Error:", error);
-        alert("Error saving booking. Please try again. Check console for details.");
+        console.error("Backend Error:", error);
+        alert("Error saving booking. Please try again or refresh the page.");
     } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = "Confirm My Slot";
