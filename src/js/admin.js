@@ -881,8 +881,8 @@ async function renderAdminCalendar() {
   );
 
   gridEl.innerHTML = '';
-  const firstDayIndex = new Date(year, month, 1).getDay();
-  const startDay = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+  const firstDayIndex = new Date(year, month, 1).getDay(); 
+  const startDay = firstDayIndex;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
   for (let i = 0; i < startDay; i++) {
